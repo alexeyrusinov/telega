@@ -2,11 +2,12 @@ from key import token, url_binance
 import markups as nav
 import datetime, requests
 from aiogram import Bot, Dispatcher, executor, types
+from btcusdt import get_json_btcusdt
 
 
-response = requests.get(url_binance)
-response.raise_for_status()
-dic = response.json()
+# response = requests.get(url_binance)
+# response.raise_for_status()
+# dic = response.json()
 
 
 bot = Bot(token) # обьект бота
@@ -51,7 +52,7 @@ async def echo_message(message: types.Message):
     elif message.text == "Информация":
         await bot.send_message(message.from_user.id, "Какая-то информация...")
     elif message.text == "Курс биткоина":
-        await bot.send_message(message.from_user.id, f"Курс биткоина... {dic[11]}" )
+        await bot.send_message(message.from_user.id, f"Курс биткоина... {get_json_btcusdt(url_binance)}" )
 
 
 if __name__ == '__main__':
