@@ -10,7 +10,7 @@ dp = Dispatcher(bot)
 
 
 now = datetime.datetime.now()
-now_day_time = now.strftime("%H:%M\n%A %d/%m/%y")
+now_day_time = now.strftime("%H:%M %A %d/%m/%y")
 
 
 @dp.message_handler(commands=['start'])
@@ -27,7 +27,7 @@ async def send_welcome(message: types.Message):
 async def echo_message(message: types.Message):
     # await bot.send_message(msg.from_user.id, msg.text)
     if message.text == "Текущее время и дата":
-        await bot.send_message(message.from_user.id, f"Current time: {now_day_time}")
+        await bot.send_message(message.from_user.id, now_day_time)
     elif message.text == "Главное меню":
         await bot.send_message(message.from_user.id, "Главное меню", reply_markup = nav.mainMenu)
     elif message.text == "Другое":
