@@ -52,7 +52,7 @@ async def echo_message(message: types.Message):
     elif message.text == "Информация":
         await bot.send_message(message.from_user.id, "Какая-то информация...")
     elif message.text == "Курс биткоина":
-        await bot.send_message(message.from_user.id, f"Курс биткоина... {get_json_btcusdt(url_binance)}" )
+        await bot.send_message(message.from_user.id, f"Курс биткоина...\n{get_json_btcusdt(url_binance)}" )
 
 
 if __name__ == '__main__':
