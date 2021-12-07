@@ -8,7 +8,7 @@ def get_json_btcusdt(url):
         response.raise_for_status()
         dic = response.json()
         res = dic[11]
-        result = str(res["symbol"] + " - " + res["price"])
+        result = str(res["symbol"] + " - " + res["price"] + " $")
     except Exception:
         print(">>>>--------> Errors with getting json <--------<<<<")
     return result
