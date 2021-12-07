@@ -8,14 +8,15 @@ def get_json_btcusdt(url):
         response.raise_for_status()
         dic = response.json()
         res = dic[11]
-        result = str(res["symbol"] + " - " + res["price"] + " $")
+        result = str(res["symbol"] + " - " + res["price"])
+        result = result[:-6] + " $"
     except Exception:
         print(">>>>--------> Errors with getting json <--------<<<<")
     return result
 
 
-
-
+# get_json_btcusdt(url_binance)
+# str.rstrip(str[-1])
 
 
 
