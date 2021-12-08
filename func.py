@@ -1,8 +1,6 @@
 import requests
 from key import url_binance
-####
 import json, datetime
-from pandas import DataFrame
 
 
 def get_json_btcusdt(url):
@@ -69,6 +67,7 @@ def pars_bus():
     with open('new_data.json', 'w', encoding='utf8') as f:
         json.dump(items_to_keep, f, ensure_ascii=False, indent=4, sort_keys=True, default=str)
 
+
     res = ''
     for i in items_to_keep: # print min to the next bus
         if i["status"] == "" and i["name_bus"] == "НЕФАЗ" or i["name_bus"] == "ПАЗ-4234":
@@ -92,18 +91,12 @@ def pars_bus():
         i["time_otpr"] = i["time_otpr"].strftime("%H:%M")
 
 
-
-
-    # df = DataFrame(items_to_keep, columns = ["time_otpr", "status", "free_place", "name_bus", "name_route"])
-    # print(df.to_string(index=False)) # output result without index pandas
-    # par_result = df.to_string(index=False)
     for i in items_to_keep:
         res += i["time_otpr"]
         res += i["status"] + ' '
         res += i["free_place"] + ' '
         res += i["name_bus"] + ' '
         res += i["name_route"] + '\n\n'
-
 
     return res
 
