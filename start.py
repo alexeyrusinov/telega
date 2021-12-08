@@ -1,9 +1,8 @@
 from key import token, url_binance
-from func import get_json_btcusdt, pars_bus
+from func import get_time, get_json_btcusdt, pars_bus
 import markups as nav
 import datetime
 from aiogram import Bot, Dispatcher, executor, types
-
 
 
 bot = Bot(token) # обьект бота
@@ -27,7 +26,7 @@ async def send_welcome(message: types.Message):
 @dp.message_handler()
 async def echo_message(message: types.Message):
     if message.text == "Текущее время и дата":
-        await bot.send_message(message.from_user.id, now_day_time)
+        await bot.send_message(message.from_user.id, get_time())
     elif message.text == "Главное меню":
         await bot.send_message(message.from_user.id, "Главное меню", reply_markup = nav.mainMenu)
     elif message.text == "Другое":

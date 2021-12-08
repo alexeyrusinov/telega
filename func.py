@@ -2,6 +2,10 @@ import requests
 from key import url_binance
 import json, datetime
 
+def get_time():
+    now = datetime.datetime.now()
+    now_day_time = now.strftime("%H:%M %A %d/%m/%y")
+    return now_day_time
 
 def get_json_btcusdt(url):
     global result
