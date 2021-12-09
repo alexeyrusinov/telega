@@ -9,10 +9,6 @@ bot = Bot(token) # обьект бота
 dp = Dispatcher(bot)
 
 
-now = datetime.datetime.now()
-now_day_time = now.strftime("%H:%M %A %d/%m/%y")
-
-
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     await message.answer(f"Привет, выбери команду...", reply_markup= nav.mainMenu)
