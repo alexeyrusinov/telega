@@ -1,4 +1,4 @@
-token.txt
+*.txt
 *.log
 .idea/
 env/
