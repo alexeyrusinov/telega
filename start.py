@@ -1,4 +1,4 @@
-from func import get_time, get_json_btcusdt, pars_bus
+from func import get_time, pars_bus, get_json_btcusdt
 import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
 import os
