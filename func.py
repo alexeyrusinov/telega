@@ -118,7 +118,7 @@ def pars_bus():
         res += i["free_place"] + ' '
         res += i["name_bus"] + ' '
         res += i["name_route"] + '\n\n'
-
+    print(res)
     return res
 
 # x = pars_bus()
