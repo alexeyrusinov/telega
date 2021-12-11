@@ -121,7 +121,8 @@ def pars_bus():
 
     return res
 
-
+# x = pars_bus()
+# print(x)
 
 
 
