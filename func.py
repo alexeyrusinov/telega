@@ -1,7 +1,4 @@
-import pytz
-import requests
-import json, datetime
-import pytz
+import requests, json, datetime, pytz
 
 url_binance = "https://api.binance.com/api/v3/ticker/price"
 
