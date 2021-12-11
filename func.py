@@ -17,7 +17,6 @@ def get_time():
     # return now_day_time
     return currentTimeZone
 
-get_time()
 
 def get_json_btcusdt(url):
     global result
