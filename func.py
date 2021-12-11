@@ -1,21 +1,15 @@
+import pytz
 import requests
 import json, datetime
-from pytz import timezone
+import pytz
 
 url_binance = "https://api.binance.com/api/v3/ticker/price"
 
 
-currentTimeZone = datetime.datetime.now(timezone('Asia/Yekaterinburg'))
-
-
 def get_time():
-    now = datetime.datetime.now()
-    currentTimeZone = now.strftime("%H:%M %A %d/%m/%y")
-    # print(currentTimeZone)
-    # now_day_time = now.strftime("%H:%M %A %d/%m/%y")
-
-    # return now_day_time
-    return currentTimeZone
+    local_date = datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+    local_date = local_date.strftime("%H:%M %A %d/%m/%y")
+    return local_date
 
 
 def get_json_btcusdt(url):
