@@ -2,7 +2,7 @@ from func import get_time, pars_bus, get_json_btcusdt
 import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
 import os
-from func import url_binance
+from func import url_binance #--------------убрать
 
 # variable environment
 TOKEN = os.environ["TOKEN"]
