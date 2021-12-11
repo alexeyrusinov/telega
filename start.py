@@ -4,6 +4,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import os
 from func import url_binance
 
+# variable environment
 TOKEN = os.environ["TOKEN"]
 
 bot = Bot(TOKEN) # обьект бота
