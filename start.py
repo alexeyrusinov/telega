@@ -1,17 +1,18 @@
-from key import token, url_binance
 from func import get_time, get_json_btcusdt, pars_bus
 import markups as nav
-import datetime
 from aiogram import Bot, Dispatcher, executor, types
+import os
+from func import url_binance
 
+TOKEN = os.environ["TOKEN"]
 
-bot = Bot(token) # обьект бота
+bot = Bot(TOKEN) # обьект бота
 dp = Dispatcher(bot)
 
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    await message.answer(f"Привет, выбери команду...", reply_markup= nav.mainMenu)
+    await message.answer(f"Привет, выберите команду...", reply_markup= nav.mainMenu)
 
 
 @dp.message_handler(commands=['help'])

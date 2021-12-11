@@ -1,11 +1,13 @@
 import requests
-from key import url_binance
 import json, datetime
+
+url_binance = "https://api.binance.com/api/v3/ticker/price"
 
 def get_time():
     now = datetime.datetime.now()
     now_day_time = now.strftime("%H:%M %A %d/%m/%y")
     return now_day_time
+
 
 def get_json_btcusdt(url):
     global result
@@ -19,6 +21,7 @@ def get_json_btcusdt(url):
     except Exception:
         print(">>>>--------> Errors with getting json <--------<<<<")
     return result
+
 
 #----------------------
 def pars_bus():
@@ -67,6 +70,8 @@ def pars_bus():
             items_to_keep.append(item)
 
 
+
+
     #write json file
     with open('new_data.json', 'w', encoding='utf8') as f:
         json.dump(items_to_keep, f, ensure_ascii=False, indent=4, sort_keys=True, default=str)
@@ -93,8 +98,19 @@ def pars_bus():
 
     for i in items_to_keep: # convert class 'datetime.time to string deleting seconds
         i["time_otpr"] = i["time_otpr"].strftime("%H:%M")
+#-------------------------
 
+    # result = []
+    # for i in items_to_keep:
+    #     one_items = i.get("time_otpr")
+    #
+    #     result.append({
+    #         'time_otpr' : one_items
+    #     })
+    # with open('result.json', 'w') as file:
+    #     json.dump(result, file, indent=4, ensure_ascii=False)
 
+#-------------------------
     for i in items_to_keep:
         res += i["time_otpr"]
         res += i["status"] + ' '
