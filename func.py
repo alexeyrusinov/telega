@@ -100,6 +100,7 @@ def pars_bus():
         i["time_otpr"] = i["time_otpr"].strftime("%H:%M")
 #-------------------------
 
+
     # result = []
     # for i in items_to_keep:
     #     one_items = i.get("time_otpr")
