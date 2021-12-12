@@ -28,7 +28,11 @@ def pars_bus():
     now = datetime.datetime.now() # get date and time
     now_day = str(now.day)
     now_month = str(now.month)
+
     times = now.time().replace(microsecond=0) # del millisecond
+    print(times)
+    local_date = datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg')).time().replace(microsecond=0)
+    print(local_date)
     id = '1331'
 
     # past now day and month
@@ -66,7 +70,7 @@ def pars_bus():
         item["name_bus"] = item["name_bus"].replace('ПАЗ-4234', 'ПАЗ')
         item["cancel"] = item["cancel"].replace("Отмена", "canceled")  # rename value
         item["status"] = item.pop("cancel") # rename key
-        if item["time_otpr"] > times:
+        if item["time_otpr"] > local_date: # тут было times
             items_to_keep.append(item)
 
 
@@ -80,7 +84,7 @@ def pars_bus():
     res = ''
     for i in items_to_keep: # print min to the next bus
         if i["status"] == "" and i["name_bus"] == "НЕФАЗ" or i["name_bus"] == "ПАЗ-4234":
-            nex_bus = i["time_otpr"].minute - times.minute
+            nex_bus = i["time_otpr"].minute - local_date.minute # тут было times
             free_place = i["free_place"]
             name_bus = i["name_bus"]
             # print(f" The next bus in {nex_bus} minutes, bus: {name_bus}, free places: {free_place} ")
@@ -88,7 +92,7 @@ def pars_bus():
             res = resultNextBus
             break
         elif i["status"] == "":
-            nex_bus = i["time_otpr"].minute - times.minute
+            nex_bus = i["time_otpr"].minute - local_date.minute # тут было times
             free_place = i["free_place"]
             # print(f" The next bus in {nex_bus} minutes, free places: {free_place} ")
             resultNextBus = str('The next bus in ' + str(nex_bus) + ' minutes, free places: ' + str(free_place) +'\n')
@@ -118,7 +122,6 @@ def pars_bus():
         res += i["free_place"] + ' '
         res += i["name_bus"] + ' '
         res += i["name_route"] + '\n\n'
-    print(res)
     return res
 
 # x = pars_bus()
