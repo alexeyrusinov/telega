@@ -1,7 +1,9 @@
-import requests, json, datetime, pytz
+import requests, json, pytz
+from datetime import datetime
+
 
 url_binance = "https://api.binance.com/api/v3/ticker/price"
-data_time_ekb = datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 
 
 def get_time(data_time_ekb):
@@ -25,10 +27,11 @@ def get_json_btcusdt(url):
 
 #----------------------
 def pars_bus(data_time_ekb):
-    now = datetime.datetime.now() # get date and time
+    now = datetime.now() # get date and time
     now_day = str(now.day)
     now_month = str(now.month)
-    data_time_ekb = data_time_ekb.time().replace(microsecond=0) # del millisecond
+    data_time_ekb = data_time_ekb.strftime('%H:%M')
+    data_time_ekb = datetime.strptime(data_time_ekb, '%H:%M')
     id = '1331'
 
     # past now day and month
@@ -59,17 +62,15 @@ def pars_bus(data_time_ekb):
     #Rename json
     items_to_keep = []
     for item in data["rasp"]:
-        item["time_otpr"] = datetime.datetime.strptime(item["time_otpr"], "%H:%M").time() # convert str to class 'datetime
+        item["time_otpr"] = datetime.strptime(item["time_otpr"], '%H:%M') # convert str to class 'datetime
         item["name_route"] = item["name_route"].replace('г.Екатеринбург (Южный АВ) -<br/>', 'Екб (Южный АВ) -')   # rename value
         item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6122 H9', 'YUTONG')
         item["name_bus"] = item["name_bus"].replace('YUTONG 6121', 'YUTONG')
         item["name_bus"] = item["name_bus"].replace('ПАЗ-4234', 'ПАЗ')
         item["cancel"] = item["cancel"].replace("Отмена", "canceled")  # rename value
         item["status"] = item.pop("cancel") # rename key
-        if item["time_otpr"] > data_time_ekb: # тут было times
+        if item["time_otpr"] > data_time_ekb:
             items_to_keep.append(item)
-
-
 
 
     #write json file
@@ -80,38 +81,24 @@ def pars_bus(data_time_ekb):
     res = ''
     for i in items_to_keep: # print min to the next bus
         if i["status"] == "" and i["name_bus"] == "НЕФАЗ" or i["name_bus"] == "ПАЗ-4234":
-            nex_bus = i["time_otpr"].minute - data_time_ekb.minute # тут было times
+            nex_bus = i["time_otpr"] - data_time_ekb
             free_place = i["free_place"]
             name_bus = i["name_bus"]
-            # print(f" The next bus in {nex_bus} minutes, bus: {name_bus}, free places: {free_place} ")
-            resultNextBus = str('The next bus in ' + str(nex_bus) + ' minutes, bus: ' + str(name_bus) + ' free places: ' + str(free_place) +'\n')
+            resultNextBus = str('The next bus in ' + str(nex_bus) + ' \nbus: ' + str(name_bus) + ' free places: ' + str(free_place) +'\n')
             res = resultNextBus
             break
         elif i["status"] == "":
-            nex_bus = i["time_otpr"].minute - data_time_ekb.minute # тут было times
+            nex_bus = i["time_otpr"] - data_time_ekb
             free_place = i["free_place"]
-            # print(f" The next bus in {nex_bus} minutes, free places: {free_place} ")
-            resultNextBus = str('The next bus in ' + str(nex_bus) + ' minutes, free places: ' + str(free_place) +'\n')
+            resultNextBus = str('The next bus in ' + str(nex_bus) + ' \nfree places: ' + str(free_place) +'\n')
             res = resultNextBus
             break
 
 
     for i in items_to_keep: # convert class 'datetime.time to string deleting seconds
         i["time_otpr"] = i["time_otpr"].strftime("%H:%M")
-#-------------------------
 
 
-    # result = []
-    # for i in items_to_keep:
-    #     one_items = i.get("time_otpr")
-    #
-    #     result.append({
-    #         'time_otpr' : one_items
-    #     })
-    # with open('result.json', 'w') as file:
-    #     json.dump(result, file, indent=4, ensure_ascii=False)
-
-#-------------------------
     for i in items_to_keep:
         res += i["time_otpr"]
         res += i["status"] + ' '
@@ -119,10 +106,6 @@ def pars_bus(data_time_ekb):
         res += i["name_bus"] + ' '
         res += i["name_route"] + '\n\n'
     return res
-
-# x = pars_bus()
-# print(x)
-
 
 
 
