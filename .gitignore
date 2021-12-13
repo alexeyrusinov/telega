@@ -4,3 +4,5 @@
 env/
 .DS_Store
 __pycache__/
+/data.json
+/new_data.json

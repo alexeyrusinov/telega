@@ -1,12 +1,12 @@
 import requests, json, datetime, pytz
 
 url_binance = "https://api.binance.com/api/v3/ticker/price"
+data_time_ekb = datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 
 
-def get_time():
-    local_date = datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg'))
-    local_date = local_date.strftime("%H:%M %A %d/%m/%y")
-    return local_date
+def get_time(data_time_ekb):
+    data_time_ekb = data_time_ekb.strftime("%H:%M %A %d/%m/%y")
+    return data_time_ekb
 
 
 def get_json_btcusdt(url):
@@ -24,15 +24,11 @@ def get_json_btcusdt(url):
 
 
 #----------------------
-def pars_bus():
+def pars_bus(data_time_ekb):
     now = datetime.datetime.now() # get date and time
     now_day = str(now.day)
     now_month = str(now.month)
-
-    times = now.time().replace(microsecond=0) # del millisecond
-    print(times)
-    local_date = datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg')).time().replace(microsecond=0)
-    print(local_date)
+    data_time_ekb = data_time_ekb.time().replace(microsecond=0) # del millisecond
     id = '1331'
 
     # past now day and month
@@ -70,7 +66,7 @@ def pars_bus():
         item["name_bus"] = item["name_bus"].replace('ПАЗ-4234', 'ПАЗ')
         item["cancel"] = item["cancel"].replace("Отмена", "canceled")  # rename value
         item["status"] = item.pop("cancel") # rename key
-        if item["time_otpr"] > local_date: # тут было times
+        if item["time_otpr"] > data_time_ekb: # тут было times
             items_to_keep.append(item)
 
 
@@ -84,7 +80,7 @@ def pars_bus():
     res = ''
     for i in items_to_keep: # print min to the next bus
         if i["status"] == "" and i["name_bus"] == "НЕФАЗ" or i["name_bus"] == "ПАЗ-4234":
-            nex_bus = i["time_otpr"].minute - local_date.minute # тут было times
+            nex_bus = i["time_otpr"].minute - data_time_ekb.minute # тут было times
             free_place = i["free_place"]
             name_bus = i["name_bus"]
             # print(f" The next bus in {nex_bus} minutes, bus: {name_bus}, free places: {free_place} ")
@@ -92,7 +88,7 @@ def pars_bus():
             res = resultNextBus
             break
         elif i["status"] == "":
-            nex_bus = i["time_otpr"].minute - local_date.minute # тут было times
+            nex_bus = i["time_otpr"].minute - data_time_ekb.minute # тут было times
             free_place = i["free_place"]
             # print(f" The next bus in {nex_bus} minutes, free places: {free_place} ")
             resultNextBus = str('The next bus in ' + str(nex_bus) + ' minutes, free places: ' + str(free_place) +'\n')
