@@ -81,7 +81,7 @@ def pars_bus():
 
     res = ''
     for i in items_to_keep: # print min to the next bus
-        if i["status"] == "" and i["name_bus"] == "НЕФАЗ" or i["name_bus"] == "ПАЗ-4234":
+        if i["status"] == "" and i["name_bus"] == "НЕФАЗ" or i["name_bus"] == "ПАЗ":
             nex_bus = i["time_otpr"] - data_time_ekb
             free_place = i["free_place"]
             name_bus = i["name_bus"]

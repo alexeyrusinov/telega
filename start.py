@@ -4,8 +4,8 @@ import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
 import os
 
-# variable environment
-TOKEN = os.environ["TOKEN"]
+TOKEN = os.environ["TOKEN"] # variable environment
+
 
 bot = Bot(TOKEN) # обьект бота
 dp = Dispatcher(bot)
