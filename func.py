@@ -1,14 +1,13 @@
 import requests, json, pytz
 from datetime import datetime
 
-
 url_binance = "https://api.binance.com/api/v3/ticker/price"
-data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 
 
-def get_time(data_time_ekb):
-    data_time_ekb = data_time_ekb.strftime("%H:%M %A %d/%m/%y")
-    return data_time_ekb
+def get_time():
+    data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+    now_data_time_ekb = data_time_ekb.strftime("%H:%M:%S %A %d/%m/%y")
+    return now_data_time_ekb
 
 
 def get_json_btcusdt(url):
@@ -26,13 +25,15 @@ def get_json_btcusdt(url):
 
 
 #----------------------
-def pars_bus(data_time_ekb):
+def pars_bus():
     now = datetime.now() # get date and time
     now_day = str(now.day)
     now_month = str(now.month)
+    data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
     data_time_ekb = data_time_ekb.strftime('%H:%M')
     data_time_ekb = datetime.strptime(data_time_ekb, '%H:%M')
     id = '1331'
+
 
     # past now day and month
     url = "https://autovokzal.org/upload/php/result.php?id=" + id + "&date=%272021-" + now_month + "-" + now_day + "%27&station=ekb"
@@ -106,10 +107,3 @@ def pars_bus(data_time_ekb):
         res += i["name_bus"] + ' '
         res += i["name_route"] + '\n\n'
     return res
-
-
-
-
-
-
-
