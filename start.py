@@ -3,6 +3,7 @@ from func import url_binance
 import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
 import os
+import sqlite_db
 
 TOKEN = os.environ["TOKEN"] # variable environment
 
@@ -10,9 +11,17 @@ TOKEN = os.environ["TOKEN"] # variable environment
 bot = Bot(TOKEN) # обьект бота
 dp = Dispatcher(bot)
 
+async def on_startup(_):
+    print("Bot is online!")
+    sqlite_db.sql_start()
+
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
+    user_id = message.from_user.id
+    # user_name = message.from_user.username
+    data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
+    await sqlite_db.sql_add_command(user_id, data_user)
     await message.answer(f"Привет, выберите команду...", reply_markup= nav.mainMenu)
 
 
@@ -36,4 +45,4 @@ async def echo_message(message: types.Message):
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True, on_startup = on_startup)
