@@ -1,4 +1,5 @@
 /token.txt
+/users.db
 *.log
 .idea/
 env/
@@ -7,4 +8,3 @@ __pycache__/
 /data.json
 /new_data.json
 /result.json
-users.db
