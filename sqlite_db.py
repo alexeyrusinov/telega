@@ -1,7 +1,6 @@
 import sqlite3 as sq
 
 
-
 def sql_start():
     global base, cur
     base = sq.connect("users.db")
@@ -25,3 +24,12 @@ async def sql_add_command(user_id, data_user):
     else:
         print(f"{data_user}: уже существует в db")
 
+
+def print_all_db():
+    base = sq.connect("users.db")
+    cur = base.cursor()
+    result = []
+    for value in cur.execute("SELECT * FROM menu"):
+        result.append(value)
+    print(result)
+    return result

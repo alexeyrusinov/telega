@@ -7,7 +7,8 @@ btnMain = KeyboardButton("Главное меню")
 btnBtc = KeyboardButton("Курс биткоина")
 btnInfo = KeyboardButton("Расписание автобуса")
 btnOther = KeyboardButton("Другое")
-mainMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnInfo).add(btnBtc, btnOther)
+btn_all_db = KeyboardButton('all db')
+mainMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnInfo).add(btnBtc, btnOther).add(btn_all_db)
 
 # other menu
 btnTime = KeyboardButton("Текущее время и дата")

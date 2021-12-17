@@ -38,6 +38,8 @@ async def echo_message(message: types.Message):
         await bot.send_message(message.from_user.id, "Главное меню", reply_markup = nav.mainMenu)
     elif message.text == "Другое":
         await bot.send_message(message.from_user.id, "Другое", reply_markup = nav.otherMenu)
+    elif message.text == "all db":
+        await bot.send_message(message.from_user.id, sqlite_db.print_all_db())
     elif message.text == "Расписание автобуса":
         await bot.send_message(message.from_user.id, pars_bus())
     elif message.text == "Курс биткоина":
