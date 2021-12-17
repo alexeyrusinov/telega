@@ -7,4 +7,4 @@ __pycache__/
 /data.json
 /new_data.json
 /result.json
-/users.db
+users.db
