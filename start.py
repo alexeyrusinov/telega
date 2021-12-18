@@ -4,7 +4,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import os
 import sqlite_db
 
-TOKEN = os.environ["TOKEN"] # variable environment
+TOKEN = os.environ["TOKEN"] # create variable environment
 
 
 bot = Bot(TOKEN) # обьект бота

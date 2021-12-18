@@ -24,7 +24,6 @@ def get_json_btcusdt(url):
     return result
 
 
-#----------------------
 def pars_bus():
     now = datetime.now() # get date and time
     now_day = str(now.day)
@@ -33,7 +32,6 @@ def pars_bus():
     data_time_ekb = data_time_ekb.strftime('%H:%M')
     data_time_ekb = datetime.strptime(data_time_ekb, '%H:%M')
     id = '1331'
-
 
     # past now day and month
     url = "https://autovokzal.org/upload/php/result.php?id=" + id + "&date=%272021-" + now_month + "-" + now_day + "%27&station=ekb"
