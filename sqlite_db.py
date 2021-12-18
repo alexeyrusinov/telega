@@ -28,8 +28,7 @@ async def sql_add_command(user_id, data_user):
 def print_all_db():
     base = sq.connect("users.db")
     cur = base.cursor()
-    result = []
-    for value in cur.execute("SELECT * FROM users"):
-        result.append(value)
-    print(result)
+    result = ''
+    for value in cur.execute("SELECT ROWID, * FROM users"):
+        result = result + str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + '\n'
     return result
