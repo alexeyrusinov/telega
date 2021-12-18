@@ -25,7 +25,7 @@ async def sql_add_command(user_id, data_user):
         print(f"{data_user}: уже существует в db")
 
 
-def print_all_db():
+def get_all_db():
     base = sq.connect("users.db")
     cur = base.cursor()
     result = ''
