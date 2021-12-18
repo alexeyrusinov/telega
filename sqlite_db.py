@@ -33,5 +33,5 @@ def get_all_db():
     for value in cur.execute("SELECT ROWID, * FROM users"):
         count += 1
         result = result + str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + '\n'
-        result = result + f'Всего пользователей: {count}'
+    result = result + f'Всего пользователей: {count}'
     return result
