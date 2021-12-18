@@ -3,6 +3,7 @@ import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
 import os
 import sqlite_db
+import sqlite3 as sq
 
 TOKEN = os.environ["TOKEN"] # create variable environment
 
@@ -25,8 +26,19 @@ async def send_welcome(message: types.Message):
 
 
 @dp.message_handler(commands=['help'])
-async def send_welcome(message: types.Message):
+async def send_help(message: types.Message):
     await message.answer("Подскажет тебе: @rusinov")
+
+
+@dp.message_handler(commands=['send'])
+async def send_message_all(message: types.Message):
+    base = sq.connect("users.db")
+    cur = base.cursor()
+    for user in cur.execute("SELECT user_id FROM users"):
+        user_id = "".join(user)
+        print(type(user_id))
+        print(f"{user_id}-------------------")
+        await bot.send_message(user_id, message.text[6:])
 
 
 @dp.message_handler()
