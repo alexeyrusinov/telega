@@ -36,8 +36,6 @@ async def send_message_all(message: types.Message):
     cur = base.cursor()
     for user in cur.execute("SELECT user_id FROM users"):
         user_id = "".join(user)
-        print(type(user_id))
-        print(f"{user_id}-------------------")
         await bot.send_message(user_id, message.text[6:])
 
 

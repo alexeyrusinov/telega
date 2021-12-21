@@ -78,18 +78,24 @@ def pars_bus():
 
 
     res = ''
-    for i in items_to_keep: # print min to the next bus
+    for i in items_to_keep: # print time to the next bus
         if i["status"] == "" and i["name_bus"] == "НЕФАЗ" or i["name_bus"] == "ПАЗ":
-            nex_bus = i["time_otpr"] - data_time_ekb
+            next_bus = i["time_otpr"] - data_time_ekb
+            next_bus = datetime.strptime(str(next_bus), '%H:%M:%S').strftime('%H:%M')
+            if next_bus[:2] == '00':
+                next_bus += ' min'
             free_place = i["free_place"]
             name_bus = i["name_bus"]
-            resultNextBus = str('The next bus in ' + str(nex_bus) + ' \nbus: ' + str(name_bus) + ' free places: ' + str(free_place) +'\n')
+            resultNextBus = str('The next bus in ' + str(next_bus) + ' \nbus: ' + str(name_bus) + ' free places: ' + str(free_place) +'\n')
             res = resultNextBus
             break
         elif i["status"] == "":
-            nex_bus = i["time_otpr"] - data_time_ekb
+            next_bus = i["time_otpr"] - data_time_ekb
+            next_bus = datetime.strptime(str(next_bus), '%H:%M:%S').strftime('%H:%M')
+            if next_bus[:2] == '00':
+                next_bus += ' min'
             free_place = i["free_place"]
-            resultNextBus = str('The next bus in ' + str(nex_bus) + ' \nfree places: ' + str(free_place) +'\n')
+            resultNextBus = str('The next bus in ' + str(next_bus) + ' \nfree places: ' + str(free_place) +'\n')
             res = resultNextBus
             break
 
