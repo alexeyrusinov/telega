@@ -1,14 +1,14 @@
-from func import get_time, pars_bus, get_json_btcusdt, url_binance
+from func import get_time, pars_bus, get_json_btc_usdt, url_binance
 import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
 import os
 import sqlite_db
 import sqlite3 as sq
 
-TOKEN = os.environ["TOKEN"] # create variable environment
+TOKEN = os.environ["TOKEN"]  # create variable environment
 
 
-bot = Bot(TOKEN) # обьект бота
+bot = Bot(TOKEN)  # object bot
 dp = Dispatcher(bot)
 
 async def on_startup(_):
@@ -52,7 +52,7 @@ async def echo_message(message: types.Message):
     elif message.text == "Расписание автобуса":
         await bot.send_message(message.from_user.id, pars_bus())
     elif message.text == "Курс биткоина":
-        await bot.send_message(message.from_user.id, get_json_btcusdt(url_binance))
+        await bot.send_message(message.from_user.id, get_json_btc_usdt(url_binance))
 
 
 if __name__ == '__main__':
