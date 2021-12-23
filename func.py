@@ -79,7 +79,7 @@ def pars_bus():
             time = i["time_otpr"] - data_time_ekb
             time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H:%M')
             if time[:2] == '00':
-                time += ' min'
+                time = time[3:] + ' min'
             free_place = i["free_place"]
             name_bus = i["name_bus"]
             next_bus_time = str('The next bus in ' + str(time) + ' \nbus: ' + str(name_bus) + ' free places: ' + str(free_place) +'\n')
@@ -88,7 +88,7 @@ def pars_bus():
             time = i["time_otpr"] - data_time_ekb
             time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H:%M')
             if time[:2] == '00':
-                time += ' min'
+                time = time[3:] + ' min'
             free_place = i["free_place"]
             next_bus_time = str('The next bus in ' + str(time) + ' \nfree places: ' + str(free_place) + '\n')
             break
