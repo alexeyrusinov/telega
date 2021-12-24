@@ -61,6 +61,7 @@ def pars_bus():
         item["time_otpr"] = datetime.strptime(item["time_otpr"], '%H:%M') # convert str to class 'datetime
         item["name_route"] = item["name_route"].replace('г.Екатеринбург (Южный АВ) -<br/>', 'Екб (Южный АВ) -')  # rename value
         item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6122 H9', 'YUTONG')
+        item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6129 H', 'YUTONG')
         item["name_bus"] = item["name_bus"].replace('YUTONG 6121', 'YUTONG')
         item["name_bus"] = item["name_bus"].replace('ПАЗ-4234', 'ПАЗ')
         item["cancel"] = item["cancel"].replace("Отмена", "canceled")  # rename value
@@ -74,12 +75,15 @@ def pars_bus():
 
     next_bus = ''
     next_bus_time = ''
-    for i in items_to_keep: # print time to the next bus
+    for i in items_to_keep:  # print time to the next bus
         if i["status"] == "" and i["name_bus"] == "НЕФАЗ" or i["name_bus"] == "ПАЗ":
             time = i["time_otpr"] - data_time_ekb
             time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H:%M')
             if time[:2] == '00':
                 time = time[3:] + ' min'
+            else:
+                time.replace(" min", "")  #### код для елсе которое стиает мин если до след автобуса больше чем час
+                # если что вот это смотри
             free_place = i["free_place"]
             name_bus = i["name_bus"]
             next_bus_time = str('The next bus in ' + str(time) + ' \nbus: ' + str(name_bus) + ' free places: ' + str(free_place) +'\n')
@@ -89,6 +93,9 @@ def pars_bus():
             time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H:%M')
             if time[:2] == '00':
                 time = time[3:] + ' min'
+            else:
+                time.replace(" min", "")  #### код для елсе которое стиает мин если до след автобуса больше чем час
+                # если что вот это смотри
             free_place = i["free_place"]
             next_bus_time = str('The next bus in ' + str(time) + ' \nfree places: ' + str(free_place) + '\n')
             break
@@ -103,6 +110,6 @@ def pars_bus():
         next_bus += i["name_bus"] + ' '
         next_bus += i["name_route"] + '\n\n'
 
-    next_bus += next_bus_time # add in end output
+    next_bus += next_bus_time  # add in end output
 
     return next_bus

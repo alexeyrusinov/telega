@@ -11,6 +11,7 @@ TOKEN = os.environ["TOKEN"]  # create variable environment
 bot = Bot(TOKEN)  # object bot
 dp = Dispatcher(bot)
 
+
 async def on_startup(_):
     print("Bot is online!")
     sqlite_db.sql_start()
