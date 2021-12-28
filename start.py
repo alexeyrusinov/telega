@@ -4,6 +4,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import os
 import sqlite_db
 import sqlite3 as sq
+import time
 
 TOKEN = os.environ["TOKEN"]  # create variable environment
 
@@ -24,6 +25,10 @@ async def send_welcome(message: types.Message):
     data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
     await sqlite_db.sql_add_command(user_id, data_user)
     await message.answer(f"Привет, выберите команду...", reply_markup= nav.mainMenu)
+    # - test output time(gours) to next bus
+    await message.answer(f"запускаю pars_bus")
+    time.sleep(32400)
+    await bot.send_message(message.from_user.id, pars_bus())
 
 
 @dp.message_handler(commands=['help'])
@@ -42,6 +47,7 @@ async def send_message_all(message: types.Message):
 
 @dp.message_handler()
 async def echo_message(message: types.Message):
+    #  await bot.send_message(message.from_user., message.text)  - тут реализовать отправку сообщения админу от других людей
     if message.text == "Текущее время и дата":
         await bot.send_message(message.from_user.id, get_time())
     elif message.text == "Главное меню":
