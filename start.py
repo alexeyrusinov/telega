@@ -4,7 +4,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import os
 import sqlite_db
 import sqlite3 as sq
-import time
+
 
 TOKEN = os.environ["TOKEN"]  # create variable environment
 
@@ -21,14 +21,9 @@ async def on_startup(_):
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     user_id = message.from_user.id
-    # user_name = message.from_user.username
     data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
     await sqlite_db.sql_add_command(user_id, data_user)
     await message.answer(f"Привет, выберите команду...", reply_markup= nav.mainMenu)
-    # - test output time(gours) to next bus
-    await message.answer(f"запускаю pars_bus")
-    time.sleep(32400)
-    await bot.send_message(message.from_user.id, pars_bus())
 
 
 @dp.message_handler(commands=['help'])
