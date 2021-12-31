@@ -25,7 +25,7 @@ async def sql_add_command(user_id, data_user):
         print(f"{data_user}: уже существует в db")
 
 
-def get_all_db():
+def get_all_users_db():
     base = sq.connect("users.db")
     cur = base.cursor()
     result = ''
@@ -34,5 +34,5 @@ def get_all_db():
         count += 1
         result = result + str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + '\n'
     result = result + f'Всего пользователей: {count}'
-    print("get_all_db done")
+    print("get_all_users_db done")
     return result

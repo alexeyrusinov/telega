@@ -1,8 +1,8 @@
 from func import get_time, pars_bus, get_json_btc_usdt, url_binance
+import sqlite_db
 import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
 import os
-import sqlite_db
 import sqlite3 as sq
 
 
@@ -50,7 +50,7 @@ async def echo_message(message: types.Message):
     elif message.text == "Другое":
         await bot.send_message(message.from_user.id, "Другое", reply_markup = nav.otherMenu)
     elif message.text == "all db":
-        await bot.send_message(message.from_user.id, sqlite_db.get_all_db())
+        await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
     elif message.text == "Расписание автобуса":
         await bot.send_message(message.from_user.id, pars_bus())
     elif message.text == "Курс биткоина":
