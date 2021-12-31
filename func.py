@@ -34,13 +34,16 @@ def get_json_btc_usdt(url):
         print(">>>>--------> Errors with getting json <--------<<<<")
 
 
-def pars_bus():
+def get_bus_time(): # переименовать функцию
     now_time = get_data_time_ekb()
     now_day = str(now_time.day)
     now_month = str(now_time.month)
+    now_year = str(now_time.year)
+
 
     # past now day and month
-    url_bus = "https://autovokzal.org/upload/php/result.php?id=" + id_bus + "&date=%272021-" + now_month + "-" + now_day + "%27&station=ekb"
+    url_bus = f"https://autovokzal.org/upload/php/result.php?id={id_bus}&date=%27{now_year}-{now_month}-{now_day}%27&station=ekb"
+
 
     now_time = now_time.strftime('%H:%M')
     now_time = datetime.strptime(now_time, '%H:%M')
@@ -121,7 +124,7 @@ def pars_bus():
 
     next_bus += next_bus_time  # add in end output
 
-    print("next bus done")
+    print("get_bus_time done")
     return next_bus
 
 #
