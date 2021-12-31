@@ -10,6 +10,7 @@ data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 
 def get_time():
     now_data_time_ekb = data_time_ekb.strftime("%H:%M:%S %A %d/%m/%y")
+    print("get_time done")
     return now_data_time_ekb
 
 
@@ -21,6 +22,7 @@ def get_json_btc_usdt(url):
         res = dic[11]
         result = str(res["symbol"] + " - " + res["price"])
         result = result[:-6] + " $"
+        print("get_json_btc_usdt done")
         return result
     except Exception:
         print(">>>>--------> Errors with getting json <--------<<<<")

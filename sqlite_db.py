@@ -34,4 +34,5 @@ def get_all_db():
         count += 1
         result = result + str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + '\n'
     result = result + f'Всего пользователей: {count}'
+    print("get_all_db done")
     return result
