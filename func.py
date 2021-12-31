@@ -115,6 +115,7 @@ def pars_bus():
 
     next_bus += next_bus_time  # add in end output
 
+    print("next bus done")
     return next_bus
 
 #
