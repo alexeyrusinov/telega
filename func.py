@@ -1,17 +1,19 @@
-import requests, json, pytz
+import requests
+import json
+import pytz
 from datetime import datetime
+# from bs4 import BeautifulSoup
 
 url_binance = "https://api.binance.com/api/v3/ticker/price"
+data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 
 
 def get_time():
-    data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
     now_data_time_ekb = data_time_ekb.strftime("%H:%M:%S %A %d/%m/%y")
     return now_data_time_ekb
 
 
 def get_json_btc_usdt(url):
-    global result
     try:
         response = requests.get(url_binance)
         response.raise_for_status()
@@ -19,37 +21,38 @@ def get_json_btc_usdt(url):
         res = dic[11]
         result = str(res["symbol"] + " - " + res["price"])
         result = result[:-6] + " $"
+        return result
     except Exception:
         print(">>>>--------> Errors with getting json <--------<<<<")
-    return result
 
 
 def pars_bus():
-    now = datetime.now()  # get date and time
-    now_day = str(now.day)
-    now_month = str(now.month)
-    data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
-    data_time_ekb = data_time_ekb.strftime('%H:%M')
-    data_time_ekb = datetime.strptime(data_time_ekb, '%H:%M')
-    id = '1331'
+    global data_time_ekb
+    id = '1331' # id bus
+
+    now_day = str(data_time_ekb.day)
+    now_month = str(data_time_ekb.month)
 
     # past now day and month
-    url = "https://autovokzal.org/upload/php/result.php?id=" + id + "&date=%272021-" + now_month + "-" + now_day + "%27&station=ekb"
+    url_bus = "https://autovokzal.org/upload/php/result.php?id=" + id + "&date=%272021-" + now_month + "-" + now_day + "%27&station=ekb"
 
-    def get_json(url):
-        global dic
+    data_time_ekb = data_time_ekb.strftime('%H:%M')
+    data_time_ekb = datetime.strptime(data_time_ekb, '%H:%M')
+
+    def get_json(url_bus):
+        global dict_json_bus
         try:
-            response = requests.get(url)
+            response = requests.get(url_bus)
             response.raise_for_status()
-            dic = response.json()
+            dict_json_bus = response.json()
+            return dict_json_bus
         except Exception:
             print(">>>>--------> Errors with getting json <--------<<<<")
-        return dic
-    get_json(url)
+    get_json(url_bus)
 
     # write json file
     with open('data.json', 'w', encoding='utf8') as f:
-        json.dump(dic, f, ensure_ascii=False, indent=4)
+        json.dump(dict_json_bus, f, ensure_ascii=False, indent=4)
 
     # Read json file
     with open('data.json') as f:
@@ -64,9 +67,9 @@ def pars_bus():
         item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6129 H', 'YUTONG')
         item["name_bus"] = item["name_bus"].replace('YUTONG 6121', 'YUTONG')
         item["name_bus"] = item["name_bus"].replace('ПАЗ-4234', 'ПАЗ')
-        item["cancel"] = item["cancel"].replace("Отмена", "canceled")  # rename value
+        item["cancel"] = item["cancel"].replace("Отмена", " canceled")  # rename value
         item["status"] = item.pop("cancel")  # rename key
-        if item["time_otpr"] > data_time_ekb:
+        if item["time_otpr"] > data_time_ekb and item["status"] != " canceled":
             items_to_keep.append(item)
 
     # write json file
@@ -113,3 +116,56 @@ def pars_bus():
     next_bus += next_bus_time  # add in end output
 
     return next_bus
+
+#
+# # pars bus 91
+#
+# url = "http://www.urbus.ru/win/popup/bl114/dy2021/dm12/dd29/su/92/"
+#
+#
+# page = requests.get(url)
+# print(page.status_code)
+# filteredNews = []
+#
+# soup = BeautifulSoup(page.text, "html.parser")
+# allNews = soup.findAll("td")
+#
+# for data in allNews:
+#     if data.findAll("td") is not None:
+#         # filteredNews.append(data.text.replace("\xa0", ""))
+#         filteredNews.append(data.get_text().replace("\xa0", ""))
+#
+#
+# filteredNews = list(filter(None, filteredNews)) # dell empty str in list
+#
+#
+#
+# # for data in filteredNews:
+# #     print(data)
+#
+# #  index
+# indexMetroBotanicheskaya = filteredNews.index('Метро Ботаническая')
+# indexTcDirijabl = filteredNews.index('ТЦДирижабль')
+# indexBulvarMalahova = filteredNews.index('Бульвар Малахова')
+# indexSomocvetniyBulvar = filteredNews.index('Самоцветный бульвар')
+# indexUvelirnaya = filteredNews.index('Ювелирная')
+# indexPerRigskiy = filteredNews.index('Рижскийпер.')
+# indexSuxologskaya = filteredNews.index('Сухоложская')
+# indexVtorjermet = filteredNews.index('Вторчермет')
+# indexPoliklinika = filteredNews.index('Поликлиника')
+# indexObshegitiye = filteredNews.index('Общежитие')
+# indexStKeramik = filteredNews.index('Ст. Керамик')
+# indexYugnayaPodstanciya = filteredNews.index('Южная подстанция')
+# indexSady = filteredNews.index('Сады')
+# indexSadRodnijok = filteredNews.index('Сад «Родничок»')
+# indexPolevodstvo = filteredNews.index('Полеводство')
+# index17KlPolevskogoTrakta = filteredNews.index('17км Полевского тракта')
+# indexZelenaya = filteredNews.index('Зеленая')
+# indexSrednaya = filteredNews.index('Средняя')
+# indexZeleniyBor = filteredNews.index('Зеленый Бор')
+# indexPovNaZeleniyBor = filteredNews.index('Пов. наЗеленый Бор')
+# indexEkodole1 = filteredNews.index('Экодолье 1')
+# indexPovNaZeleniyBor2 = filteredNews.index('Пов. наЗеленый Бор')
+# indexSrednaya2 = filteredNews.index('Средняя')
+# indexGorniyShit = filteredNews.index('Горный Щит')
+# indexShirokayaRejka = filteredNews.index('Широкая Речка')
