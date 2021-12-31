@@ -28,16 +28,17 @@ def get_json_btc_usdt(url):
 
 def pars_bus():
     global data_time_ekb
+    now_time = data_time_ekb
     id = '1331' # id bus
 
-    now_day = str(data_time_ekb.day)
-    now_month = str(data_time_ekb.month)
+    now_day = str(now_time.day)
+    now_month = str(now_time.month)
 
     # past now day and month
     url_bus = "https://autovokzal.org/upload/php/result.php?id=" + id + "&date=%272021-" + now_month + "-" + now_day + "%27&station=ekb"
 
-    data_time_ekb = data_time_ekb.strftime('%H:%M')
-    data_time_ekb = datetime.strptime(data_time_ekb, '%H:%M')
+    now_time = now_time.strftime('%H:%M')
+    now_time = datetime.strptime(now_time, '%H:%M')
 
     def get_json(url_bus):
         global dict_json_bus
@@ -69,7 +70,7 @@ def pars_bus():
         item["name_bus"] = item["name_bus"].replace('ПАЗ-4234', 'ПАЗ')
         item["cancel"] = item["cancel"].replace("Отмена", " canceled")  # rename value
         item["status"] = item.pop("cancel")  # rename key
-        if item["time_otpr"] > data_time_ekb and item["status"] != " canceled":
+        if item["time_otpr"] > now_time and item["status"] != " canceled":
             items_to_keep.append(item)
 
     # write json file
@@ -80,7 +81,7 @@ def pars_bus():
     next_bus_time = ''
     for i in items_to_keep:  # print time to the next bus
         if i["status"] == "" and i["name_bus"] == "НЕФАЗ" or i["name_bus"] == "ПАЗ":
-            time = i["time_otpr"] - data_time_ekb
+            time = i["time_otpr"] - now_time
             time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H:%M')
             if time[:2] == '00':
                 time = time[3:] + ' min'
@@ -92,7 +93,7 @@ def pars_bus():
             next_bus_time = str('The next bus in ' + str(time) + ' \nbus: ' + str(name_bus) + ' free places: ' + str(free_place) +'\n')
             break
         elif i["status"] == "":
-            time = i["time_otpr"] - data_time_ekb
+            time = i["time_otpr"] - now_time
             time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H:%M')
             if time[:2] == '00':
                 time = time[3:] + ' min'
