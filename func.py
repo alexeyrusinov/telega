@@ -5,11 +5,17 @@ from datetime import datetime
 # from bs4 import BeautifulSoup
 
 url_binance = "https://api.binance.com/api/v3/ticker/price"
-data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+id_bus = '1331'
+
+
+def get_data_time_ekb():
+    data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+    return data_time_ekb
 
 
 def get_time():
-    now_data_time_ekb = data_time_ekb.strftime("%H:%M:%S %A %d/%m/%y")
+    now_data_time_ekb = get_data_time_ekb()
+    now_data_time_ekb = now_data_time_ekb.strftime("%H:%M:%S %A %d/%m/%y")
     print("get_time done")
     return now_data_time_ekb
 
@@ -29,15 +35,12 @@ def get_json_btc_usdt(url):
 
 
 def pars_bus():
-    global data_time_ekb
-    now_time = data_time_ekb
-    id = '1331' # id bus
-
+    now_time = get_data_time_ekb()
     now_day = str(now_time.day)
     now_month = str(now_time.month)
 
     # past now day and month
-    url_bus = "https://autovokzal.org/upload/php/result.php?id=" + id + "&date=%272021-" + now_month + "-" + now_day + "%27&station=ekb"
+    url_bus = "https://autovokzal.org/upload/php/result.php?id=" + id_bus + "&date=%272021-" + now_month + "-" + now_day + "%27&station=ekb"
 
     now_time = now_time.strftime('%H:%M')
     now_time = datetime.strptime(now_time, '%H:%M')
