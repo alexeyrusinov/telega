@@ -144,8 +144,10 @@ def get_bus_time():
 
     print("get_bus_time done")
 
-    if next_bus is None:
-        return f"buses_dispatched today -{a}"
+    # print(f"{len(next_bus)}--------")
+
+    if len(next_bus) == 0:
+        return f"No buses for today."
     else:
         return next_bus
 
