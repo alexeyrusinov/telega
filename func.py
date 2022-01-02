@@ -6,7 +6,6 @@ from datetime import datetime
 # from bs4 import BeautifulSoup
 
 url_binance = "https://api.binance.com/api/v3/ticker/price"
-id_bus = '1331'
 
 
 def get_data_time_ekb():
@@ -42,7 +41,7 @@ def get_bus_time():
     now_year = str(now_time.year)
 
     # past now day and month
-    url_bus = f"https://autovokzal.org/upload/php/result.php?id={id_bus}&date=%27{now_year}-{now_month}-{now_day}%27&station=ekb"
+    url_bus = f"https://autovokzal.org/upload/php/result.php?id=1331&date=%27{now_year}-{now_month}-{now_day}%27&station=ekb"
 
     now_time = now_time.strftime('%H:%M')
     now_time = datetime.strptime(now_time, '%H:%M')
