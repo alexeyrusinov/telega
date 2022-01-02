@@ -2,6 +2,7 @@ import requests
 import json
 import pytz
 from datetime import datetime
+
 # from bs4 import BeautifulSoup
 
 url_binance = "https://api.binance.com/api/v3/ticker/price"
@@ -34,16 +35,14 @@ def get_json_btc_usdt(url):
         print(">>>>--------> Errors with getting json <--------<<<<")
 
 
-def get_bus_time(): # переименовать функцию
+def get_bus_time():
     now_time = get_data_time_ekb()
     now_day = str(now_time.day)
     now_month = str(now_time.month)
     now_year = str(now_time.year)
 
-
     # past now day and month
     url_bus = f"https://autovokzal.org/upload/php/result.php?id={id_bus}&date=%27{now_year}-{now_month}-{now_day}%27&station=ekb"
-
 
     now_time = now_time.strftime('%H:%M')
     now_time = datetime.strptime(now_time, '%H:%M')
@@ -57,6 +56,7 @@ def get_bus_time(): # переименовать функцию
             return dict_json_bus
         except Exception:
             print(">>>>--------> Errors with getting json <--------<<<<")
+
     get_json(url_bus)
 
     # write json file
@@ -65,21 +65,30 @@ def get_bus_time(): # переименовать функцию
 
     # Read json file
     with open('data.json') as f:
-        data = json.load(f)
+        all_buses = json.load(f)
 
     # Rename json
     items_to_keep = []
-    for item in data["rasp"]:
-        item["time_otpr"] = datetime.strptime(item["time_otpr"], '%H:%M') # convert str to class 'datetime
-        item["name_route"] = item["name_route"].replace('г.Екатеринбург (Южный АВ) -<br/>', 'Екб (Южный АВ) -')  # rename value
+    buses_dispatched = []
+    buses_canceled = []
+    for item in all_buses["rasp"]:
+        item["time_otpr"] = datetime.strptime(item["time_otpr"], '%H:%M')  # convert str to class 'datetime
+        item["name_route"] = item["name_route"].replace('г.Екатеринбург (Южный АВ) -<br/>',
+                                                        'Екб (Южный АВ) -')  # rename value
         item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6122 H9', 'YUTONG')
         item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6129 H', 'YUTONG')
         item["name_bus"] = item["name_bus"].replace('YUTONG 6121', 'YUTONG')
         item["name_bus"] = item["name_bus"].replace('ПАЗ-4234', 'ПАЗ')
-        item["cancel"] = item["cancel"].replace("Отмена", " canceled")  # rename value
+        item["cancel"] = item["cancel"].replace("Отмена", "canceled")  # rename value
         item["status"] = item.pop("cancel")  # rename key
-        if item["time_otpr"] > now_time and item["status"] != " canceled":
+        if item["time_otpr"] > now_time and item["status"] != "canceled":
             items_to_keep.append(item)
+        elif item["status"] == "Отправлен":
+            buses_dispatched.append(item)
+        elif item["status"] == "canceled":
+            buses_canceled.append(item)
+
+
 
     # write json file
     with open('new_data.json', 'w', encoding='utf8') as f:
@@ -98,7 +107,8 @@ def get_bus_time(): # переименовать функцию
                 # если что вот это смотри
             free_place = i["free_place"]
             name_bus = i["name_bus"]
-            next_bus_time = str('The next bus in ' + str(time) + ' \nbus: ' + str(name_bus) + ' free places: ' + str(free_place) +'\n')
+            next_bus_time = str(
+                'The next bus in ' + str(time) + ' \nbus: ' + str(name_bus) + ' free places: ' + str(free_place) + '\n')
             break
         elif i["status"] == "":
             time = i["time_otpr"] - now_time
@@ -124,8 +134,21 @@ def get_bus_time(): # переименовать функцию
 
     next_bus += next_bus_time  # add in end output
 
+    buses = ""
+    buses += str(len(all_buses["rasp"]))
+    a = str(len(buses_dispatched))
+
+    print(f"all_buses - {buses}")
+    print(f"buses_dispatched - {a}")
+    print(f"items_to_keep - {len(items_to_keep)}")
+    print(f"buses_canceled - {len(buses_canceled)}")
+
     print("get_bus_time done")
-    return next_bus
+
+    if next_bus is None:
+        return f"buses_dispatched today -{a}"
+    else:
+        return next_bus
 
 #
 # # pars bus 91
