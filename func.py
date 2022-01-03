@@ -144,14 +144,12 @@ def get_bus_time():
 
     print("get_bus_time done")
 
-    # print(f"{len(next_bus)}--------")
-
     if len(next_bus) == 0:
         return f"No buses for today."
     else:
         return next_bus
 
-#
+
 # # pars bus 91
 #
 # url = "http://www.urbus.ru/win/popup/bl114/dy2021/dm12/dd29/su/92/"
