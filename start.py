@@ -7,6 +7,7 @@ import sqlite3 as sq
 
 
 TOKEN = os.environ["TOKEN"]  # create variable environment
+ADMIN_ID = os.environ["ADMIN_ID"]
 
 
 bot = Bot(TOKEN)  # object bot
@@ -42,6 +43,8 @@ async def send_message_all(message: types.Message):
 
 @dp.message_handler()
 async def echo_message(message: types.Message):
+    if message.text is not None:
+        await bot.send_message(ADMIN_ID, message.text)
     #  await bot.send_message(message.from_user., message.text)  - тут реализовать отправку сообщения админу от других людей
     if message.text == "Текущее время и дата":
         await bot.send_message(message.from_user.id, get_time())
