@@ -5,6 +5,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import os
 import sqlite3 as sq
 
+import random
 
 TOKEN = os.environ["TOKEN"]  # create variable environment
 ADMIN_ID = os.environ["ADMIN_ID"]
@@ -24,7 +25,7 @@ async def send_welcome(message: types.Message):
     user_id = message.from_user.id
     data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
     await sqlite_db.sql_add_command(user_id, data_user)
-    await message.answer(f"Привет, выберите команду...", reply_markup= nav.mainMenu)
+    await message.answer(f"Привет, выберите команду...", reply_markup=nav.mainMenu)
 
 
 @dp.message_handler(commands=['help'])
@@ -40,6 +41,12 @@ async def send_message_all(message: types.Message):
         user_id = "".join(user)
         await bot.send_message(user_id, message.text[6:])
 
+@dp.callback_query_handler(text="btnRandom")
+async def getRandomNum(message: types.Message):
+    # await bot.delete_message(message.from_user.id, message.message.message_id)
+    # await bot.send_message(message.from_user.id, "Случайное сисло: {0}".format(random.randint(0, 1000)), reply_markup= nav.myMenu)
+    await bot.edit_message_text("Случайное число: {0}".format(random.randint(0, 1000)), message.from_user.id, message_id = message.message.message_id)
+    print("getRandomNum done")
 
 @dp.message_handler()
 async def echo_message(message: types.Message):
@@ -47,15 +54,17 @@ async def echo_message(message: types.Message):
     if message.text == "Текущее время и дата":
         await bot.send_message(message.from_user.id, get_time())
     elif message.text == "Главное меню":
-        await bot.send_message(message.from_user.id, "Главное меню", reply_markup = nav.mainMenu)
+        await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.mainMenu)
     elif message.text == "Другое":
-        await bot.send_message(message.from_user.id, "Другое", reply_markup = nav.otherMenu)
+        await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
     elif message.text == "all db":
         await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
     elif message.text == "Расписание автобуса":
         await bot.send_message(message.from_user.id, get_bus_time())
     elif message.text == "Курс биткоина":
         await bot.send_message(message.from_user.id, get_json_btc_usdt(url_binance))
+    elif message.text == "Случайное число":
+        await bot.send_message(message.from_user.id, "Случайное число", reply_markup=nav.myMenu)
     elif message.text is not None:
         await bot.send_message(ADMIN_ID, message.text)
 

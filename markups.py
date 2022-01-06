@@ -1,4 +1,11 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+myMenu = InlineKeyboardMarkup(row_width=2)
+btnRandom = InlineKeyboardButton(text="узнать число", callback_data="btnRandom")
+myMenu.insert(btnRandom)
+
+
 
 btnMain = KeyboardButton("Главное меню")
 
@@ -12,4 +19,5 @@ mainMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnInfo).add(btnBtc, bt
 
 # other menu
 btnTime = KeyboardButton("Текущее время и дата")
-otherMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnTime, btnMain)
+btnRandint = KeyboardButton("Случайное число")
+otherMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnTime,btnRandint, btnMain)

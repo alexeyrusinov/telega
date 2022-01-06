@@ -152,14 +152,23 @@ def get_bus_time():
 # # pars bus 91
 #
 # url = "http://www.urbus.ru/win/popup/bl114/dy2021/dm12/dd29/su/92/"
-#
+# url = "https://www.autovokzal.org/"
 #
 # page = requests.get(url)
 # print(page.status_code)
 # filteredNews = []
 #
+# days = []
 # soup = BeautifulSoup(page.text, "html.parser")
-# allNews = soup.findAll("td")
+# # allNews = soup.findAll("td")
+# day = soup.findAll("pmu-days")
+# print(day)
+# for data in day:
+#     if data is not None:
+#         days.append(data)
+#
+# for data in days:
+#     print(data)
 #
 # for data in allNews:
 #     if data.findAll("td") is not None:
