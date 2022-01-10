@@ -53,6 +53,7 @@ async def getRandomNum(message: types.Message):
 ############
 @dp.callback_query_handler(text_contains="bus")
 async def inlineMenu(call: types.CallbackQuery): # это чтобы понять какая кнопка была нажата
+    data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
     await bot.delete_message(call.from_user.id, call.message.message_id)
     if call.data == "all_buses":
         await bot.send_message(call.from_user.id, "Все автобусы", reply_markup= nav.inlineMenu)
@@ -80,7 +81,7 @@ async def botShop(call: types.CallbackQuery): # это чтобы понять �
 
 @dp.message_handler()
 async def echo_message(message: types.Message):
-    #  await bot.send_message(message.from_user., message.text)  - тут реализовать отправку сообщения админу от других людей
+    # data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name) ---- if need
     if message.text == "Текущее время и дата":
         await bot.send_message(message.from_user.id, get_time())
     elif message.text == "Главное меню":
