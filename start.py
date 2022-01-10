@@ -26,6 +26,7 @@ async def send_welcome(message: types.Message):
     data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
     await sqlite_db.sql_add_command(user_id, data_user)
     await message.answer(f"Привет, выберите команду...", reply_markup=nav.mainMenu)
+    await message.answer("inlineMenu", reply_markup=nav.inlineMenu)
 
 
 @dp.message_handler(commands=['help'])
@@ -43,10 +44,39 @@ async def send_message_all(message: types.Message):
 
 @dp.callback_query_handler(text="btnRandom")
 async def getRandomNum(message: types.Message):
-    # await bot.delete_message(message.from_user.id, message.message.message_id)
-    # await bot.send_message(message.from_user.id, "Случайное сисло: {0}".format(random.randint(0, 1000)), reply_markup= nav.myMenu)
-    await bot.edit_message_text("Случайное число: {0}".format(random.randint(0, 1000)), message.from_user.id, message_id = message.message.message_id)
+    await bot.delete_message(message.from_user.id, message.message.message_id)
+    await bot.send_message(message.from_user.id, "Случайное сисло: {0}".format(random.randint(0, 1000)), reply_markup= nav.myMenu)
+    # await bot.edit_message_text("Случайное число: {0}".format(random.randint(0, 1000)), message.from_user.id, message_id = message.message.message_id)
     print("getRandomNum done")
+
+
+############
+@dp.callback_query_handler(text_contains="bus")
+async def inlineMenu(call: types.CallbackQuery): # это чтобы понять какая кнопка была нажата
+    await bot.delete_message(call.from_user.id, call.message.message_id)
+    if call.data == "all_buses":
+        await bot.send_message(call.from_user.id, "Все автобусы", reply_markup= nav.inlineMenu)
+        print("Все автобусы done")
+    elif call.data == "dispatched_buses":
+        await bot.send_message(call.from_user.id, "Отправленные автобусы", reply_markup=nav.inlineMenu)
+        print("Отправленные автобусы done")
+    elif call.data == "bus_schedule":
+        await bot.send_message(call.from_user.id, f"Расписание:\n {get_bus_time()}", reply_markup=nav.inlineMenu)
+        print("Расписание done")
+        # await await bot.send_message(message.from_user.id, get_bus_time())
+###########
+
+
+@dp.callback_query_handler(text_contains="buy")
+async def botShop(call: types.CallbackQuery): # это чтобы понять какая кнопка была нажата
+    await bot.delete_message(call.from_user.id, call.message.message_id)
+    if call.data == "buySub":
+        await bot.send_message(call.from_user.id, "Тарифы на подписку", reply_markup= nav.myMenu)
+    elif call.data == "buyVip":
+        await bot.send_message(call.from_user.id, "Купить VIP", reply_markup= nav.myMenu)
+    print("botShop done")
+
+
 
 @dp.message_handler()
 async def echo_message(message: types.Message):
@@ -63,8 +93,8 @@ async def echo_message(message: types.Message):
         await bot.send_message(message.from_user.id, get_bus_time())
     elif message.text == "Курс биткоина":
         await bot.send_message(message.from_user.id, get_json_btc_usdt(url_binance))
-    elif message.text == "Случайное число":
-        await bot.send_message(message.from_user.id, "Случайное число", reply_markup=nav.myMenu)
+    elif message.text == "inlineButtons":
+        await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
     elif message.text is not None:
         await bot.send_message(ADMIN_ID, message.text)
 

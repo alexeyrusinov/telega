@@ -57,7 +57,7 @@ def get_bus_time():
             print(">>>>--------> Errors with getting json <--------<<<<")
 
     get_json(url_bus)
-
+    my_bus = dict()
     # write json file
     with open('data.json', 'w', encoding='utf8') as f:
         json.dump(dict_json_bus, f, ensure_ascii=False, indent=4)
@@ -80,7 +80,7 @@ def get_bus_time():
         item["name_bus"] = item["name_bus"].replace('ПАЗ-4234', 'ПАЗ')
         item["cancel"] = item["cancel"].replace("Отмена", "canceled")  # rename value
         item["status"] = item.pop("cancel")  # rename key
-        if item["time_otpr"] > now_time and item["status"] != "canceled":
+        if item["time_otpr"] > now_time and item["status"] != "canceled": ### тут now_time переделать под выбор дня
             items_to_keep.append(item)
         elif item["status"] == "Отправлен":
             buses_dispatched.append(item)
@@ -135,6 +135,12 @@ def get_bus_time():
     buses += str(len(all_buses["rasp"]))
     a = str(len(buses_dispatched))
 
+    # add to dict for output
+    # my_bus['buses'] = all_buses["rasp"]
+    # my_bus['buses_dispatched'] = buses_dispatched
+    # my_bus['buses_schedule'] = items_to_keep
+    # my_bus['buses_canceled'] = buses_canceled
+
     print(f"all_buses - {buses}")
     print(f"buses_dispatched - {a}")
     print(f"items_to_keep - {len(items_to_keep)}")
@@ -142,14 +148,22 @@ def get_bus_time():
 
     print("get_bus_time done")
 
+    # print(f"--------{len(buses_dispatched)}")
+    # print(f"--------{type(my_bus)}")
+
     if len(next_bus) == 0:
         return f"No buses for today."
     else:
         return next_bus
 
 
+def bus_schedule_120():
+    pass
+    # return
 
-# # pars bus 91
+
+
+# # pars bus 91-------------------------------------------------------------
 #
 # url = "http://www.urbus.ru/win/popup/bl114/dy2021/dm12/dd29/su/92/"
 # url = "https://www.autovokzal.org/"
