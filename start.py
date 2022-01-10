@@ -57,13 +57,13 @@ async def inlineMenu(call: types.CallbackQuery): # это чтобы понят�
     await bot.delete_message(call.from_user.id, call.message.message_id)
     if call.data == "all_buses":
         await bot.send_message(call.from_user.id, "Все автобусы", reply_markup= nav.inlineMenu)
-        print("Все автобусы done")
+        print("inline Все автобусы done")
     elif call.data == "dispatched_buses":
         await bot.send_message(call.from_user.id, "Отправленные автобусы", reply_markup=nav.inlineMenu)
-        print("Отправленные автобусы done")
+        print("inline Отправленные автобусы done")
     elif call.data == "bus_schedule":
         await bot.send_message(call.from_user.id, f"Расписание:\n {get_bus_time()}", reply_markup=nav.inlineMenu)
-        print("Расписание done")
+        print("inline Расписание done")
         # await await bot.send_message(message.from_user.id, get_bus_time())
 ###########
 

@@ -67,7 +67,7 @@ def get_bus_time():
         all_buses = json.load(f)
 
     # Rename json
-    items_to_keep = []
+    buses_schedule = []
     buses_dispatched = []
     buses_canceled = []
     for item in all_buses["rasp"]:
@@ -81,7 +81,7 @@ def get_bus_time():
         item["cancel"] = item["cancel"].replace("Отмена", "canceled")  # rename value
         item["status"] = item.pop("cancel")  # rename key
         if item["time_otpr"] > now_time and item["status"] != "canceled": ### тут now_time переделать под выбор дня
-            items_to_keep.append(item)
+            buses_schedule.append(item)
         elif item["status"] == "Отправлен":
             buses_dispatched.append(item)
         elif item["status"] == "canceled":
@@ -89,11 +89,11 @@ def get_bus_time():
 
     # write json file
     with open('new_data.json', 'w', encoding='utf8') as f:
-        json.dump(items_to_keep, f, ensure_ascii=False, indent=4, sort_keys=True, default=str)
+        json.dump(buses_schedule, f, ensure_ascii=False, indent=4, sort_keys=True, default=str)
 
     next_bus = ''
     next_bus_time = ''
-    for i in items_to_keep:  # print time to the next bus
+    for i in buses_schedule:  # print time to the next bus
         if i["status"] == "" and i["name_bus"] == "НЕФАЗ" or i["name_bus"] == "ПАЗ":
             time = i["time_otpr"] - now_time
             time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H:%M')
@@ -119,10 +119,10 @@ def get_bus_time():
             next_bus_time = str('The next bus in ' + str(time) + ' \nfree places: ' + str(free_place) + '\n')
             break
 
-    for i in items_to_keep:  # convert class 'datetime.time to string deleting seconds
+    for i in all_buses["rasp"]:  # convert class 'datetime.time to string deleting seconds
         i["time_otpr"] = i["time_otpr"].strftime("%H:%M")
 
-    for i in reversed(items_to_keep):  # revers list
+    for i in reversed(buses_schedule):  # revers list
         next_bus += i["time_otpr"]
         next_bus += i["status"] + ' '
         next_bus += i["free_place"] + ' '
@@ -143,24 +143,15 @@ def get_bus_time():
 
     print(f"all_buses - {buses}")
     print(f"buses_dispatched - {a}")
-    print(f"items_to_keep - {len(items_to_keep)}")
+    print(f"buses_schedule - {len(buses_schedule)}")
     print(f"buses_canceled - {len(buses_canceled)}")
 
     print("get_bus_time done")
-
-    # print(f"--------{len(buses_dispatched)}")
-    # print(f"--------{type(my_bus)}")
 
     if len(next_bus) == 0:
         return f"No buses for today."
     else:
         return next_bus
-
-
-def bus_schedule_120():
-    pass
-    # return
-
 
 
 # # pars bus 91-------------------------------------------------------------
