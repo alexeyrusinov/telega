@@ -52,7 +52,7 @@ def get_bus_time():
     now_time = now_time.strftime('%H:%M')
     now_time = datetime.strptime(now_time, '%H:%M')
 
-    def get_json(url_bus):
+    def get_json(url_bus): # --- удалить саму функцию а тело оставить
         global dict_json_bus
         try:
             response = requests.get(url_bus)
@@ -73,9 +73,10 @@ def get_bus_time():
         all_buses = json.load(f)
 
     # Rename json
-    buses_schedule = []
-    buses_dispatched = []
-    buses_canceled = []
+    buses_schedule, buses_dispatched, buses_canceled = ([] for i in range(3))  # create lists
+    # buses_schedule = []
+    # buses_dispatched = []
+    # buses_canceled = []
     for item in all_buses["rasp"]:
         item["time_otpr"] = datetime.strptime(item["time_otpr"], '%H:%M')  # convert str to class 'datetime
         item["name_route"] = item["name_route"].replace('г.Екатеринбург (Южный АВ) -<br/>',
@@ -97,7 +98,6 @@ def get_bus_time():
     with open('new_data.json', 'w', encoding='utf8') as f:
         json.dump(buses_schedule, f, ensure_ascii=False, indent=4, sort_keys=True, default=str)
 
-    next_bus = ''
     next_bus_time = ''
     for i in buses_schedule:  # print time to the next bus
         if i["status"] == "" and i["name_bus"] == "НЕФАЗ" or i["name_bus"] == "ПАЗ":
@@ -128,27 +128,28 @@ def get_bus_time():
     for i in all_buses["rasp"]:  # convert class 'datetime.time to string deleting seconds
         i["time_otpr"] = i["time_otpr"].strftime("%H:%M")
 
-    for i in reversed(buses_schedule):  # revers list
+    next_bus = ''
+    for i in reversed(buses_schedule):  # revers list, and output next bus
         next_bus += i["time_otpr"]
         next_bus += i["status"] + ' '
         next_bus += i["free_place"] + ' '
         next_bus += i["name_bus"] + ' '
         next_bus += i["name_route"] + '\n\n'
 
-    next_bus += next_bus_time  # add in end output
+    next_bus += next_bus_time
 
-    buses = ""
-    buses += str(len(all_buses["rasp"]))
-    a = str(len(buses_dispatched))
+    # a = str(len(buses_dispatched))
 
     # add to dict for output
     # my_bus['buses'] = all_buses["rasp"]
     # my_bus['buses_dispatched'] = buses_dispatched
     # my_bus['buses_schedule'] = items_to_keep
     # my_bus['buses_canceled'] = buses_canceled
+    buses = ""
+    buses += str(len(all_buses["rasp"]))
 
     print(f"all_buses - {buses}")
-    print(f"buses_dispatched - {a}")
+    print(f"buses_dispatched - {str(len(buses_dispatched))}")
     print(f"buses_schedule - {len(buses_schedule)}")
     print(f"buses_canceled - {len(buses_canceled)}")
 
