@@ -8,13 +8,14 @@ from datetime import datetime
 url_binance = "https://api.binance.com/api/v3/ticker/price"
 
 
-def get_data_time_ekb():
-    data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
-    return data_time_ekb
+# def get_data_time_ekb():
+#     data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+#     return data_time_ekb
 
 
 def get_time():
-    now_data_time_ekb = get_data_time_ekb()
+    now_data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+    # now_data_time_ekb = get_data_time_ekb()
     now_data_time_ekb = now_data_time_ekb.strftime("%H:%M:%S %A %d/%m/%y")
     print("get_time done")
     return now_data_time_ekb
