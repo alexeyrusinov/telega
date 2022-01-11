@@ -1,4 +1,4 @@
-from func import get_time, get_bus_time, get_json_btc_usdt, url_binance
+from func import get_time, get_bus_time, get_btc_usdt_rate#, url_binance
 import sqlite_db
 import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
@@ -93,7 +93,7 @@ async def echo_message(message: types.Message):
     elif message.text == "Расписание автобуса":
         await bot.send_message(message.from_user.id, get_bus_time())
     elif message.text == "Курс биткоина":
-        await bot.send_message(message.from_user.id, get_json_btc_usdt(url_binance))
+        await bot.send_message(message.from_user.id, get_btc_usdt_rate())
     elif message.text == "inlineButtons":
         await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
     elif message.text is not None:

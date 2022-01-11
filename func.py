@@ -5,14 +5,16 @@ from datetime import datetime
 
 # from bs4 import BeautifulSoup
 
-url_binance = "https://api.binance.com/api/v3/ticker/price"
+# url_binance = "https://api.binance.com/api/v3/ticker/price"
 
 
+# текущее время и дата в ЕКБ
 def get_data_time_ekb():
     data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
     return data_time_ekb
 
 
+# btn Текущее время и дата
 def get_time():
     now_data_time_ekb = get_data_time_ekb()
     now_data_time_ekb = now_data_time_ekb.strftime("%H:%M:%S %A %d/%m/%y")
@@ -20,7 +22,9 @@ def get_time():
     return now_data_time_ekb
 
 
-def get_json_btc_usdt(url):
+# btn Курс биткоина
+def get_btc_usdt_rate():
+    url_binance = "https://api.binance.com/api/v3/ticker/price"
     try:
         response = requests.get(url_binance)
         response.raise_for_status()
@@ -34,11 +38,13 @@ def get_json_btc_usdt(url):
         print(">>>>--------> Errors with getting json <--------<<<<")
 
 
+# btn Расписание автобуса
 def get_bus_time():
     now_time = get_data_time_ekb()
-    now_day = str(now_time.day)
-    now_month = str(now_time.month)
-    now_year = str(now_time.year)
+    now_day, now_month, now_year = str(now_time.day), str(now_time.month), str(now_time.year)
+    # now_day = str(now_time.day)
+    # now_month = str(now_time.month)
+    # now_year = str(now_time.year)
 
     # past now day and month
     url_bus = f"https://autovokzal.org/upload/php/result.php?id=1331&date=%27{now_year}-{now_month}-{now_day}%27&station=ekb"
