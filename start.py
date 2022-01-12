@@ -1,4 +1,4 @@
-from func import get_time, get_bus_time, get_btc_usdt_rate#, url_binance
+from func import get_convert_date_time, get_btc_usdt_rate, get_current_schedule, get_all_bus_schedule
 import sqlite_db
 import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
@@ -56,13 +56,16 @@ async def inlineMenu(call: types.CallbackQuery): # это чтобы понят�
     data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
     await bot.delete_message(call.from_user.id, call.message.message_id)
     if call.data == "all_buses":
-        await bot.send_message(call.from_user.id, "Все автобусы", reply_markup= nav.inlineMenu)
+        # await bot.send_message(call.from_user.id, "Все автобусы", reply_markup=nav.inlineMenu)
+        await bot.send_message(call.from_user.id, f"Все автобусы на сегодня:\n {get_all_bus_schedule()}", reply_markup=nav.inlineMenu)
         print("inline Все автобусы done")
     elif call.data == "dispatched_buses":
         await bot.send_message(call.from_user.id, "Отправленные автобусы", reply_markup=nav.inlineMenu)
         print("inline Отправленные автобусы done")
     elif call.data == "bus_schedule":
-        await bot.send_message(call.from_user.id, f"Расписание:\n {get_bus_time()}", reply_markup=nav.inlineMenu)
+        # await bot.send_message(call.from_user.id, f"Расписание:\n {get_bus_time()}", reply_markup=nav.inlineMenu)
+        await bot.send_message(call.from_user.id, f"Расписание:\n {get_current_schedule()}", reply_markup=nav.inlineMenu)
+        # await bot.send_message(call.from_user.id, f"Расписание:\n {buses_schedule}", reply_markup=nav.inlineMenu)
         print("inline Расписание done")
         # await await bot.send_message(message.from_user.id, get_bus_time())
 ###########
@@ -83,7 +86,7 @@ async def botShop(call: types.CallbackQuery): # это чтобы понять �
 async def echo_message(message: types.Message):
     # data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name) ---- if need
     if message.text == "Текущее время и дата":
-        await bot.send_message(message.from_user.id, get_time())
+        await bot.send_message(message.from_user.id, get_convert_date_time())
     elif message.text == "Главное меню":
         await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.mainMenu)
     elif message.text == "Другое":
@@ -91,7 +94,9 @@ async def echo_message(message: types.Message):
     elif message.text == "all db":
         await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
     elif message.text == "Расписание автобуса":
-        await bot.send_message(message.from_user.id, get_bus_time())
+        # await bot.send_message(message.from_user.id, get_bus_time())
+        await bot.send_message(message.from_user.id, get_current_schedule())
+        # await bot.send_message(message.from_user.id, buses_schedule)
     elif message.text == "Курс биткоина":
         await bot.send_message(message.from_user.id, get_btc_usdt_rate())
     elif message.text == "inlineButtons":
@@ -100,5 +105,8 @@ async def echo_message(message: types.Message):
         await bot.send_message(ADMIN_ID, message.text)
 
 
-if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True, on_startup = on_startup)
+try:
+    if __name__ == '__main__':
+        executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
+except Exception:
+    print("ooooops connect to internet")
