@@ -1,4 +1,5 @@
-from func import get_convert_date_time, get_btc_usdt_rate, get_current_schedule, get_all_bus_schedule
+from func import get_convert_date_time, get_btc_usdt_rate, get_current_schedule, get_all_bus_schedule,\
+    get_buses_dispatched, get_convert_date
 import sqlite_db
 import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
@@ -47,7 +48,7 @@ async def getRandomNum(message: types.Message):
     await bot.delete_message(message.from_user.id, message.message.message_id)
     await bot.send_message(message.from_user.id, "Случайное сисло: {0}".format(random.randint(0, 1000)), reply_markup= nav.myMenu)
     # await bot.edit_message_text("Случайное число: {0}".format(random.randint(0, 1000)), message.from_user.id, message_id = message.message.message_id)
-    print("getRandomNum done")
+    print("getRandomNum done-")
 
 
 ############
@@ -60,7 +61,9 @@ async def inlineMenu(call: types.CallbackQuery): # это чтобы понят�
         await bot.send_message(call.from_user.id, f"Все автобусы на сегодня:\n {get_all_bus_schedule()}", reply_markup=nav.inlineMenu)
         print("inline Все автобусы done")
     elif call.data == "dispatched_buses":
-        await bot.send_message(call.from_user.id, "Отправленные автобусы", reply_markup=nav.inlineMenu)
+        # await bot.send_message(call.from_user.id, "Отправленные автобусы", reply_markup=nav.inlineMenu)
+        await bot.send_message(call.from_user.id, f"Отправленные автобусы за сегодня:\n {get_buses_dispatched()}",
+                               reply_markup=nav.inlineMenu)
         print("inline Отправленные автобусы done")
     elif call.data == "bus_schedule":
         # await bot.send_message(call.from_user.id, f"Расписание:\n {get_bus_time()}", reply_markup=nav.inlineMenu)

@@ -23,6 +23,13 @@ def get_convert_date_time():
     return now_data_time_ekb
 
 
+def get_convert_date():
+    now_data_time_ekb = get_data_time_ekb()
+    now_data_time_ekb = now_data_time_ekb.strftime("%d/%m/%y %A")
+    print("get_convert_date done")
+    return now_data_time_ekb
+
+
 # convert format time for calculate
 def get_now_time():
     now_time = get_data_time_ekb()
@@ -118,9 +125,9 @@ def get_bus_time():
 
         if item["time_otpr"] > now_time and item["status"] != "canceled":  ### тут now_time переделать под выбор дня
             buses_schedule.append(item)
-        elif item["status"] == "Отправлен":
+        elif item["status"] == "✅":
             buses_dispatched.append(item)
-        elif item["status"] == "canceled":
+        elif item["status"] == "❌":
             buses_canceled.append(item)
 
     # write json file
@@ -206,8 +213,6 @@ def get_all_bus_schedule():
     return entire_schedule_for_today
 
 
-
-
 # btn and inline btn Расписание автобуса
 def get_current_schedule():
     a, b, buses_schedule, c = get_bus_time()
@@ -216,6 +221,15 @@ def get_current_schedule():
     else:
         return buses_schedule
         # return next_bus
+
+
+# inline btn Отправленные автобусы
+def get_buses_dispatched():
+    a, buses_dispatched, buses_schedule, c = get_bus_time()
+    entire_buses_dispatched_for_today = list_schedule_json_to_string(buses_dispatched)
+    entire_buses_dispatched_for_today += 'Отправленные автобусы за сегодня: '
+    entire_buses_dispatched_for_today += get_convert_date()
+    return entire_buses_dispatched_for_today
 
 
 
