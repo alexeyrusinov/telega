@@ -2,11 +2,7 @@ import requests
 import json
 import pytz
 from datetime import datetime
-
-
 # from bs4 import BeautifulSoup
-
-# url_binance = "https://api.binance.com/api/v3/ticker/price"
 
 
 # текущее время и дата в ЕКБ
@@ -70,33 +66,16 @@ def get_bus_time():
     now_time = get_data_time_ekb()
     now_day, now_month, now_year = str(now_time.day), str(now_time.month), str(now_time.year)
 
-
-    # now_day = str(now_time.day)
-    # now_month = str(now_time.month)
-    # now_year = str(now_time.year)
-
     # past now day and month
     url_bus = f"https://autovokzal.org/upload/php/result.php?id=1331&date=%27{now_year}-{now_month}-{now_day}%27&station=ekb"
-
-    # now_time = get_now_time()
-
-    # now_time = now_time.strftime('%H:%M')
-    # now_time = datetime.strptime(now_time, '%H:%M')
-
-    # def get_json(url_bus):  # --- удалить саму функцию а тело оставить
-        # global dict_json_bus
 
     try:
         response = requests.get(url_bus)
         response.raise_for_status()
         dict_json_bus = response.json()
-        # return dict_json_bus
     except Exception:
         print(">>>>--------> Errors with getting json <--------<<<<")
 
-    # get_json(url_bus)
-    # my_bus = dict()  # перенести ----------- перенёс
-    # write json file
     with open('data.json', 'w', encoding='utf8') as f:
         json.dump(dict_json_bus, f, ensure_ascii=False, indent=4)
 
@@ -106,7 +85,7 @@ def get_bus_time():
 
     # Rename json
     now_time = get_now_time()
-    buses_schedule, buses_dispatched, buses_canceled = ([] for i in range(3))  # create lists
+    buses_schedule, buses_dispatched, buses_canceled = ([] for i in range(3))  # create 3 lists
 
     for item in all_data["rasp"]:
         item["time_otpr"] = datetime.strptime(item["time_otpr"], '%H:%M')  # convert str to class 'datetime
@@ -120,7 +99,6 @@ def get_bus_time():
         item["cancel"] = item["cancel"].replace("Отмена", "❌")  # rename value
         item["cancel"] = item["cancel"].replace("Отправлен", "✅")
         item["status"] = item.pop("cancel")  # rename key
-
         if item["time_otpr"] > now_time and item["status"] != "canceled":  ### тут now_time переделать под выбор дня
             buses_schedule.append(item)
         elif item["status"] == "✅":
@@ -141,7 +119,6 @@ def get_bus_time():
                 time = time[3:] + ' min'
             else:
                 time.replace(" min", "")  #### код для елсе которое стиает мин если до след автобуса больше чем час
-                # если что вот это смотри
             free_place = i["free_place"]
             name_bus = i["name_bus"]
             next_bus_time = str(
@@ -154,7 +131,6 @@ def get_bus_time():
                 time = time[3:] + ' min'
             else:
                 time.replace(" min", "")  #### код для елсе которое стиает мин если до след автобуса больше чем час
-                # если что вот это смотри
             free_place = i["free_place"]
             next_bus_time = str('The next bus in ' + str(time) + ' \nfree places: ' + str(free_place) + '\n')
             break
@@ -199,7 +175,6 @@ def get_current_schedule():
         return f"No buses for today: {get_convert_date()}"
     else:
         return buses_schedule
-        # return next_bus
 
 
 # inline btn Отправленные автобусы
