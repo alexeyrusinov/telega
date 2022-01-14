@@ -1,11 +1,10 @@
 from func import get_convert_date_time, get_btc_usdt_rate, get_current_schedule, get_all_bus_schedule,\
-    get_buses_dispatched, get_convert_date
+    get_buses_dispatched, get_buses_canceled
 import sqlite_db
 import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
 import os
 import sqlite3 as sq
-
 import random
 
 TOKEN = os.environ["TOKEN"]  # create variable environment
@@ -27,7 +26,7 @@ async def send_welcome(message: types.Message):
     data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
     await sqlite_db.sql_add_command(user_id, data_user)
     await message.answer(f"Привет, выберите команду...", reply_markup=nav.mainMenu)
-    await message.answer("inlineMenu", reply_markup=nav.inlineMenu)
+    await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
 
 
 @dp.message_handler(commands=['help'])
@@ -48,7 +47,7 @@ async def getRandomNum(message: types.Message):
     await bot.delete_message(message.from_user.id, message.message.message_id)
     await bot.send_message(message.from_user.id, "Случайное сисло: {0}".format(random.randint(0, 1000)), reply_markup= nav.myMenu)
     # await bot.edit_message_text("Случайное число: {0}".format(random.randint(0, 1000)), message.from_user.id, message_id = message.message.message_id)
-    print("getRandomNum done-")
+    print("getRandomNum done")
 
 
 @dp.callback_query_handler(text_contains="bus")
@@ -56,19 +55,19 @@ async def inlineMenu(call: types.CallbackQuery): # это чтобы понят�
     data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
     await bot.delete_message(call.from_user.id, call.message.message_id)
     if call.data == "all_buses":
-        # await bot.send_message(call.from_user.id, "Все автобусы", reply_markup=nav.inlineMenu)
-        await bot.send_message(call.from_user.id, f"Все автобусы на сегодня:\n {get_all_bus_schedule()}", reply_markup=nav.inlineMenu)
+        await bot.send_message(call.from_user.id, f"Все автобусы:\n {get_all_bus_schedule()}", reply_markup=nav.inlineMenu)
         print("inline Все автобусы done")
     elif call.data == "dispatched_buses":
-        # await bot.send_message(call.from_user.id, "Отправленные автобусы", reply_markup=nav.inlineMenu)
-        await bot.send_message(call.from_user.id, f"Отправленные автобусы за сегодня:\n {get_buses_dispatched()}",
+        await bot.send_message(call.from_user.id, f"Отправленные:\n {get_buses_dispatched()}",
                                reply_markup=nav.inlineMenu)
         print("inline Отправленные автобусы done")
     elif call.data == "bus_schedule":
-        # await bot.send_message(call.from_user.id, f"Расписание:\n {get_bus_time()}", reply_markup=nav.inlineMenu)
-        await bot.send_message(call.from_user.id, f"Расписание:\n {get_current_schedule()}", reply_markup=nav.inlineMenu)
-        # await bot.send_message(call.from_user.id, f"Расписание:\n {buses_schedule}", reply_markup=nav.inlineMenu)
+        await bot.send_message(call.from_user.id, f"Ближайшие:\n {get_current_schedule()}", reply_markup=nav.inlineMenu)
         print("inline Расписание done")
+    elif call.data == "buses_canceled":
+        await bot.send_message(call.from_user.id, f"Отменённые:\n {get_buses_canceled()}", reply_markup=nav.inlineMenu)
+        print("inline Отменённые автобусы done")
+
 
 
 @dp.callback_query_handler(text_contains="buy")
@@ -93,9 +92,7 @@ async def echo_message(message: types.Message):
     elif message.text == "all db":
         await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
     elif message.text == "Расписание автобуса":
-        # await bot.send_message(message.from_user.id, get_bus_time())
         await bot.send_message(message.from_user.id, get_current_schedule())
-        # await bot.send_message(message.from_user.id, buses_schedule)
     elif message.text == "Курс биткоина":
         await bot.send_message(message.from_user.id, get_btc_usdt_rate())
     elif message.text == "inlineButtons":

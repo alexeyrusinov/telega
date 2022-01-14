@@ -111,11 +111,11 @@ def get_bus_time():
     for item in all_data["rasp"]:
         item["time_otpr"] = datetime.strptime(item["time_otpr"], '%H:%M')  # convert str to class 'datetime
         item["name_route"] = item["name_route"].replace('г.Екатеринбург (Южный АВ) -<br/>',
-                                                        'ЕКБ южный ав -')  # rename value
+                                                        'Южный АВ -')  # rename value
         item["name_route"] = item["name_route"].replace('г.', '')
-        item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6122 H9', 'YUTONG')
-        item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6129 H', 'YUTONG')
-        item["name_bus"] = item["name_bus"].replace('YUTONG 6121', 'YUTONG')
+        item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6122 H9', 'YTNG')
+        item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6129 H', 'YTNG')
+        item["name_bus"] = item["name_bus"].replace('YUTONG 6121', 'YTNG')
         item["name_bus"] = item["name_bus"].replace('ПАЗ-4234', 'ПАЗ')
         item["cancel"] = item["cancel"].replace("Отмена", "❌")  # rename value
         item["cancel"] = item["cancel"].replace("Отправлен", "✅")
@@ -185,14 +185,16 @@ def get_bus_time():
 
 # inline btn Все автобусы
 def get_all_bus_schedule():
-    all_buses, b, buses_schedule, c = get_bus_time()
+    all_buses, buses_dispatched, buses_schedule, buses_canceled = get_bus_time()
     entire_schedule_for_today = list_schedule_json_to_string(all_buses)
+    entire_schedule_for_today += 'Все автобусы за сегодня: '
+    entire_schedule_for_today += get_convert_date()
     return entire_schedule_for_today
 
 
 # btn and inline btn Расписание автобуса
 def get_current_schedule():
-    a, b, buses_schedule, c = get_bus_time()
+    all_buses, buses_dispatched, buses_schedule, buses_canceled = get_bus_time()
     if len(buses_schedule) == 0:
         return f"No buses for today."
     else:
@@ -202,41 +204,19 @@ def get_current_schedule():
 
 # inline btn Отправленные автобусы
 def get_buses_dispatched():
-    a, buses_dispatched, buses_schedule, c = get_bus_time()
+    all_buses, buses_dispatched, buses_schedule, buses_canceled = get_bus_time()
     entire_buses_dispatched_for_today = list_schedule_json_to_string(buses_dispatched)
     entire_buses_dispatched_for_today += 'Отправленные автобусы за сегодня: '
     entire_buses_dispatched_for_today += get_convert_date()
     return entire_buses_dispatched_for_today
 
 
-# def next_bus_time(buses_schedule_list):
-#     now_time = get_now_time()
-#     next_bus_time = ''
-#     for i in buses_schedule_list:  # print time to the next bus
-#         if i["status"] == "" and i["name_bus"] == "НЕФАЗ" or i["name_bus"] == "ПАЗ":
-#             time = i["time_otpr"] - now_time
-#             time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H:%M')
-#             if time[:2] == '00':
-#                 time = time[3:] + ' min'
-#             else:
-#                 time.replace(" min", "")  #### код для елсе которое стиает мин если до след автобуса больше чем час
-#                 # если что вот это смотри
-#             free_place = i["free_place"]
-#             name_bus = i["name_bus"]
-#             next_bus_time = str(
-#                 'The next bus in ' + str(time) + ' \nbus: ' + str(name_bus) + ' free places: ' + str(free_place) + '\n')
-#             break
-#         elif i["status"] == "":
-#             time = i["time_otpr"] - now_time
-#             time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H:%M')
-#             if time[:2] == '00':
-#                 time = time[3:] + ' min'
-#             else:
-#                 time.replace(" min", "")  #### код для елсе которое стиает мин если до след автобуса больше чем час
-#                 # если что вот это смотри
-#             free_place = i["free_place"]
-#             next_bus_time = str('The next bus in ' + str(time) + ' \nfree places: ' + str(free_place) + '\n')
-#             break
+def get_buses_canceled():
+    all_buses, buses_dispatched, buses_schedule, buses_canceled = get_bus_time()
+    entire_buses_canceled_for_today = list_schedule_json_to_string(buses_canceled)
+    entire_buses_canceled_for_today += 'Отменённые автобусы за сегодня: '
+    entire_buses_canceled_for_today += get_convert_date()
+    return entire_buses_canceled_for_today
 
 
 # # pars bus 91-------------------------------------------------------------

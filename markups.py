@@ -12,23 +12,21 @@ btnVip = InlineKeyboardButton(text="Купить VIP", callback_data="buyVip")
 myMenu.insert(btnRandom)
 myMenu.insert(btnUrl)
 myMenu.insert(btnShare)
-# myMenu.insert(btnSomething)
 myMenu.insert(btnSub)
 myMenu.insert(btnVip)
 
 inlineMenu = InlineKeyboardMarkup(row_width=1)
 btnAllBuses = InlineKeyboardButton(text="Все автобусы", callback_data="all_buses")
-btnDispatchedBuses = InlineKeyboardButton(text="Отправленные автобусы", callback_data="dispatched_buses")
-btnGetBuses = InlineKeyboardButton(text="Расписание", callback_data="bus_schedule")
+btnDispatchedBuses = InlineKeyboardButton(text="Отправленные", callback_data="dispatched_buses")
+btnGetBuses = InlineKeyboardButton(text="Ближайшие", callback_data="bus_schedule")
+btnCanceledBuses = InlineKeyboardButton(text='Отмененные', callback_data="buses_canceled")
 
 inlineMenu.insert(btnAllBuses)
 inlineMenu.insert(btnDispatchedBuses)
 inlineMenu.insert(btnGetBuses)
-
-
+inlineMenu.insert(btnCanceledBuses)
 
 btnMain = KeyboardButton("Главное меню")
-
 
 # main menu
 btnBtc = KeyboardButton("Курс биткоина")
@@ -40,5 +38,4 @@ mainMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnInfo).add(btnBtc, bt
 # other menu
 btnTime = KeyboardButton("Текущее время и дата")
 btnRandint = KeyboardButton("inlineButtons")
-# btnInlineTest = KeyboardButton()
 otherMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnTime,btnRandint, btnMain)
