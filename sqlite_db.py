@@ -36,3 +36,6 @@ def get_all_users_db():
     result = result + f'Всего пользователей: {count}'
     print("get_all_users_db done")
     return result
+
+# добавить удаление пользователя
+
