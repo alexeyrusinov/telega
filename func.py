@@ -105,11 +105,9 @@ def get_bus_time():
         all_data = json.load(f)
 
     # Rename json
-    now_time = get_now_time() # del 1 list pervyi
-    all_buses00, buses_schedule, buses_dispatched, buses_canceled = ([] for i in range(4))  # create lists
-    # buses_schedule = []
-    # buses_dispatched = []
-    # buses_canceled = []
+    now_time = get_now_time()
+    buses_schedule, buses_dispatched, buses_canceled = ([] for i in range(3))  # create lists
+
     for item in all_data["rasp"]:
         item["time_otpr"] = datetime.strptime(item["time_otpr"], '%H:%M')  # convert str to class 'datetime
         item["name_route"] = item["name_route"].replace('г.Екатеринбург (Южный АВ) -<br/>',
@@ -167,18 +165,6 @@ def get_bus_time():
     schedule = list_schedule_json_to_string(buses_schedule)
     schedule += next_bus_time
 
-    # next_bus = ''
-    # for i in reversed(buses_schedule):  # revers list, and output next bus
-    #     next_bus += i["time_otpr"]
-    #     next_bus += i["status"] + ' '
-    #     next_bus += i["free_place"] + ' '
-    #     next_bus += i["name_bus"] + ' '
-    #     next_bus += i["name_route"] + '\n\n'
-
-    # next_bus += next_bus_time
-
-    # a = str(len(buses_dispatched))
-
     #  add to dict for output
     my_bus = dict()
     my_bus['buses'] = all_data["rasp"]
@@ -196,15 +182,6 @@ def get_bus_time():
     print("get_bus_time done")
     return all_data["rasp"], buses_dispatched, schedule, buses_canceled
 
-
-    # return my_bus
-    # if len(next_bus) == 0:
-    #     return f"No buses for today."
-    # else:
-    #     return next_bus
-
-
-# all_buses, buses_dispatched, buses_schedule, buses_canceled = get_bus_time()
 
 # inline btn Все автобусы
 def get_all_bus_schedule():
@@ -230,7 +207,6 @@ def get_buses_dispatched():
     entire_buses_dispatched_for_today += 'Отправленные автобусы за сегодня: '
     entire_buses_dispatched_for_today += get_convert_date()
     return entire_buses_dispatched_for_today
-
 
 
 # def next_bus_time(buses_schedule_list):
