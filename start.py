@@ -51,7 +51,6 @@ async def getRandomNum(message: types.Message):
     print("getRandomNum done-")
 
 
-############
 @dp.callback_query_handler(text_contains="bus")
 async def inlineMenu(call: types.CallbackQuery): # это чтобы понять какая кнопка была нажата
     data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
@@ -70,8 +69,6 @@ async def inlineMenu(call: types.CallbackQuery): # это чтобы понят�
         await bot.send_message(call.from_user.id, f"Расписание:\n {get_current_schedule()}", reply_markup=nav.inlineMenu)
         # await bot.send_message(call.from_user.id, f"Расписание:\n {buses_schedule}", reply_markup=nav.inlineMenu)
         print("inline Расписание done")
-        # await await bot.send_message(message.from_user.id, get_bus_time())
-###########
 
 
 @dp.callback_query_handler(text_contains="buy")
@@ -82,7 +79,6 @@ async def botShop(call: types.CallbackQuery): # это чтобы понять �
     elif call.data == "buyVip":
         await bot.send_message(call.from_user.id, "Купить VIP", reply_markup= nav.myMenu)
     print("botShop done")
-
 
 
 @dp.message_handler()
@@ -108,8 +104,8 @@ async def echo_message(message: types.Message):
         await bot.send_message(ADMIN_ID, message.text)
 
 
-try:
-    if __name__ == '__main__':
+if __name__ == '__main__':
+    try:
         executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
-except Exception:
-    print("ooooops connect to internet")
+    except Exception:
+        print("ooooops, No internet connection")
