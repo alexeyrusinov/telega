@@ -196,7 +196,7 @@ def get_all_bus_schedule():
 def get_current_schedule():
     all_buses, buses_dispatched, buses_schedule, buses_canceled = get_bus_time()
     if len(buses_schedule) == 0:
-        return f"No buses for today."
+        return f"No buses for today: {get_convert_date()}"
     else:
         return buses_schedule
         # return next_bus
