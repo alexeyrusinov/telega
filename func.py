@@ -106,7 +106,6 @@ def get_bus_time():
         elif item["status"] == "❌":
             buses_canceled.append(item)
 
-
     # write json file
     with open('new_data.json', 'w', encoding='utf8') as f:
         json.dump(buses_schedule, f, ensure_ascii=False, indent=4, sort_keys=True, default=str)

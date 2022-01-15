@@ -18,13 +18,13 @@ myMenu.insert(btnVip)
 inlineMenu = InlineKeyboardMarkup(row_width=1)
 btnAllBuses = InlineKeyboardButton(text="Все автобусы", callback_data="all_buses")
 btnDispatchedBuses = InlineKeyboardButton(text="Отправленные", callback_data="dispatched_buses")
-btnGetBuses = InlineKeyboardButton(text="Ближайшие", callback_data="bus_schedule")
 btnCanceledBuses = InlineKeyboardButton(text='Отмененные', callback_data="buses_canceled")
+btnGetBuses = InlineKeyboardButton(text="Ближайшие", callback_data="bus_schedule")
 
 inlineMenu.insert(btnAllBuses)
 inlineMenu.insert(btnDispatchedBuses)
-inlineMenu.insert(btnGetBuses)
 inlineMenu.insert(btnCanceledBuses)
+inlineMenu.insert(btnGetBuses)
 
 btnMain = KeyboardButton("Главное меню")
 
