@@ -99,12 +99,13 @@ def get_bus_time():
         item["cancel"] = item["cancel"].replace("Отмена", "❌")  # rename value
         item["cancel"] = item["cancel"].replace("Отправлен", "✅")
         item["status"] = item.pop("cancel")  # rename key
-        if item["time_otpr"] > now_time and item["status"] != "canceled":  ### тут now_time переделать под выбор дня
+        if item["time_otpr"] > now_time and item["status"] != "❌":  ### тут now_time переделать под выбор дня
             buses_schedule.append(item)
-        elif item["status"] == "✅":
+        elif item["status"] == "✅" and item["status"]:
             buses_dispatched.append(item)
         elif item["status"] == "❌":
             buses_canceled.append(item)
+
 
     # write json file
     with open('new_data.json', 'w', encoding='utf8') as f:
@@ -147,6 +148,7 @@ def get_bus_time():
     my_bus['buses_dispatched'] = buses_dispatched
     my_bus['buses_schedule'] = buses_schedule
     my_bus['buses_canceled'] = buses_canceled
+    print(f" buses_canceled is {buses_canceled}")
 
     buses = ""
     buses += str(len(all_data["rasp"]))
