@@ -37,5 +37,10 @@ def get_all_users_db():
     print("get_all_users_db done")
     return result
 
-# добавить удаление пользователя
+# добавить удаление пользователя через машина состояний
+
+# def dell_user_db():
+#     base = sq.connect("users.db")
+#     cur = base.cursor()
+#     for user in cur.execute(f"DELETE FROM users WHERE ROWID = {user_number}"):
 

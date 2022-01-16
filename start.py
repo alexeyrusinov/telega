@@ -1,5 +1,6 @@
-from func import get_convert_date_time, get_btc_usdt_rate, get_current_schedule, get_all_bus_schedule,\
+from pars_bus import get_btc_usdt_rate, get_current_schedule, get_all_bus_schedule,\
     get_buses_dispatched, get_buses_canceled
+from date_and_time import get_convert_date_time
 import sqlite_db
 import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
@@ -32,18 +33,21 @@ async def send_welcome(message: types.Message):
 @dp.message_handler(commands=['help'])
 async def send_help(message: types.Message):
     await message.answer("Подскажет тебе: @rusinov")
+    print("Command help done")
 
 
 @dp.message_handler(commands=['send'])
-async def send_message_all(message: types.Message):
+async def send_message_all_users(message: types.Message):
     base = sq.connect("users.db")
     cur = base.cursor()
     for user in cur.execute("SELECT user_id FROM users"):
         user_id = "".join(user)
         await bot.send_message(user_id, message.text[6:])
+    print("Command send done")
+
 
 @dp.callback_query_handler(text="btnRandom")
-async def getRandomNum(message: types.Message):
+async def get_random_num(message: types.Message):
     await bot.delete_message(message.from_user.id, message.message.message_id)
     await bot.send_message(message.from_user.id, "Случайное сисло: {0}".format(random.randint(0, 1000)), reply_markup= nav.myMenu)
     # await bot.edit_message_text("Случайное число: {0}".format(random.randint(0, 1000)), message.from_user.id, message_id = message.message.message_id)
@@ -51,7 +55,7 @@ async def getRandomNum(message: types.Message):
 
 
 @dp.callback_query_handler(text_contains="bus")
-async def inlineMenu(call: types.CallbackQuery): # это чтобы понять какая кнопка была нажата
+async def inline_menu(call: types.CallbackQuery): # это чтобы понять какая кнопка была нажата
     data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
     await bot.delete_message(call.from_user.id, call.message.message_id)
     if call.data == "all_buses":
@@ -69,9 +73,8 @@ async def inlineMenu(call: types.CallbackQuery): # это чтобы понят�
         print("inline Отменённые автобусы done")
 
 
-
 @dp.callback_query_handler(text_contains="buy")
-async def botShop(call: types.CallbackQuery): # это чтобы понять какая кнопка была нажата
+async def bot_shop(call: types.CallbackQuery): # это чтобы понять какая кнопка была нажата
     await bot.delete_message(call.from_user.id, call.message.message_id)
     if call.data == "buySub":
         await bot.send_message(call.from_user.id, "Тарифы на подписку", reply_markup= nav.myMenu)
