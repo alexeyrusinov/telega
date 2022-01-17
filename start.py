@@ -1,6 +1,7 @@
-from pars_bus import get_btc_usdt_rate, get_current_schedule, get_all_bus_schedule,\
+from func.pars_bus import get_current_schedule, get_all_bus_schedule,\
     get_buses_dispatched, get_buses_canceled
-from date_and_time import get_convert_date_time
+from func.date_and_time import get_convert_date_time
+from func import btc
 import sqlite_db
 import markups as nav
 from aiogram import Bot, Dispatcher, executor, types
@@ -102,7 +103,7 @@ async def echo_message(message: types.Message):
         case "Расписание автобуса":
             await bot.send_message(message.from_user.id, get_current_schedule())
         case "Курс биткоина":
-            await bot.send_message(message.from_user.id, get_btc_usdt_rate())
+            await bot.send_message(message.from_user.id, btc.get_btc_usdt_rate())
         case "inlineButtons":
             await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
         case _:

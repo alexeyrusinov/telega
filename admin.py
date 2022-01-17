@@ -1,8 +1,8 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
-from aiogram import types, Dispatcher, Bot
-from pars_bus import get_current_schedule, get_all_bus_schedule,\
+from aiogram import types, Dispatcher
+from func.pars_bus import get_current_schedule, get_all_bus_schedule,\
     get_buses_dispatched, get_buses_canceled
 import os
 

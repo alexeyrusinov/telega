@@ -1,25 +1,9 @@
 import requests
 import json
 from datetime import datetime
-from date_and_time import get_data_time_ekb, get_convert_date, get_now_time
+from func.date_and_time import get_data_time_ekb, get_convert_date, get_now_time
 # import pytz
 # from bs4 import BeautifulSoup
-
-
-# btn Курс биткоина
-def get_btc_usdt_rate():
-    url_binance = "https://api.binance.com/api/v3/ticker/price"
-    try:
-        response = requests.get(url_binance)
-        response.raise_for_status()
-        dic = response.json()
-        res = dic[11]
-        result = str(res["symbol"] + " - " + res["price"])
-        result = result[:-6] + " $"
-        print("get_json_btc_usdt done")
-        return result
-    except Exception:
-        print(">>>>--------> Errors with getting json <--------<<<<")
 
 
 def list_schedule_json_to_string(list_schedule):
@@ -48,11 +32,11 @@ def get_bus_time():
     except Exception:
         print(">>>>--------> Errors with getting json <--------<<<<")
 
-    with open('data.json', 'w', encoding='utf8') as f:
+    with open('../data.json', 'w', encoding='utf8') as f:
         json.dump(dict_json_bus, f, ensure_ascii=False, indent=4)
 
     # Read json file
-    with open('data.json') as f:
+    with open('../data.json') as f:
         all_data = json.load(f)
 
     # Rename json
@@ -79,7 +63,7 @@ def get_bus_time():
             buses_canceled.append(item)
 
     # write json file
-    with open('new_data.json', 'w', encoding='utf8') as f:
+    with open('../new_data.json', 'w', encoding='utf8') as f:
         json.dump(buses_schedule, f, ensure_ascii=False, indent=4, sort_keys=True, default=str)
 
     next_bus_time = ''
