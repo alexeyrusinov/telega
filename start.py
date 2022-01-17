@@ -7,13 +7,17 @@ from aiogram import Bot, Dispatcher, executor, types
 import os
 import sqlite3 as sq
 import random
+from aiogram.contrib.fsm_storage.memory import MemoryStorage # позволяет хранить данные в опер. памяти
+import admin
+
+storage = MemoryStorage()
 
 TOKEN = os.environ["TOKEN"]  # create variable environment
 ADMIN_ID = os.environ["ADMIN_ID"]
 
 
 bot = Bot(TOKEN)  # object bot
-dp = Dispatcher(bot)
+dp = Dispatcher(bot, storage=storage)
 
 
 async def on_startup(_):
@@ -29,6 +33,7 @@ async def send_welcome(message: types.Message):
     await message.answer(f"Привет, выберите команду...", reply_markup=nav.mainMenu)
     await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
 
+admin.register_handlers_admin(dp)
 
 @dp.message_handler(commands=['help'])
 async def send_help(message: types.Message):
@@ -58,19 +63,20 @@ async def get_random_num(message: types.Message):
 async def inline_menu(call: types.CallbackQuery): # это чтобы понять какая кнопка была нажата
     data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
     await bot.delete_message(call.from_user.id, call.message.message_id)
-    if call.data == "all_buses":
-        await bot.send_message(call.from_user.id, f"Все автобусы:\n {get_all_bus_schedule()}", reply_markup=nav.inlineMenu)
-        print("inline Все автобусы done")
-    elif call.data == "dispatched_buses":
-        await bot.send_message(call.from_user.id, f"Отправленные:\n {get_buses_dispatched()}",
+    match call.data:
+        case "all_buses":
+            await bot.send_message(call.from_user.id, f"Все автобусы:\n {get_all_bus_schedule()}", reply_markup=nav.inlineMenu)
+            print("inline Все автобусы done")
+        case "dispatched_buses":
+            await bot.send_message(call.from_user.id, f"Отправленные:\n {get_buses_dispatched()}",
                                reply_markup=nav.inlineMenu)
-        print("inline Отправленные автобусы done")
-    elif call.data == "bus_schedule":
-        await bot.send_message(call.from_user.id, f"Ближайшие:\n {get_current_schedule()}", reply_markup=nav.inlineMenu)
-        print("inline Расписание done")
-    elif call.data == "buses_canceled":
-        await bot.send_message(call.from_user.id, f"Отменённые:\n {get_buses_canceled()}", reply_markup=nav.inlineMenu)
-        print("inline Отменённые автобусы done")
+            print("inline Отправленные автобусы done")
+        case "bus_schedule":
+            await bot.send_message(call.from_user.id, f"Ближайшие:\n {get_current_schedule()}", reply_markup=nav.inlineMenu)
+            print("inline Расписание done")
+        case "buses_canceled":
+            await bot.send_message(call.from_user.id, f"Отменённые:\n {get_buses_canceled()}", reply_markup=nav.inlineMenu)
+            print("inline Отменённые автобусы done")
 
 
 @dp.callback_query_handler(text_contains="buy")
@@ -86,22 +92,23 @@ async def bot_shop(call: types.CallbackQuery): # это чтобы понять 
 @dp.message_handler()
 async def echo_message(message: types.Message):
     # data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name) ---- if need
-    if message.text == "Текущее время и дата":
-        await bot.send_message(message.from_user.id, get_convert_date_time())
-    elif message.text == "Главное меню":
-        await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.mainMenu)
-    elif message.text == "Другое":
-        await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
-    elif message.text == "all db":
-        await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
-    elif message.text == "Расписание автобуса":
-        await bot.send_message(message.from_user.id, get_current_schedule())
-    elif message.text == "Курс биткоина":
-        await bot.send_message(message.from_user.id, get_btc_usdt_rate())
-    elif message.text == "inlineButtons":
-        await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
-    elif message.text is not None:
-        await bot.send_message(ADMIN_ID, message.text)
+    match message.text:
+        case "Текущее время и дата":
+            await bot.send_message(message.from_user.id, get_convert_date_time())
+        case "Главное меню":
+            await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.mainMenu)
+        case "Другое":
+            await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
+        case "all db":
+            await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
+        case "Расписание автобуса":
+            await bot.send_message(message.from_user.id, get_current_schedule())
+        case "Курс биткоина":
+            await bot.send_message(message.from_user.id, get_btc_usdt_rate())
+        case "inlineButtons":
+            await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
+        case _:
+            await bot.send_message(ADMIN_ID, message.text)
 
 
 if __name__ == '__main__':
