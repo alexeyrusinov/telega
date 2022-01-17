@@ -4,6 +4,9 @@ from aiogram.dispatcher.filters import Text
 from aiogram import types, Dispatcher, Bot
 from pars_bus import get_current_schedule, get_all_bus_schedule,\
     get_buses_dispatched, get_buses_canceled
+import os
+
+ADMIN_ID = os.environ["ADMIN_ID"]
 
 
 class FSMAdmin(StatesGroup):
@@ -13,12 +16,13 @@ class FSMAdmin(StatesGroup):
 #Задаём вопрос
 # dp.message_handler(commands="Выбрать", state=None)
 async def fsm_start(message: types.Message):
-    await FSMAdmin.question.set()
-    await message.reply("Выберите тип расписания, отправив цифру:\n"
-                        "1 - Все автобусы,\n"
-                        "2 - Отправленные,\n"
-                        "3 - Отменённые,\n"
-                        "4 - Ближайшие")
+    if message.from_user.id == int(ADMIN_ID):
+        await FSMAdmin.question.set()
+        await message.reply("Выберите тип расписания, отправив только цифру:\n"
+                            "1 - Все автобусы,\n"
+                            "2 - Отправленные,\n"
+                            "3 - Отменённые,\n"
+                            "4 - Ближайшие")
 
 
 #Выход из состояний

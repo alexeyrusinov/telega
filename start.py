@@ -10,12 +10,8 @@ import random
 from aiogram.contrib.fsm_storage.memory import MemoryStorage # позволяет хранить данные в опер. памяти
 import admin
 
-storage = MemoryStorage()
-
 TOKEN = os.environ["TOKEN"]  # create variable environment
-ADMIN_ID = os.environ["ADMIN_ID"]
-
-
+storage = MemoryStorage()
 bot = Bot(TOKEN)  # object bot
 dp = Dispatcher(bot, storage=storage)
 
@@ -33,7 +29,9 @@ async def send_welcome(message: types.Message):
     await message.answer(f"Привет, выберите команду...", reply_markup=nav.mainMenu)
     await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
 
+
 admin.register_handlers_admin(dp)
+
 
 @dp.message_handler(commands=['help'])
 async def send_help(message: types.Message):
@@ -108,7 +106,7 @@ async def echo_message(message: types.Message):
         case "inlineButtons":
             await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
         case _:
-            await bot.send_message(ADMIN_ID, message.text)
+            await bot.send_message(admin.ADMIN_ID, message.text)
 
 
 if __name__ == '__main__':
