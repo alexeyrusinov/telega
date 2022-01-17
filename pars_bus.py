@@ -89,6 +89,8 @@ def get_bus_time():
             time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H:%M')
             if time[:2] == '00':
                 time = time[3:] + ' min'
+                if time[:1] == '0':
+                    time = time[1:]
             else:
                 time.replace(" min", "")  #### код для елсе которое стиает мин если до след автобуса больше чем час
             free_place = i["free_place"]
@@ -101,6 +103,8 @@ def get_bus_time():
             time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H:%M')
             if time[:2] == '00':
                 time = time[3:] + ' min'
+                if time[:1] == '0':
+                    time = time[1:]
             else:
                 time.replace(" min", "")  #### код для елсе которое стиает мин если до след автобуса больше чем час
             free_place = i["free_place"]
