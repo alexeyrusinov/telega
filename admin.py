@@ -5,6 +5,7 @@ from aiogram import types, Dispatcher
 from func.pars_bus import get_current_schedule, get_all_bus_schedule,\
     get_buses_dispatched, get_buses_canceled
 import os
+import sqlite_db
 
 ADMIN_ID = os.environ["ADMIN_ID"]
 
@@ -39,6 +40,8 @@ async def cancel_handler(message: types.Message, state: FSMContext):
 #ловим первый ответ
 # dp.message_handler(state=FSMAdmin.question)
 async def load_question(message: types.Message, state:FSMContext):
+    user_id = message.from_user.id
+    data_user = [message.from_user.id, message.from_user.username, message.from_user.first_name]
     async with state.proxy() as data:
         data["type_schedule"] = message.text
     async with state.proxy() as data:
@@ -46,17 +49,18 @@ async def load_question(message: types.Message, state:FSMContext):
             case '1':
                 await message.reply(get_all_bus_schedule())
             case '2':
-                print("right")
                 await message.reply(get_buses_dispatched())
             case '3':
                 await message.reply(get_buses_canceled())
             case '4':
                 await message.reply(get_current_schedule())
+    result = int(data["type_schedule"])
+    await sqlite_db.add_passing_bus(user_id, result)
     await state.finish()
 
 
 def register_handlers_admin(dp : Dispatcher):
-    dp.register_message_handler(fsm_start, commands="Выбрать", state=None)
+    dp.register_message_handler(fsm_start, commands="select", state=None)
     dp.register_message_handler(cancel_handler, state="*", commands="отмена")
     dp.register_message_handler(cancel_handler, Text(equals="отмена", ignore_case=True, ), state="*")
     dp.register_message_handler(load_question, state=FSMAdmin.question)
