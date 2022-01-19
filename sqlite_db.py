@@ -7,7 +7,7 @@ def sql_start():
     cur = base.cursor()
     if base:
         print("Data base connected Ok!")
-    base.execute('CREATE TABLE IF NOT EXISTS users(user_id INT PRIMARY KEY, user_name TEXT, name TEXT, passing_bus INT)')
+    cur.execute('CREATE TABLE IF NOT EXISTS users(user_id INT PRIMARY KEY, user_name TEXT, name TEXT, passing_bus INT)')
     base.commit()
     base.close()
 
@@ -36,7 +36,7 @@ def get_all_users_db():
     count = 0
     for value in cur.execute("SELECT ROWID, * FROM users"):
         count += 1
-        result = result + str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + '\n'
+        result = result + str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + " " + str(value[4]) + '\n'
     result = result + f'Всего пользователей: {count}'
     base.commit()
     base.close()
@@ -47,7 +47,6 @@ def get_all_users_db():
 async def add_passing_bus(user_id, result):
     base = sq.connect("users.db")
     cur = base.cursor()
-    data = cur.fetchone()
     cur.execute("""UPDATE users SET passing_bus = ? WHERE user_id = ?""", (result, user_id,))
     print(f"value of column passing_bus of user {user_id} update to {result}")
     base.commit()
