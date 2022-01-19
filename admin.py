@@ -24,6 +24,8 @@ async def fsm_start(message: types.Message):
                             "2 - Отправленные,\n"
                             "3 - Отменённые,\n"
                             "4 - Ближайшие")
+    else:
+        await message.answer("sorry, only for admin")
 
 
 #Выход из состояний
