@@ -28,12 +28,19 @@ inlineMenu.insert(btnGetBuses)
 
 btnMain = KeyboardButton("Главное меню")
 
-# main menu
+# admin menu
 btnBtc = KeyboardButton("Курс биткоина")
 btnInfo = KeyboardButton("Расписание автобуса")
 btnOther = KeyboardButton("Другое")
 btn_all_db = KeyboardButton('all db')
-mainMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnInfo).add(btnBtc, btnOther).add(btn_all_db)
+adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnInfo).add(btnBtc, btnOther).add(btn_all_db)
+
+# user menu
+btnBtc = KeyboardButton("Курс биткоина")
+btnInfo = KeyboardButton("Расписание автобуса")
+btnOther = KeyboardButton("Другое")
+
+userMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnInfo).add(btnBtc, btnOther)
 
 # other menu
 btnTime = KeyboardButton("Текущее время и дата")

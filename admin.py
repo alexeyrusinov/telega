@@ -7,7 +7,7 @@ from func.pars_bus import get_current_schedule, get_all_bus_schedule,\
 import os
 import sqlite_db
 
-ADMIN_ID = os.environ["ADMIN_ID"]
+ADMIN_ID = int(os.environ["ADMIN_ID"])
 
 
 class FSMAdmin(StatesGroup):
@@ -17,7 +17,7 @@ class FSMAdmin(StatesGroup):
 #Задаём вопрос
 # dp.message_handler(commands="Выбрать", state=None)
 async def fsm_start(message: types.Message):
-    if message.from_user.id == int(ADMIN_ID):
+    if message.from_user.id == ADMIN_ID:
         await FSMAdmin.question.set()
         await message.reply("Выберите тип расписания, отправив только цифру:\n"
                             "1 - Все автобусы,\n"

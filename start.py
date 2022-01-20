@@ -26,9 +26,14 @@ async def on_startup(_):
 async def send_welcome(message: types.Message):
     user_id = message.from_user.id
     data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
-    await sqlite_db.sql_add_command(user_id, data_user)
-    await message.answer(f"Привет, выберите команду...", reply_markup=nav.mainMenu)
-    await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
+    if user_id == admin.ADMIN_ID:
+        await sqlite_db.sql_add_command(user_id, data_user)
+        await message.answer(f"Привет, выберите команду...", reply_markup=nav.adminMenu)
+        await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
+    else:
+        await sqlite_db.sql_add_command(user_id, data_user)
+        await message.answer(f"Привет, выберите команду...", reply_markup=nav.userMenu)
+        await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
 
 
 admin.register_handlers_admin(dp)
@@ -103,7 +108,8 @@ async def echo_message(message: types.Message):
         case "Другое":
             await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
         case "all db":
-            await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
+            if message.from_user.id == admin.ADMIN_ID:
+                await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
         case "Расписание автобуса":
             await bot.send_message(message.from_user.id, get_current_schedule())
         case "Курс биткоина":
