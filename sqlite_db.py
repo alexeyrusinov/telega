@@ -1,5 +1,5 @@
 import sqlite3 as sq
-
+from func import pars_bus
 
 def sql_start():
     with sq.connect("users.db") as con:
@@ -41,6 +41,25 @@ def get_all_users_db():
         cur.close()
         print("get_all_users_db done")
         return result
+
+
+def get_passing_bus(user_id):
+    with sq.connect("users.db") as con:
+        cur = con.cursor()
+        sqlite_select = """SELECT passing_bus FROM users WHERE user_id = ?"""
+        cur.execute(sqlite_select, (user_id,))
+        result = cur.fetchone()
+        cur.close()
+        print(result)
+        match result[0]:
+            case 1:
+                return pars_bus.get_all_bus_schedule()
+            case 2:
+                return pars_bus.get_buses_dispatched()
+            case 3:
+                return pars_bus.get_buses_canceled()
+            case 4:
+                return pars_bus.get_current_schedule()
 
 
 async def add_passing_bus(user_id, result):

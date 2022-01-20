@@ -111,7 +111,8 @@ async def echo_message(message: types.Message):
             if message.from_user.id == admin.ADMIN_ID:
                 await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
         case "Расписание автобуса":
-            await bot.send_message(message.from_user.id, get_current_schedule())
+            # await bot.send_message(message.from_user.id, get_current_schedule())
+            await bot.send_message(message.from_user.id, sqlite_db.get_passing_bus(message.from_user.id))
         case "Курс биткоина":
             await bot.send_message(message.from_user.id, btc.get_btc_usdt_rate())
         case "inlineButtons":
