@@ -1,4 +1,4 @@
-from func.pars_bus import get_current_schedule, get_all_bus_schedule,\
+from func.pars_bus import get_current_schedule, get_all_bus_schedule, \
     get_buses_dispatched, get_buses_canceled
 from func.date_and_time import get_convert_date_time
 from func import btc
@@ -8,7 +8,7 @@ from aiogram import Bot, Dispatcher, executor, types
 import os
 import sqlite3 as sq
 import random
-from aiogram.contrib.fsm_storage.memory import MemoryStorage # позволяет хранить данные в опер. памяти
+from aiogram.contrib.fsm_storage.memory import MemoryStorage  # позволяет хранить данные в опер. памяти
 import admin
 
 TOKEN = os.environ["TOKEN"]  # create variable environment
@@ -53,38 +53,42 @@ async def send_message_all_users(message: types.Message):
 @dp.callback_query_handler(text="btnRandom")
 async def get_random_num(message: types.Message):
     await bot.delete_message(message.from_user.id, message.message.message_id)
-    await bot.send_message(message.from_user.id, "Случайное сисло: {0}".format(random.randint(0, 1000)), reply_markup= nav.myMenu)
+    await bot.send_message(message.from_user.id, "Случайное сисло: {0}".format(random.randint(0, 1000)),
+                           reply_markup=nav.myMenu)
     # await bot.edit_message_text("Случайное число: {0}".format(random.randint(0, 1000)), message.from_user.id, message_id = message.message.message_id)
     print("getRandomNum done")
 
 
 @dp.callback_query_handler(text_contains="bus")
-async def inline_menu(call: types.CallbackQuery): # это чтобы понять какая кнопка была нажата
+async def inline_menu(call: types.CallbackQuery):  # это чтобы понять какая кнопка была нажата
     data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
     await bot.delete_message(call.from_user.id, call.message.message_id)
     match call.data:
         case "all_buses":
-            await bot.send_message(call.from_user.id, f"Все автобусы:\n {get_all_bus_schedule()}", reply_markup=nav.inlineMenu)
+            await bot.send_message(call.from_user.id, f"Все автобусы:\n {get_all_bus_schedule()}",
+                                   reply_markup=nav.inlineMenu)
             print("inline Все автобусы done")
         case "dispatched_buses":
             await bot.send_message(call.from_user.id, f"Отправленные:\n {get_buses_dispatched()}",
-                               reply_markup=nav.inlineMenu)
+                                   reply_markup=nav.inlineMenu)
             print("inline Отправленные автобусы done")
         case "bus_schedule":
-            await bot.send_message(call.from_user.id, f"Ближайшие:\n {get_current_schedule()}", reply_markup=nav.inlineMenu)
+            await bot.send_message(call.from_user.id, f"Ближайшие:\n {get_current_schedule()}",
+                                   reply_markup=nav.inlineMenu)
             print("inline Расписание done")
         case "buses_canceled":
-            await bot.send_message(call.from_user.id, f"Отменённые:\n {get_buses_canceled()}", reply_markup=nav.inlineMenu)
+            await bot.send_message(call.from_user.id, f"Отменённые:\n {get_buses_canceled()}",
+                                   reply_markup=nav.inlineMenu)
             print("inline Отменённые автобусы done")
 
 
 @dp.callback_query_handler(text_contains="buy")
-async def bot_shop(call: types.CallbackQuery): # это чтобы понять какая кнопка была нажата
+async def bot_shop(call: types.CallbackQuery):  # это чтобы понять какая кнопка была нажата
     await bot.delete_message(call.from_user.id, call.message.message_id)
     if call.data == "buySub":
-        await bot.send_message(call.from_user.id, "Тарифы на подписку", reply_markup= nav.myMenu)
+        await bot.send_message(call.from_user.id, "Тарифы на подписку", reply_markup=nav.myMenu)
     elif call.data == "buyVip":
-        await bot.send_message(call.from_user.id, "Купить VIP", reply_markup= nav.myMenu)
+        await bot.send_message(call.from_user.id, "Купить VIP", reply_markup=nav.myMenu)
     print("botShop done")
 
 
@@ -115,3 +119,4 @@ if __name__ == '__main__':
         executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
     except Exception:
         print("ooooops, No internet connection")
+        raise

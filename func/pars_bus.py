@@ -31,6 +31,8 @@ def get_bus_time():
         dict_json_bus = response.json()
     except Exception:
         print(">>>>--------> Errors with getting json <--------<<<<")
+        raise
+
 
     with open('../data.json', 'w', encoding='utf8') as f:
         json.dump(dict_json_bus, f, ensure_ascii=False, indent=4)
