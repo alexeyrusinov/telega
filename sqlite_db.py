@@ -51,15 +51,18 @@ def get_passing_bus(user_id):
         result = cur.fetchone()
         cur.close()
         print(result)
-        match result[0]:
-            case 1:
-                return pars_bus.get_all_bus_schedule()
-            case 2:
-                return pars_bus.get_buses_dispatched()
-            case 3:
-                return pars_bus.get_buses_canceled()
-            case 4:
-                return pars_bus.get_current_schedule()
+        if result[0] is None:
+            return f'Введи команду: /select'
+        else:
+            match result[0]:
+                case 1:
+                    return pars_bus.get_all_bus_schedule()
+                case 2:
+                    return pars_bus.get_buses_dispatched()
+                case 3:
+                    return pars_bus.get_buses_canceled()
+                case 4:
+                    return pars_bus.get_current_schedule()
 
 
 async def add_passing_bus(user_id, result):
