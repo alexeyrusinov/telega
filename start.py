@@ -123,7 +123,7 @@ async def echo_message(message: types.Message):
         case "inlineButtons":
             await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
         case _:
-            await bot.send_message(admin.ADMIN_ID, message.text)
+            await bot.forward_message(admin.ADMIN_ID, message.from_user.id, message.message_id)
 
 
 if __name__ == '__main__':
