@@ -113,6 +113,8 @@ async def echo_message(message: types.Message):
         case "all db":
             if message.from_user.id == admin.ADMIN_ID:
                 await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
+            else:
+                await message.answer("only for admin")
         case "Расписание автобуса":
             # await bot.send_message(message.from_user.id, get_current_schedule())
             await bot.send_message(message.from_user.id, sqlite_db.get_passing_bus(message.from_user.id))
