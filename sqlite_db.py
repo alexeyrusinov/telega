@@ -1,6 +1,7 @@
 import sqlite3 as sq
 from func import pars_bus
 
+
 def sql_start():
     with sq.connect("users.db") as con:
         cur = con.cursor()
@@ -50,9 +51,8 @@ def get_passing_bus(user_id):
         cur.execute(sqlite_select, (user_id,))
         result = cur.fetchone()
         cur.close()
-        print(result)
         if result[0] is None:
-            return f'Введи команду: /select'
+            return f'Не выбран тип расписания, нажми: /select'
         else:
             match result[0]:
                 case 1:
@@ -65,13 +65,13 @@ def get_passing_bus(user_id):
                     return pars_bus.get_current_schedule()
 
 
-async def add_passing_bus(user_id, result):
+async def add_passing_bus(data_user, result):
     with sq.connect("users.db") as con:
         cur = con.cursor()
-        cur.execute("""UPDATE users SET passing_bus = ? WHERE user_id = ?""", (result, user_id,))
+        cur.execute("""UPDATE users SET passing_bus = ? WHERE user_id = ?""", (result, data_user[0],))
         con.commit()
         cur.close()
-        print(f"value of column passing_bus of user {user_id} update to {result}")
+        print(f"value of column passing_bus of {data_user} update to {result}")
 
 
 # добавить удаление пользователя через машина состояний
