@@ -17,15 +17,15 @@ class FSMAdmin(StatesGroup):
 #Задаём вопрос
 # dp.message_handler(commands="Выбрать", state=None)
 async def fsm_start(message: types.Message):
-    if message.from_user.id == ADMIN_ID:
-        await FSMAdmin.question.set()
-        await message.reply("Выберите тип расписания, отправив только цифру:\n"
-                            "1 - Все автобусы,\n"
-                            "2 - Отправленные,\n"
-                            "3 - Отменённые,\n"
-                            "4 - Ближайшие")
-    else:
-        await message.answer("sorry, only for admin")
+    # if message.from_user.id == ADMIN_ID:
+    await FSMAdmin.question.set()
+    await message.reply("Выберите тип расписания, отправив только цифру:\n"
+                        "1 - Все автобусы,\n"
+                        "2 - Отправленные,\n"
+                        "3 - Отменённые,\n"
+                        "4 - Ближайшие")
+    # else:
+        # await message.answer("sorry, only for admin")
 
 
 #Выход из состояний
