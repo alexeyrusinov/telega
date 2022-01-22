@@ -153,9 +153,12 @@ def get_buses_dispatched():
 def get_buses_canceled():
     all_buses, buses_dispatched, buses_schedule, buses_canceled = get_bus_time()
     entire_buses_canceled_for_today = list_schedule_json_to_string(buses_canceled)
-    entire_buses_canceled_for_today += 'Отменённые автобусы за сегодня: '
-    entire_buses_canceled_for_today += get_convert_date()
-    return entire_buses_canceled_for_today
+    if len(entire_buses_canceled_for_today) == 0:
+        return f"No canceled buses today: {get_convert_date()}"
+    else:
+        entire_buses_canceled_for_today += 'Отменённые автобусы за сегодня: '
+        entire_buses_canceled_for_today += get_convert_date()
+        return entire_buses_canceled_for_today
 
 
 
