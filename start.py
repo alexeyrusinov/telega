@@ -125,6 +125,11 @@ async def echo_message(message: types.Message):
         case _:
             if message.from_user.id != admin.ADMIN_ID:
                 await bot.forward_message(admin.ADMIN_ID, message.from_user.id, message.message_id)
+            if message.from_user.id == admin.ADMIN_ID:
+                var = message.reply_to_message
+                var = var["forward_from"]["id"]
+                await bot.send_message(var, message.text)
+
 
 
 if __name__ == '__main__':
