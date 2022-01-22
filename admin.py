@@ -42,23 +42,26 @@ async def cancel_handler(message: types.Message, state: FSMContext):
 #ловим первый ответ
 # dp.message_handler(state=FSMAdmin.question)
 async def load_question(message: types.Message, state:FSMContext):
-    user_id = message.from_user.id
     data_user = [message.from_user.id, message.from_user.username, message.from_user.first_name]
     async with state.proxy() as data:
         data["type_schedule"] = message.text
-    async with state.proxy() as data:
-        match data["type_schedule"]:
-            case '1':
-                await message.reply(get_all_bus_schedule())
-            case '2':
-                await message.reply(get_buses_dispatched())
-            case '3':
-                await message.reply(get_buses_canceled())
-            case '4':
-                await message.reply(get_current_schedule())
-    result = int(data["type_schedule"])
-    await sqlite_db.add_passing_bus(user_id, result)
-    await state.finish()
+        result = int(data["type_schedule"])
+        if 0 < result <= 4:
+            await sqlite_db.add_passing_bus(data_user, result)
+            await state.finish()
+            match result:
+                case 1:
+                    await message.reply(get_all_bus_schedule())
+                case 2:
+                    await message.reply(get_buses_dispatched())
+                case 3:
+                    await message.reply(get_buses_canceled())
+                case 4:
+                    await message.reply(get_current_schedule())
+        else:
+            await state.reset_state()
+            await message.answer("Только цифру из предложенных...")
+            await fsm_start(message)
 
 
 def register_handlers_admin(dp : Dispatcher):
