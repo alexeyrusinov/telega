@@ -11,8 +11,11 @@ import random
 from aiogram.contrib.fsm_storage.memory import MemoryStorage  # позволяет хранить данные в опер. памяти
 import admin
 import handlers
+from aiogram.utils.exceptions import BotBlocked
+
 
 TOKEN = os.environ["TOKEN"]  # create variable environment
+# ADMIN_ID = int(os.environ["ADMIN_ID"])
 storage = MemoryStorage()
 bot = Bot(TOKEN)  # object bot
 dp = Dispatcher(bot, storage=storage)
@@ -22,19 +25,6 @@ async def on_startup(_):
     print("Bot is online!")
     sqlite_db.sql_start()
 
-
-# @dp.message_handler(commands=['start'])
-# async def send_welcome(message: types.Message):
-#     user_id = message.from_user.id
-#     data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
-#     if user_id == admin.ADMIN_ID:
-#         await sqlite_db.sql_add_command(user_id, data_user)
-#         await message.answer(f"Привет, выберите команду...", reply_markup=nav.adminMenu)
-#         await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
-#     else:
-#         await sqlite_db.sql_add_command(user_id, data_user)
-#         await message.answer(f"Привет, выберите команду...", reply_markup=nav.userMenu)
-#         await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
 
 handlers.register_handlers_all(dp)
 admin.register_handlers_admin(dp)
@@ -48,12 +38,16 @@ async def send_help(message: types.Message):
 
 @dp.message_handler(commands=['send'])
 async def send_message_all_users(message: types.Message):
-    base = sq.connect("users.db")
-    cur = base.cursor()
-    for user in cur.execute("SELECT user_id FROM users"):
-        user_id = "".join(user)
-        await bot.send_message(user_id, message.text[6:])
-    print("Command send done")
+    with sq.connect("users.db") as con:
+        cur = con.cursor()
+        for user in cur.execute("SELECT user_id FROM users"):
+            user_id = "".join(map(str, user))
+            try:
+                await bot.send_message(user_id, message.text[6:])
+            except BotBlocked:
+                print(f"user {user_id} - bot blocked")
+        cur.close()
+    print(f"Command send done, text: \"{message.text[6:]}\" ")
 
 
 @dp.callback_query_handler(text="btnRandom")
@@ -100,19 +94,18 @@ async def bot_shop(call: types.CallbackQuery):  # это чтобы понять
 
 @dp.message_handler()
 async def echo_message(message: types.Message):
-    # data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name) ---- if need
     match message.text:
         case "Текущее время и дата":
             await bot.send_message(message.from_user.id, get_convert_date_time())
         case "Главное меню":
-            if message.from_user.id == admin.ADMIN_ID:
+            if message.from_user.id == handlers.ADMIN_ID:
                 await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.adminMenu)
             else:
                 await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.userMenu)
         case "Другое":
             await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
         case "all db":
-            if message.from_user.id == admin.ADMIN_ID:
+            if message.from_user.id == handlers.ADMIN_ID:
                 await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
             else:
                 await message.answer("only for admin")
@@ -124,9 +117,9 @@ async def echo_message(message: types.Message):
         case "inlineButtons":
             await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
         case _:
-            if message.from_user.id != admin.ADMIN_ID:
-                await bot.forward_message(admin.ADMIN_ID, message.from_user.id, message.message_id)
-            if message.from_user.id == admin.ADMIN_ID:
+            if message.from_user.id != handlers.ADMIN_ID:
+                await bot.forward_message(handlers.ADMIN_ID, message.from_user.id, message.message_id)
+            if message.from_user.id == handlers.ADMIN_ID:
                 try:
                     var = message.reply_to_message
                     var = var["forward_from"]["id"]
