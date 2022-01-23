@@ -10,6 +10,7 @@ import sqlite3 as sq
 import random
 from aiogram.contrib.fsm_storage.memory import MemoryStorage  # позволяет хранить данные в опер. памяти
 import admin
+import handlers
 
 TOKEN = os.environ["TOKEN"]  # create variable environment
 storage = MemoryStorage()
@@ -22,20 +23,20 @@ async def on_startup(_):
     sqlite_db.sql_start()
 
 
-@dp.message_handler(commands=['start'])
-async def send_welcome(message: types.Message):
-    user_id = message.from_user.id
-    data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
-    if user_id == admin.ADMIN_ID:
-        await sqlite_db.sql_add_command(user_id, data_user)
-        await message.answer(f"Привет, выберите команду...", reply_markup=nav.adminMenu)
-        await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
-    else:
-        await sqlite_db.sql_add_command(user_id, data_user)
-        await message.answer(f"Привет, выберите команду...", reply_markup=nav.userMenu)
-        await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
+# @dp.message_handler(commands=['start'])
+# async def send_welcome(message: types.Message):
+#     user_id = message.from_user.id
+#     data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
+#     if user_id == admin.ADMIN_ID:
+#         await sqlite_db.sql_add_command(user_id, data_user)
+#         await message.answer(f"Привет, выберите команду...", reply_markup=nav.adminMenu)
+#         await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
+#     else:
+#         await sqlite_db.sql_add_command(user_id, data_user)
+#         await message.answer(f"Привет, выберите команду...", reply_markup=nav.userMenu)
+#         await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
 
-
+handlers.register_handlers_all(dp)
 admin.register_handlers_admin(dp)
 
 

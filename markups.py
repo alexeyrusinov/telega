@@ -46,3 +46,10 @@ userMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnInfo).add(btnBtc, bt
 btnTime = KeyboardButton("Текущее время и дата")
 btnRandint = KeyboardButton("inlineButtons")
 otherMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnTime,btnRandint, btnMain)
+
+# bus_answer_menu
+btn_answer1 = KeyboardButton("1")
+btn_answer2 = KeyboardButton("2")
+btn_answer3 = KeyboardButton("3")
+btn_answer4 = KeyboardButton("4")
+bus_answer_menu = ReplyKeyboardMarkup(resize_keyboard=True).add(btn_answer1, btn_answer2, btn_answer3).add(btn_answer4)
