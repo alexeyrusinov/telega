@@ -14,7 +14,7 @@ def sql_start():
         cur.close()
 
 
-async def sql_add_command(user_id, data_user):
+async def sql_add_user(user_id, data_user):
     with sq.connect("users.db") as con:
         cur = con.cursor()
         cur.execute(f"SELECT user_id FROM users WHERE user_id = '{user_id}' ")
