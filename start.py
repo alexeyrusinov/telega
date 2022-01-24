@@ -10,7 +10,7 @@ import sqlite3 as sq
 import random
 from aiogram.contrib.fsm_storage.memory import MemoryStorage  # позволяет хранить данные в опер. памяти
 import admin
-import handlers
+from handlers import start_handler
 from aiogram.utils.exceptions import BotBlocked
 
 
@@ -26,7 +26,7 @@ async def on_startup(_):
     sqlite_db.sql_start()
 
 
-handlers.register_handlers_all(dp)
+start_handler.register_handlers_all(dp)
 admin.register_handlers_admin(dp)
 
 
@@ -98,14 +98,14 @@ async def echo_message(message: types.Message):
         case "Текущее время и дата":
             await bot.send_message(message.from_user.id, get_convert_date_time())
         case "Главное меню":
-            if message.from_user.id == handlers.ADMIN_ID:
+            if message.from_user.id == start_handler.ADMIN_ID:
                 await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.adminMenu)
             else:
                 await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.userMenu)
         case "Другое":
             await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
         case "all db":
-            if message.from_user.id == handlers.ADMIN_ID:
+            if message.from_user.id == start_handler.ADMIN_ID:
                 await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
             else:
                 await message.answer("only for admin")
@@ -117,9 +117,9 @@ async def echo_message(message: types.Message):
         case "inlineButtons":
             await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
         case _:
-            if message.from_user.id != handlers.ADMIN_ID:
-                await bot.forward_message(handlers.ADMIN_ID, message.from_user.id, message.message_id)
-            if message.from_user.id == handlers.ADMIN_ID:
+            if message.from_user.id != start_handler.ADMIN_ID:
+                await bot.forward_message(start_handler.ADMIN_ID, message.from_user.id, message.message_id)
+            if message.from_user.id == start_handler.ADMIN_ID:
                 try:
                     var = message.reply_to_message
                     var = var["forward_from"]["id"]
