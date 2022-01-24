@@ -19,5 +19,5 @@ async def send_welcome(message: types.Message):
         await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
 
 
-def register_handlers_all(dp : Dispatcher):
+def register_handlers_start(dp : Dispatcher):
     dp.register_message_handler(send_welcome, commands=['start'])
