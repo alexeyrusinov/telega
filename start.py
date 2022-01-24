@@ -10,7 +10,7 @@ import sqlite3 as sq
 import random
 from aiogram.contrib.fsm_storage.memory import MemoryStorage  # позволяет хранить данные в опер. памяти
 import admin
-from handlers import start_handler
+from handlers import start_handler, help_handler
 from aiogram.utils.exceptions import BotBlocked
 
 
@@ -26,7 +26,8 @@ async def on_startup(_):
     sqlite_db.sql_start()
 
 
-start_handler.register_handlers_all(dp)
+start_handler.register_handlers_start(dp)
+help_handler.register_handlers_help(dp)
 admin.register_handlers_admin(dp)
 
 
