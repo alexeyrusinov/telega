@@ -4,13 +4,9 @@ from aiogram.dispatcher.filters import Text
 from aiogram import types, Dispatcher
 from func.pars_bus import get_current_schedule, get_all_bus_schedule,\
     get_buses_dispatched, get_buses_canceled
-import os
 import sqlite_db
-# from start import send_welcome
 import markups as nav
-import handlers
-
-ADMIN_ID = int(os.environ["ADMIN_ID"])
+from handlers import start_handler
 
 
 class FSMAdmin(StatesGroup):
@@ -20,15 +16,12 @@ class FSMAdmin(StatesGroup):
 #Задаём вопрос
 # dp.message_handler(commands="Выбрать", state=None)
 async def fsm_start(message: types.Message):
-    # if message.from_user.id == ADMIN_ID:
     await FSMAdmin.question.set()
     await message.reply("Выберите тип расписания, отправив только цифру:\n"
                         "1 - Все автобусы,\n"
                         "2 - Отправленные,\n"
                         "3 - Отменённые,\n"
                         "4 - Ближайшие", reply_markup=nav.bus_answer_menu)
-    # else:
-        # await message.answer("sorry, only for admin")
 
 
 #Выход из состояний
@@ -62,7 +55,7 @@ async def load_question(message: types.Message, state:FSMContext):
                         await message.reply(get_buses_canceled())
                     case 4:
                         await message.reply(get_current_schedule())
-                await handlers.send_welcome(message)
+                await start_handler.send_welcome(message)
             else:
                 await state.reset_state()
                 await message.answer("Только цифру из предложенных...")
