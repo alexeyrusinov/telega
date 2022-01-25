@@ -33,6 +33,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
         return
     await state.finish()
     await message.reply("OK")
+    await send_welcome(message)
 
 
 #ловим первый ответ
