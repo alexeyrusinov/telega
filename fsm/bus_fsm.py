@@ -9,14 +9,14 @@ import markups as nav
 from handlers.client_handlers import send_welcome
 
 
-class FSMAdmin(StatesGroup):
+class FSMSelectBus(StatesGroup):
     question = State()
 
 
 #Задаём вопрос
 # dp.message_handler(commands="Выбрать", state=None)
 async def fsm_start(message: types.Message):
-    await FSMAdmin.question.set()
+    await FSMSelectBus.question.set()
     await message.reply("Выберите тип расписания, отправив только цифру:\n"
                         "1 - Все автобусы,\n"
                         "2 - Отправленные,\n"
@@ -71,7 +71,7 @@ def register_handlers_bus_fsm(dp : Dispatcher):
     dp.register_message_handler(fsm_start, commands="select", state=None)
     dp.register_message_handler(cancel_handler, state="*", commands="отмена")
     dp.register_message_handler(cancel_handler, Text(equals="отмена", ignore_case=True, ), state="*")
-    dp.register_message_handler(load_question, state=FSMAdmin.question)
+    dp.register_message_handler(load_question, state=FSMSelectBus.question)
 
 
 
