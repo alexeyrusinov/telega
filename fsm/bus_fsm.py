@@ -49,14 +49,14 @@ async def load_question(message: types.Message, state:FSMContext):
                 await state.finish()
                 match result:
                     case 1:
-                        await message.reply(get_all_bus_schedule())
+                        await message.reply(get_all_bus_schedule(), reply_markup=nav.user_and_admin_menu(message.from_user.id))
                     case 2:
-                        await message.reply(get_buses_dispatched())
+                        await message.reply(get_buses_dispatched(), reply_markup=nav.user_and_admin_menu(message.from_user.id))
                     case 3:
-                        await message.reply(get_buses_canceled())
+                        await message.reply(get_buses_canceled(), reply_markup=nav.user_and_admin_menu(message.from_user.id))
                     case 4:
-                        await message.reply(get_current_schedule())
-                await send_welcome(message)
+                        await message.reply(get_current_schedule(), reply_markup=nav.user_and_admin_menu(message.from_user.id))
+                # await send_welcome(message)
             else:
                 await state.reset_state()
                 await message.answer("Только цифру из предложенных...")
