@@ -53,4 +53,7 @@ btn_answer1 = KeyboardButton("1")
 btn_answer2 = KeyboardButton("2")
 btn_answer3 = KeyboardButton("3")
 btn_answer4 = KeyboardButton("4")
-bus_answer_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(btn_answer1, btn_answer2, btn_answer3).add(btn_answer4)
+btn_cancel = KeyboardButton("отмена")
+bus_answer_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(btn_answer1, btn_answer2)\
+                                                                                   .add(btn_answer3, btn_cancel)\
+                                                                                   .add(btn_answer4)
