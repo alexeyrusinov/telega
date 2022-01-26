@@ -1,5 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from create_bot import ADMIN_ID
 
 myMenu = InlineKeyboardMarkup(row_width=2)
 btnRandom = InlineKeyboardButton(text="узнать число", callback_data="btnRandom")
@@ -28,20 +29,31 @@ inlineMenu.insert(btnGetBuses)
 
 btnMain = KeyboardButton("Главное меню")
 
-# admin menu
-btnBtc = KeyboardButton("Курс биткоина")
-btnInfo = KeyboardButton("Расписание автобуса")
-btnOther = KeyboardButton("Другое")
-btn_all_db = KeyboardButton("alldb")
-btn_send = KeyboardButton("/send")
-adminMenu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(btnInfo).add(btnBtc, btnOther).add(btn_all_db)#".add(btn_send)
+################
 
-# user menu
-btnBtc = KeyboardButton("Курс биткоина")
-btnInfo = KeyboardButton("Расписание автобуса")
-btnOther = KeyboardButton("Другое")
 
-userMenu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(btnInfo).add(btnBtc, btnOther)
+def user_and_admin_menu(user_id):
+    if user_id == ADMIN_ID:
+        # admin menu
+        btnBtc = KeyboardButton("Курс биткоина")
+        btnInfo = KeyboardButton("Расписание автобуса")
+        btnOther = KeyboardButton("Другое")
+        btn_all_db = KeyboardButton("alldb")
+        btn_send = KeyboardButton("/send")
+        adminMenu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(btnInfo).add(btnBtc, btnOther).add(btn_all_db, btn_send)
+        return adminMenu
+    else:
+        # user menu
+        btnBtc = KeyboardButton("Курс биткоина")
+        btnInfo = KeyboardButton("Расписание автобуса")
+        btnOther = KeyboardButton("Другое")
+        userMenu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(btnInfo).add(btnBtc, btnOther)
+        return userMenu
+
+##############
+
+
+
 
 # other menu
 btnTime = KeyboardButton("Текущее время и дата")
@@ -57,3 +69,6 @@ btn_cancel = KeyboardButton("отмена")
 bus_answer_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(btn_answer1, btn_answer2)\
                                                                                    .add(btn_answer3, btn_cancel)\
                                                                                    .add(btn_answer4)
+# check menu
+btn_yes = KeyboardButton("отправляем")
+check_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(btn_yes, btn_cancel)
