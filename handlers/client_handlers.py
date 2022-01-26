@@ -1,7 +1,7 @@
 from aiogram import types, Dispatcher
 import sqlite_db
 import markups as nav
-from create_bot import bot, ADMIN_ID
+from create_bot import bot
 import random
 from func.pars_bus import get_all_bus_schedule, get_buses_dispatched, get_current_schedule, get_buses_canceled
 
@@ -9,14 +9,8 @@ from func.pars_bus import get_all_bus_schedule, get_buses_dispatched, get_curren
 # @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
-    if data_user[0] == ADMIN_ID:
-        await sqlite_db.sql_add_user(data_user[0], data_user)
-        await message.answer(f"Привет, выберите команду...", reply_markup=nav.adminMenu)
-        await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
-    else:
-        await sqlite_db.sql_add_user(data_user[0], data_user)
-        await message.answer(f"Привет, выберите команду...", reply_markup=nav.userMenu)
-        await message.answer("Расписание проходящих автобусов", reply_markup=nav.inlineMenu)
+    await sqlite_db.sql_add_user(data_user[0], data_user)
+    await message.answer("select command..", reply_markup=nav.user_and_admin_menu(message.from_user.id))
 
 
 # @dp.message_handler(commands=['help'])
