@@ -12,10 +12,7 @@ async def echo_message(message: types.Message):
         case "Текущее время и дата":
             await bot.send_message(message.from_user.id, get_convert_date_time())
         case "Главное меню":
-            if message.from_user.id == ADMIN_ID:
-                await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.adminMenu)
-            else:
-                await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.userMenu)
+            await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.user_and_admin_menu(message.from_user.id))
         case "Другое":
             await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
         case "Расписание автобуса":
