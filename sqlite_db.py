@@ -29,6 +29,18 @@ async def sql_add_user(data_user):
         cur.close()
 
 
+async def sql_del_user(user_id):
+    # del user from db
+    with sq.connect("users.db") as con:
+        cur = con.cursor()
+        cur.execute("SELECT user_id FROM users WHERE user_id = ?", user_id, )
+        data = cur.fetchone()
+        cur.execute("DELETE FROM users WHERE user_id = ? ", user_id, )
+        print(f"user - {data} - was deleted")
+        con.commit()
+        cur.close()
+
+
 def get_all_users_db():
     with sq.connect("users.db") as con:
         cur = con.cursor()

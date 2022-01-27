@@ -9,6 +9,20 @@ from create_bot import bot, ADMIN_ID
 from markups import check_menu, user_and_admin_menu
 
 
+
+# вот тут хэндлер удаления пользователя
+# а реализация в sqlite_db
+
+async def del_user(message: types.Message):
+    if message.from_user.id == ADMIN_ID:
+        user_id = (message.text[5:],)
+        print(user_id)
+        await sqlite_db.sql_del_user(user_id)
+    else:
+        await message.answer("only for admin")
+
+
+# отпправка текствого сообщения пользователям
 class FSMSendMessageToAllUsers(StatesGroup):
     message = State()
     check = State()
@@ -63,6 +77,7 @@ async def get_all_users(message: types.Message):
 
 
 def register_handlers_admin(dp: Dispatcher):
+    dp.register_message_handler(del_user, commands=['del'])
     dp.register_message_handler(send_question, commands=['send'], state=None)
     dp.register_message_handler(load_message, state=FSMSendMessageToAllUsers.message)
     dp.register_message_handler(send_message_all_users, state=FSMSendMessageToAllUsers.check)
