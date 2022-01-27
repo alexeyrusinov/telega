@@ -14,19 +14,18 @@ def sql_start():
         cur.close()
 
 
-async def sql_add_user(user_id, data_user):
+async def sql_add_user(data_user):
     with sq.connect("users.db") as con:
         cur = con.cursor()
-        cur.execute(f"SELECT user_id FROM users WHERE user_id = '{user_id}' ")
+        cur.execute(f"SELECT user_id FROM users WHERE user_id = '{data_user[0]}' ")
         data = cur.fetchone()
-        print(f'data - {data}, попался - {data_user}')
         if data is None:
             # add values in fields
             cur.execute('INSERT INTO users VALUES(?, ?, ?, NULL)', data_user, )
-            print(f'{data_user} добавлен в db')
+            print(f'{data_user} - добавлен в db')
             con.commit()
         else:
-            print(f"{data_user}: уже существует в db")
+            print(f"{data_user} - уже существует в db")
         cur.close()
 
 
