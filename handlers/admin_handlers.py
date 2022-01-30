@@ -58,11 +58,11 @@ async def send_message_all_users(message: types.Message, state:FSMContext):
                     if answer == "отправляем":
                         await bot.send_message(user_id, text, reply_markup=user_and_admin_menu(message.from_user.id))
                         await state.finish()
-                        print(f"text: \"{text}\" to - {user[1]} - {user[0]} - done")
+                        print(f"text: \"{text}\" send to - {user[1]} - {user[0]} - done")
                     else:
                         await state.reset_state()
                         await message.answer("отменено", reply_markup=user_and_admin_menu(message.from_user.id))
-                        print(f"сommand \"SendMessageToAllUsers\" NOT done, text: \"{text}\" ")
+                        print(f"command \"SendMessageToAllUsers\" NOT done, text: \"{text}\" ")
                         break
                 except BotBlocked:
                     print(f"user {user_id} - bot blocked")
