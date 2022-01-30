@@ -8,8 +8,9 @@ from func.pars_bus import get_all_bus_schedule, get_buses_dispatched, get_curren
 
 # @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
-    await sqlite_db.sql_add_user(data_user)
+    # data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
+    # await sqlite_db.sql_add_user(data_user)
+    await sqlite_db.sql_add_user(message)
     await message.answer("select command..", reply_markup=nav.user_and_admin_menu(message.from_user.id))
 
 
