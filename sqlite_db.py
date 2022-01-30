@@ -58,22 +58,18 @@ def get_all_users_db():
 def get_passing_bus(user_id):
     with sq.connect("users.db") as con:
         cur = con.cursor()
-        sqlite_select = """SELECT passing_bus FROM users WHERE user_id = ?"""
-        cur.execute(sqlite_select, (user_id,))
+        cur.execute("""SELECT passing_bus FROM users WHERE user_id = ?""", (user_id,))
         result = cur.fetchone()
         cur.close()
-        if result[0] is None:
-            return f'Не выбран тип расписания, нажми: /select'
-        else:
-            match result[0]:
-                case "все автобусы":
-                    return pars_bus.get_all_bus_schedule()
-                case "отправленные":
-                    return pars_bus.get_buses_dispatched()
-                case "отмененные":
-                    return pars_bus.get_buses_canceled()
-                case "ближайшие":
-                    return pars_bus.get_current_schedule()
+        match result[0]:
+            case "все автобусы":
+                return pars_bus.get_all_bus_schedule()
+            case "отправленные":
+                return pars_bus.get_buses_dispatched()
+            case "отмененные":
+                return pars_bus.get_buses_canceled()
+            case "ближайшие":
+                return pars_bus.get_current_schedule()
 
 
 async def add_passing_bus(data_user, result):
