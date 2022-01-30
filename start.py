@@ -20,5 +20,5 @@ if __name__ == '__main__':
     try:
         executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
     except Exception:
-        print("ooooops, No internet connection")
+        print("ooooops, maybe No internet connection")
         raise
