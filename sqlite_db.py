@@ -48,8 +48,8 @@ def get_all_users_db():
         count = 0
         for value in cur.execute("SELECT ROWID, * FROM users"):
             count += 1
-            result = result + str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + " " + str(value[4]) + '\n'
-        result = result + f'Всего пользователей: {count}'
+            result += str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + " " + str(value[4]) + '\n'
+        result += f'Всего пользователей: {count}'
         cur.close()
         print("get_all_users_db done")
         return result
