@@ -9,6 +9,7 @@ from create_bot import bot, ADMIN_ID
 from markups import check_menu, user_and_admin_menu
 
 
+##### соединить в одно в файле sqlite_db ------------------------------------------------------
 async def del_user(message: types.Message):
     if message.from_user.id == ADMIN_ID:
         try:
