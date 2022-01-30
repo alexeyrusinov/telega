@@ -7,7 +7,7 @@ from func.date_and_time import get_convert_date_time
 
 
 # @dp.message_handler()
-async def echo_message(message: types.Message):
+async def filter_message(message: types.Message):
     match message.text:
         case "Текущее время и дата":
             await bot.send_message(message.from_user.id, get_convert_date_time())
@@ -16,7 +16,6 @@ async def echo_message(message: types.Message):
         case "Другое":
             await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
         case "Расписание автобуса":
-            # await bot.send_message(message.from_user.id, get_current_schedule())
             await bot.send_message(message.from_user.id, sqlite_db.get_passing_bus(message.from_user.id))
         case "Курс биткоина":
             await bot.send_message(message.from_user.id, btc.get_btc_usdt_rate())
@@ -35,4 +34,4 @@ async def echo_message(message: types.Message):
 
 
 def register_handlers_other(dp : Dispatcher):
-    dp.register_message_handler(echo_message)
+    dp.register_message_handler(filter_message)
