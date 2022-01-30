@@ -11,9 +11,12 @@ from markups import check_menu, user_and_admin_menu
 
 async def del_user(message: types.Message):
     if message.from_user.id == ADMIN_ID:
-        user_id = (message.text[5:],)
-        print(user_id)
-        await sqlite_db.sql_del_user(user_id)
+        try:
+            user_id = (message.text[5:],)
+            await sqlite_db.sql_del_user(user_id)
+            await message.answer(f"user {user_id[0]} - was deleted")
+        except Exception:
+            await message.answer("oops, incorrect user_id")
     else:
         await message.answer("only for admin")
 

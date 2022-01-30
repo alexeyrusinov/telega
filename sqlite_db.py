@@ -36,7 +36,7 @@ async def sql_del_user(user_id):
         cur.execute("SELECT user_id FROM users WHERE user_id = ?", user_id, )
         data = cur.fetchone()
         cur.execute("DELETE FROM users WHERE user_id = ? ", user_id, )
-        print(f"user - {data} - was deleted")
+        print(f"user - {data[0]} - was deleted")
         con.commit()
         cur.close()
 
