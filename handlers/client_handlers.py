@@ -9,7 +9,6 @@ from func.pars_bus import get_all_bus_schedule, get_buses_dispatched, get_curren
 # @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
-    # await sqlite_db.sql_add_user(data_user[0], data_user)
     await sqlite_db.sql_add_user(data_user)
     await message.answer("select command..", reply_markup=nav.user_and_admin_menu(message.from_user.id))
 
@@ -30,7 +29,7 @@ async def get_random_num(message: types.Message):
 
 # @dp.callback_query_handler(text_contains="bus")
 async def inline_menu(call: types.CallbackQuery):  # это чтобы понять какая кнопка была нажата
-    data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
+    # data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
     await bot.delete_message(call.from_user.id, call.message.message_id)
     match call.data:
         case "all_buses":
