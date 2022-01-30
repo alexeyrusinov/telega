@@ -35,12 +35,12 @@ async def cancel_handler(message: types.Message, state: FSMContext):
 #ловим первый ответ
 # dp.message_handler(state=FSMAdmin.question)
 async def load_question(message: types.Message, state:FSMContext):
-    data_user = [message.from_user.id, message.from_user.username, message.from_user.first_name]
+    data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
     async with state.proxy() as data:
         data["type_schedule"] = message.text
         result = data["type_schedule"]
         if result in ["все автобусы", "отправленные", "отмененные", "ближайшие"]:
-            await sqlite_db.add_passing_bus(data_user, result)
+            await sqlite_db.update_type_timetable_passing_bus(data_user, result)
             await state.finish()
             match result:
                 case "все автобусы":
