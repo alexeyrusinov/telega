@@ -9,7 +9,7 @@ def sql_start():
         cur.execute('CREATE TABLE IF NOT EXISTS users(user_id INT PRIMARY KEY,'
                     'user_name TEXT,'
                     'name TEXT,'
-                    'passing_bus INT)')
+                    'passing_bus TEXT DEFAULT "ближайшие")')
         con.commit()
         cur.close()
 
@@ -21,7 +21,7 @@ async def sql_add_user(data_user):
         data = cur.fetchone()
         if data is None:
             # add values in fields
-            cur.execute('INSERT INTO users VALUES(?, ?, ?, NULL)', data_user, )
+            cur.execute('INSERT INTO users (user_id, user_name, name) VALUES(?, ?, ?)', data_user,)
             print(f'{data_user} - добавлен в db')
             con.commit()
         else:
@@ -66,13 +66,13 @@ def get_passing_bus(user_id):
             return f'Не выбран тип расписания, нажми: /select'
         else:
             match result[0]:
-                case 1:
+                case "все автобусы":
                     return pars_bus.get_all_bus_schedule()
-                case 2:
+                case "отправленные":
                     return pars_bus.get_buses_dispatched()
-                case 3:
+                case "отмененные":
                     return pars_bus.get_buses_canceled()
-                case 4:
+                case "ближайшие":
                     return pars_bus.get_current_schedule()
 
 
