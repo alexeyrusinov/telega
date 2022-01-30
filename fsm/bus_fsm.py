@@ -17,11 +17,7 @@ class FSMSelectBus(StatesGroup):
 # dp.message_handler(commands="Выбрать", state=None)
 async def fsm_start(message: types.Message):
     await FSMSelectBus.question.set()
-    await message.reply("Выберите тип расписания, отправив только цифру:\n"
-                        "1 - Все автобусы,\n"
-                        "2 - Отправленные,\n"
-                        "3 - Отменённые,\n"
-                        "4 - Ближайшие", reply_markup=nav.bus_answer_menu)
+    await message.reply("Выберите тип расписания:", reply_markup=nav.bus_answer_menu)
 
 
 #Выход из состояний
@@ -42,29 +38,23 @@ async def load_question(message: types.Message, state:FSMContext):
     data_user = [message.from_user.id, message.from_user.username, message.from_user.first_name]
     async with state.proxy() as data:
         data["type_schedule"] = message.text
-        try:
-            result = int(data["type_schedule"])
-            if 0 < result <= 4:
-                await sqlite_db.add_passing_bus(data_user, result)
-                await state.finish()
-                match result:
-                    case 1:
-                        await message.reply(get_all_bus_schedule(), reply_markup=nav.user_and_admin_menu(message.from_user.id))
-                    case 2:
-                        await message.reply(get_buses_dispatched(), reply_markup=nav.user_and_admin_menu(message.from_user.id))
-                    case 3:
-                        await message.reply(get_buses_canceled(), reply_markup=nav.user_and_admin_menu(message.from_user.id))
-                    case 4:
-                        await message.reply(get_current_schedule(), reply_markup=nav.user_and_admin_menu(message.from_user.id))
-                # await send_welcome(message)
-            else:
-                await state.reset_state()
-                await message.answer("Только цифру из предложенных...")
-                await fsm_start(message)
-        except ValueError:
-            await state.reset_state()
-            await message.answer("Только цифру, а не это ваше...")
-            await fsm_start(message)
+        result = data["type_schedule"]
+        if result in ["все автобусы", "отправленные", "отмененные", "ближайшие"]:
+            await sqlite_db.add_passing_bus(data_user, result)
+            await state.finish()
+            match result:
+                case "все автобусы":
+                    await message.reply(get_all_bus_schedule(),
+                                        reply_markup=nav.user_and_admin_menu(message.from_user.id))
+                case "отправленные":
+                    await message.reply(get_buses_dispatched(),
+                                        reply_markup=nav.user_and_admin_menu(message.from_user.id))
+                case "отмененные":
+                    await message.reply(get_buses_canceled(),
+                                        reply_markup=nav.user_and_admin_menu(message.from_user.id))
+                case "ближайшие":
+                    await message.reply(get_current_schedule(),
+                                        reply_markup=nav.user_and_admin_menu(message.from_user.id))
 
 
 def register_handlers_bus_fsm(dp : Dispatcher):

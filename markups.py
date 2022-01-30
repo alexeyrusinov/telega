@@ -53,22 +53,21 @@ def user_and_admin_menu(user_id):
 ##############
 
 
-
-
 # other menu
 btnTime = KeyboardButton("Текущее время и дата")
 btnRandint = KeyboardButton("inlineButtons")
 otherMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnTime,btnRandint, btnMain)
 
 # bus_answer_menu
-btn_answer1 = KeyboardButton("1")
-btn_answer2 = KeyboardButton("2")
-btn_answer3 = KeyboardButton("3")
-btn_answer4 = KeyboardButton("4")
+btn_answer1 = KeyboardButton("все автобусы")
+btn_answer2 = KeyboardButton("отправленные")
+btn_answer3 = KeyboardButton("отмененные")
+btn_answer4 = KeyboardButton("ближайшие")
 btn_cancel = KeyboardButton("отмена")
-bus_answer_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(btn_answer1, btn_answer2)\
-                                                                                   .add(btn_answer3, btn_cancel)\
-                                                                                   .add(btn_answer4)
+bus_answer_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(btn_answer4)\
+                                                                                   .add(btn_answer1, btn_answer2)\
+                                                                                   .add(btn_answer3, btn_cancel)
+
 # check menu
 btn_yes = KeyboardButton("отправляем")
 check_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(btn_yes, btn_cancel)
