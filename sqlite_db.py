@@ -1,5 +1,6 @@
-import sqlite3 as sq
 from func import pars_bus
+import sqlite3 as sq
+from aiogram import types
 
 
 def sql_start():
@@ -14,13 +15,13 @@ def sql_start():
         cur.close()
 
 
-async def sql_add_user(data_user):
+async def sql_add_user(message: types.Message):
     with sq.connect("users.db") as con:
+        data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
         cur = con.cursor()
         cur.execute(f"SELECT user_id FROM users WHERE user_id = '{data_user[0]}' ")
         data = cur.fetchone()
         if data is None:
-            # add values in fields
             cur.execute('INSERT INTO users (user_id, user_name, name) VALUES(?, ?, ?)', data_user,)
             print(f'{data_user} - добавлен в db')
             con.commit()
@@ -30,7 +31,7 @@ async def sql_add_user(data_user):
 
 
 async def sql_del_user(user_id):
-    # del user from db
+    # admin handlers
     with sq.connect("users.db") as con:
         cur = con.cursor()
         cur.execute("SELECT user_id FROM users WHERE user_id = ?", user_id, )
@@ -55,7 +56,7 @@ def get_all_users_db():
         return result
 
 
-def get_passing_bus(user_id):
+def get_timetable_passing_bus(user_id):
     with sq.connect("users.db") as con:
         cur = con.cursor()
         cur.execute("""SELECT passing_bus FROM users WHERE user_id = ?""", (user_id,))
@@ -72,7 +73,7 @@ def get_passing_bus(user_id):
                 return pars_bus.get_current_schedule()
 
 
-async def add_passing_bus(data_user, result):
+async def update_type_timetable_passing_bus(data_user, result):
     with sq.connect("users.db") as con:
         cur = con.cursor()
         cur.execute("""UPDATE users SET passing_bus = ? WHERE user_id = ?""", (result, data_user[0],))

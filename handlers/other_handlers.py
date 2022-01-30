@@ -16,7 +16,7 @@ async def filter_message(message: types.Message):
         case "Другое":
             await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
         case "Расписание автобуса":
-            await bot.send_message(message.from_user.id, sqlite_db.get_passing_bus(message.from_user.id))
+            await bot.send_message(message.from_user.id, sqlite_db.get_timetable_passing_bus(message.from_user.id))
         case "Курс биткоина":
             await bot.send_message(message.from_user.id, btc.get_btc_usdt_rate())
         case "inlineButtons":
