@@ -9,13 +9,19 @@ from create_bot import bot, ADMIN_ID
 from markups import check_menu, user_and_admin_menu
 
 
-##### соединить в одно в файле sqlite_db ------------------------------------------------------
 async def del_user(message: types.Message):
     if message.from_user.id == ADMIN_ID:
         try:
             user_id = (message.text[5:],)
-            await sqlite_db.sql_del_user(user_id)
-            await message.answer(f"user {user_id[0]} - was deleted")
+            with sq.connect("users.db") as con:
+                cur = con.cursor()
+                cur.execute("SELECT user_id FROM users WHERE user_id = ?", user_id, )
+                data = cur.fetchone()
+                cur.execute("DELETE FROM users WHERE user_id = ? ", user_id, )
+                await message.answer(f"user {user_id[0]} - was deleted")
+                print(f"user - {data[0]} - was deleted")
+                con.commit()
+                cur.close()
         except Exception:
             await message.answer("oops, incorrect user_id")
     else:
