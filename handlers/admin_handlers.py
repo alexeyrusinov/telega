@@ -77,7 +77,20 @@ async def send_message_all_users(message: types.Message, state:FSMContext):
 
 async def get_all_users(message: types.Message):
     if message.from_user.id == ADMIN_ID:
-        await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
+        with sq.connect("users.db") as con:
+            cur = con.cursor()
+            result = ''
+            count = 0
+            for value in cur.execute("SELECT * FROM users"):
+                count += 1
+                result += str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + '\n'
+            result += f'Всего пользователей: {count}'
+            cur.close()
+            print(f'Всего пользователей: {count}')
+            # return result
+        # await bot.send_message(message.from_user.id, sqlite_db.get_all_users_db())
+        await bot.send_message(message.from_user.id, result)
+
     else:
         await message.answer("only for admin")
 

@@ -30,20 +30,6 @@ async def sql_add_user(message: types.Message):
         cur.close()
 
 
-def get_all_users_db():
-    with sq.connect("users.db") as con:
-        cur = con.cursor()
-        result = ''
-        count = 0
-        for value in cur.execute("SELECT * FROM users"):
-            count += 1
-            result += str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + '\n'
-        result += f'Всего пользователей: {count}'
-        cur.close()
-        print("get_all_users_db done")
-        return result
-
-
 def get_timetable_passing_bus(user_id):
     with sq.connect("users.db") as con:
         cur = con.cursor()
