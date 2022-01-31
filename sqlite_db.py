@@ -19,7 +19,7 @@ async def sql_add_user(message: types.Message):
     with sq.connect("users.db") as con:
         data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
         cur = con.cursor()
-        cur.execute(f"SELECT user_id FROM users WHERE user_id = '{data_user[0]}' ")
+        cur.execute("SELECT user_id FROM users WHERE user_id = ?", (data_user[0],))
         data = cur.fetchone()
         if data is None:
             cur.execute('INSERT INTO users (user_id, user_name, name) VALUES(?, ?, ?)', data_user,)
@@ -30,26 +30,14 @@ async def sql_add_user(message: types.Message):
         cur.close()
 
 
-async def sql_del_user(user_id):
-    # admin handlers
-    with sq.connect("users.db") as con:
-        cur = con.cursor()
-        cur.execute("SELECT user_id FROM users WHERE user_id = ?", user_id, )
-        data = cur.fetchone()
-        cur.execute("DELETE FROM users WHERE user_id = ? ", user_id, )
-        print(f"user - {data[0]} - was deleted")
-        con.commit()
-        cur.close()
-
-
 def get_all_users_db():
     with sq.connect("users.db") as con:
         cur = con.cursor()
         result = ''
         count = 0
-        for value in cur.execute("SELECT ROWID, * FROM users"):
+        for value in cur.execute("SELECT * FROM users"):
             count += 1
-            result += str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + " " + str(value[4]) + '\n'
+            result += str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + '\n'
         result += f'Всего пользователей: {count}'
         cur.close()
         print("get_all_users_db done")
