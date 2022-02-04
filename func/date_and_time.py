@@ -12,7 +12,6 @@ def get_data_time_ekb():
 def get_convert_date_time():
     now_data_time_ekb = get_data_time_ekb()
     now_data_time_ekb = now_data_time_ekb.strftime("%H:%M:%S %A %d/%m/%y")
-    print("get_convert_date_time done")
     return now_data_time_ekb
 
 
