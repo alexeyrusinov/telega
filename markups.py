@@ -39,8 +39,9 @@ def user_and_admin_menu(user_id):
         btnInfo = KeyboardButton("Расписание автобуса")
         btnOther = KeyboardButton("Другое")
         btn_all_db = KeyboardButton("alldb")
-        btn_send = KeyboardButton("/send")
-        adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnInfo).add(btnBtc, btnOther).add(btn_all_db, btn_send)
+        btn_send = KeyboardButton("send")
+        btn_del_users = KeyboardButton("del")
+        adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnInfo).add(btnBtc, btnOther).add(btn_del_users, btn_all_db, btn_send)
         return adminMenu
     else:
         # user menu
@@ -69,5 +70,8 @@ bus_answer_menu = ReplyKeyboardMarkup(resize_keyboard=True).add(btn_answer4)\
                                                                                    .add(btn_answer3, btn_cancel)
 
 # check menu
-btn_yes = KeyboardButton("отправляем")
+btn_yes = KeyboardButton("верно")
 check_menu = ReplyKeyboardMarkup(resize_keyboard=True).add(btn_yes, btn_cancel)
+
+# cancel menu
+cancel_menu = ReplyKeyboardMarkup(resize_keyboard=True).add(btn_cancel)
