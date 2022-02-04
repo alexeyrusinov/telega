@@ -62,6 +62,3 @@ def register_handlers_bus_fsm(dp : Dispatcher):
     dp.register_message_handler(cancel_handler, state="*", commands="отмена")
     dp.register_message_handler(cancel_handler, Text(equals="отмена", ignore_case=True, ), state="*")
     dp.register_message_handler(load_question, state=FSMSelectBus.question)
-
-
-
