@@ -17,7 +17,7 @@ class FSMSelectBus(StatesGroup):
 # dp.message_handler(commands="Выбрать", state=None)
 async def fsm_start(message: types.Message):
     await FSMSelectBus.question.set()
-    await message.reply("Выберите тип расписания:", reply_markup=nav.bus_answer_menu)
+    await message.reply("select type of schedule:", reply_markup=nav.bus_answer_menu)
 
 
 #Выход из состояний
