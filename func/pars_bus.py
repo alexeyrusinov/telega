@@ -113,12 +113,8 @@ def get_bus_time():
     buses = ""
     buses += str(len(all_data["rasp"]))
 
-    print(f"all_buses - {buses}")
-    print(f"buses_dispatched - {str(len(buses_dispatched))}")
-    print(f"buses_schedule - {len(buses_schedule)}")
-    print(f"buses_canceled - {len(buses_canceled)}")
-    print("get_bus_time done")
-
+    print(f"all_buses - {buses}, buses_dispatched - {str(len(buses_dispatched))}, "
+          f"buses_schedule - {len(buses_schedule)}, buses_canceled - {len(buses_canceled)}")
     return all_data["rasp"], buses_dispatched, schedule, buses_canceled
 
 
