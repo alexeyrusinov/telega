@@ -23,10 +23,10 @@ async def sql_add_user(message: types.Message):
         data = cur.fetchone()
         if data is None:
             cur.execute('INSERT INTO users (user_id, user_name, name) VALUES(?, ?, ?)', data_user,)
-            print(f'{data_user} - добавлен в db')
+            print(f'{data_user} - added to db')
             con.commit()
         else:
-            print(f"{data_user} - уже существует в db")
+            print(f"{data_user} - already exists in db")
         cur.close()
 
 
@@ -53,13 +53,4 @@ async def update_type_timetable_passing_bus(data_user, result):
         cur.execute("""UPDATE users SET passing_bus = ? WHERE user_id = ?""", (result, data_user[0],))
         con.commit()
         cur.close()
-        print(f"value of column passing_bus of {data_user} update to {result}")
-
-
-# добавить удаление пользователя через машина состояний
-
-# def dell_user_db():
-#     base = sq.connect("users.db")
-#     cur = base.cursor()
-#     for user in cur.execute(f"DELETE FROM users WHERE ROWID = {user_number}"):
-
+        print(f"value of column passing_bus of user {data_user} updated to {result}")
