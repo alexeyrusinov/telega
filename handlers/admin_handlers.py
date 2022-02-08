@@ -79,7 +79,7 @@ async def load_message_send(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data["text"] = message.text
         result = data["text"]
-        await message.answer(f"сheck before sending a message:\n {result}", reply_markup=check_menu)
+        await message.answer(f"check before sending a message:\n {result}", reply_markup=check_menu)
     await FSMSendMessageToAllUsers.next()
 
 
