@@ -1,10 +1,10 @@
 import pytz
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 # получаем текущее время и дата в ЕКБ
-def get_data_time_ekb():
-    data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+def get_data_time_ekb(days=0):
+    data_time_ekb = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=days)
     return data_time_ekb
 
 
