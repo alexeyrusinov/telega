@@ -63,12 +63,11 @@ def get_bus_time(days=0):
         elif item["status"] == "❌":
             buses_canceled.append(item)
 
-    # write json file
-    with open('new_data.json', 'w', encoding='utf8') as f:
+    with open('new_data.json', 'w', encoding='utf8') as f:  # write json file
         json.dump(buses_schedule, f, ensure_ascii=False, indent=4, sort_keys=True, default=str)
 
     next_bus_time = ''
-    if days: # parameters func
+    if days: # parameters func get_bus_time
         next_bus_time = f"date: {now_time_with_parm_days.strftime('%d-%m-%Y')}"
         print(f"date: {now_time_with_parm_days.strftime('%d-%m-%Y')}")
     else:
@@ -108,52 +107,51 @@ def get_bus_time(days=0):
     schedule = list_schedule_json_to_string(buses_schedule)
     schedule += next_bus_time
 
-    my_bus = dict()  # add to dict for output
-    my_bus['buses'] = all_data["rasp"]
-    my_bus['buses_dispatched'] = buses_dispatched
-    my_bus['buses_schedule'] = buses_schedule
-    my_bus['buses_canceled'] = buses_canceled
+    # my_bus = dict()  # add to dict for output
+    # my_bus['all_buses'] = all_data["rasp"]
+    # my_bus['buses_dispatched'] = buses_dispatched
+    # my_bus['buses_schedule'] = buses_schedule
+    # my_bus['buses_canceled'] = buses_canceled
+    # my_bus['now_time_with_parm_days'] = now_time_with_parm_days
+    # my_bus['now_time'] = now_time
 
     buses = ""
     buses += str(len(all_data["rasp"]))
 
     print(f"all_buses - {buses}, buses_dispatched - {str(len(buses_dispatched))}, "
           f"buses_schedule - {len(buses_schedule)}, buses_canceled - {len(buses_canceled)}")
-    return all_data["rasp"], buses_dispatched, schedule, buses_canceled
+    return all_data["rasp"], buses_dispatched, schedule, buses_canceled, now_time_with_parm_days, now_time
 
 
 def get_all_bus_schedule():  # Все автобусы
-    all_buses, buses_dispatched, buses_schedule, buses_canceled = get_bus_time()
+    all_buses, buses_dispatched, buses_schedule, buses_canceled, now_time_with_parm_days, now_time = get_bus_time()
     entire_schedule_for_today = list_schedule_json_to_string(all_buses)
-    entire_schedule_for_today += 'Все автобусы за сегодня: '
-    entire_schedule_for_today += get_convert_date()
+    entire_schedule_for_today += f"Все автобусы за: {now_time_with_parm_days.strftime('%d-%m-%Y')}"
     return entire_schedule_for_today
 
 
 def get_current_schedule():  # Расписание автобуса
-    all_buses, buses_dispatched, buses_schedule, buses_canceled = get_bus_time()
+    all_buses, buses_dispatched, buses_schedule, buses_canceled, now_time_with_parm_days, now_time = get_bus_time()
     if len(buses_schedule) == 0:
-        return f"No buses for today: {get_convert_date()}"
+        return f"No buses for: {now_time_with_parm_days.strftime('%d-%m-%Y')}"
     else:
         return buses_schedule
 
 
 def get_buses_dispatched(): # Отправленные автобусы
-    all_buses, buses_dispatched, buses_schedule, buses_canceled = get_bus_time()
+    all_buses, buses_dispatched, buses_schedule, buses_canceled, now_time_with_parm_days, now_time = get_bus_time()
     entire_buses_dispatched_for_today = list_schedule_json_to_string(buses_dispatched)
-    entire_buses_dispatched_for_today += 'Отправленные автобусы за сегодня: '
-    entire_buses_dispatched_for_today += get_convert_date()
+    entire_buses_dispatched_for_today += f"Отправленные автобусы за: {now_time.strftime('%d-%m-%Y')}"
     return entire_buses_dispatched_for_today
 
 
 def get_buses_canceled(): # Отменённые автобусы
-    all_buses, buses_dispatched, buses_schedule, buses_canceled = get_bus_time()
+    all_buses, buses_dispatched, buses_schedule, buses_canceled, now_time_with_parm_days, now_time = get_bus_time()
     entire_buses_canceled_for_today = list_schedule_json_to_string(buses_canceled)
     if len(entire_buses_canceled_for_today) == 0:
-        return f"No canceled buses today: {get_convert_date()}"
+        return f"No canceled buses today: {now_time_with_parm_days.strftime('%d-%m-%Y')}"
     else:
-        entire_buses_canceled_for_today += 'Отменённые автобусы за сегодня: '
-        entire_buses_canceled_for_today += get_convert_date()
+        entire_buses_canceled_for_today += f"Отменённые автобусы за: {now_time_with_parm_days.strftime('%d-%m-%Y')}"
         return entire_buses_canceled_for_today
 
 # %Y-%m-%d
