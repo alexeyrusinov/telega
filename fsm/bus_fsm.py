@@ -3,7 +3,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
 from aiogram import types, Dispatcher
 from func.pars_bus import get_current_schedule, get_all_bus_schedule,\
-    get_buses_dispatched, get_buses_canceled
+    get_bus_dispatched, get_bus_canceled
 import sqlite_db
 import markups as nav
 from handlers.client_handlers import send_welcome
@@ -47,10 +47,10 @@ async def load_question(message: types.Message, state:FSMContext):
                     await message.reply(get_all_bus_schedule(),
                                         reply_markup=nav.user_and_admin_menu(message.from_user.id))
                 case "отправленные":
-                    await message.reply(get_buses_dispatched(),
+                    await message.reply(get_bus_dispatched(),
                                         reply_markup=nav.user_and_admin_menu(message.from_user.id))
                 case "отмененные":
-                    await message.reply(get_buses_canceled(),
+                    await message.reply(get_bus_canceled(),
                                         reply_markup=nav.user_and_admin_menu(message.from_user.id))
                 case "ближайшие":
                     await message.reply(get_current_schedule(),

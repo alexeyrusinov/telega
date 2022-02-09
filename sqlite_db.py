@@ -40,9 +40,9 @@ def get_timetable_passing_bus(user_id):
             case "все автобусы":
                 return pars_bus.get_all_bus_schedule()
             case "отправленные":
-                return pars_bus.get_buses_dispatched()
+                return pars_bus.get_bus_dispatched()
             case "отмененные":
-                return pars_bus.get_buses_canceled()
+                return pars_bus.get_bus_canceled()
             case "ближайшие":
                 return pars_bus.get_current_schedule()
 

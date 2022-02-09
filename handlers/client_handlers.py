@@ -3,7 +3,7 @@ import sqlite_db
 import markups as nav
 from create_bot import bot
 import random
-from func.pars_bus import get_all_bus_schedule, get_buses_dispatched, get_current_schedule, get_buses_canceled
+from func.pars_bus import get_all_bus_schedule, get_bus_dispatched, get_current_schedule, get_bus_canceled
 
 
 # @dp.message_handler(commands=['start'])
@@ -32,13 +32,13 @@ async def inline_menu(call: types.CallbackQuery):  # это чтобы поня�
             await bot.send_message(call.from_user.id, f"Все автобусы:\n {get_all_bus_schedule()}",
                                    reply_markup=nav.inlineMenu)
         case "dispatched_buses":
-            await bot.send_message(call.from_user.id, f"Отправленные:\n {get_buses_dispatched()}",
+            await bot.send_message(call.from_user.id, f"Отправленные:\n {get_bus_dispatched()}",
                                    reply_markup=nav.inlineMenu)
         case "bus_schedule":
             await bot.send_message(call.from_user.id, f"Ближайшие:\n {get_current_schedule()}",
                                    reply_markup=nav.inlineMenu)
         case "buses_canceled":
-            await bot.send_message(call.from_user.id, f"Отменённые:\n {get_buses_canceled()}",
+            await bot.send_message(call.from_user.id, f"Отменённые:\n {get_bus_canceled()}",
                                    reply_markup=nav.inlineMenu)
 
 
