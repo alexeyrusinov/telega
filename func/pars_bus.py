@@ -103,7 +103,7 @@ def get_bus_time(days=0):
             bus_canceled.append(item)
 
     with open('new_data.json', 'w', encoding='utf8') as f:  # write json file
-        json.dump(bus_schedule, f, ensure_ascii=False, indent=4, sort_keys=True, default=str)
+        json.dump(all_data["rasp"], f, ensure_ascii=False, indent=4, sort_keys=True, default=str)
 
     data_bus = dict()  # add to dict for output
     data_bus['days'] = days
