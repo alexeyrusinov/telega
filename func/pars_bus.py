@@ -92,6 +92,7 @@ def get_bus_time(days=0):
         item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6129 H', 'YTNG')
         item["name_bus"] = item["name_bus"].replace('YUTONG 6121', 'YTNG')
         item["name_bus"] = item["name_bus"].replace('ПАЗ-4234', 'ПАЗ')
+        item["name_bus"] = item["name_bus"].replace('ПАЗ 4234-04', 'ПАЗ')
         item["cancel"] = item["cancel"].replace("Отмена", "❌")  # rename value
         item["cancel"] = item["cancel"].replace("Отправлен", "✅")
         item["status"] = item.pop("cancel")  # rename key
