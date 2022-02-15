@@ -9,7 +9,7 @@ def list_schedule_json_to_string(list_schedule):
         i["time_otpr"] = i["time_otpr"].strftime("%H:%M")
     schedule = ''
     for i in reversed(list_schedule):  # revers list, and output next bus
-        schedule += i["time_otpr"] + ' '
+        schedule += i["time_otpr"]
         schedule += i["status"] + ' '
         schedule += i["free_place"] + ' '
         schedule += i["name_bus"] + ' '
@@ -63,7 +63,8 @@ def get_bus_time(days=0):
     now_datetime = get_data_time_ekb()
     now_date_str = now_datetime.strftime('%d-%m-%Y')
 
-    day, month, year = str(now_datetime_with_parm_days.day), str(now_datetime_with_parm_days.month), str(now_datetime_with_parm_days.year)
+    day, month, year = str(now_datetime_with_parm_days.day), str(now_datetime_with_parm_days.month), str(
+        now_datetime_with_parm_days.year)
     url_bus = f"https://autovokzal.org/upload/php/result.php?id=1331&date=%27{year}-{month}-{day}%27&station=ekb"
 
     try:
@@ -77,7 +78,7 @@ def get_bus_time(days=0):
     with open('data.json', 'w', encoding='utf8') as f:
         json.dump(dict_json_bus, f, ensure_ascii=False, indent=4)
 
-    with open('data.json') as f:   # Read json file
+    with open('data.json') as f:  # Read json file
         all_data = json.load(f)
 
     bus_schedule, bus_dispatched, bus_canceled = ([] for i in range(3))  # create 3 lists
@@ -156,6 +157,46 @@ def get_bus_canceled():  # Отменённые автобусы
     else:
         entire_bus_canceled_for_today += f"Отменённые автобусы за: {data_bus['now_date_with_parm_days']}"
         return entire_bus_canceled_for_today
+
+
+########---------
+
+def get_bus(days=0):
+    now_datetime_with_parm_days = get_data_time_ekb(days)
+
+    day, month, year = str(now_datetime_with_parm_days.day), str(now_datetime_with_parm_days.month), str(
+        now_datetime_with_parm_days.year)
+    url_bus = f"https://autovokzal.org/upload/php/result.php?id=1331&date=%27{year}-{month}-{day}%27&station=ekb"
+
+    response = requests.get(url_bus)
+    response.raise_for_status()
+    dict_json_bus = response.json()
+
+    if dict_json_bus is None or len(dict_json_bus['rasp']) == 0:
+        print(f'oops.. data is empty last parameters {days + 1}, parameters days: {days}')
+    else:
+        return dict_json_bus
+
+
+def generation_date_schedule():
+    mydict = {}
+    for i in range(15):
+        req = get_bus(i)
+        if req:
+            mydict.update({i: get_data_time_ekb(i).strftime('%d-%m-%Y')})
+            # mydict.update({get_data_time_ekb(i).strftime('%d-%m-%Y'): req})
+        else:
+            break
+    print(f"result: {len(mydict)}\n"
+          f"{mydict}")
+    return mydict
+
+
+if __name__ == '__main__':
+    x = generation_date_schedule()
+
+# y = generation_date_schedule()
+# print(y)
 
 # %Y-%m-%d
 # # pars bus 91-------------------------------------------------------------
