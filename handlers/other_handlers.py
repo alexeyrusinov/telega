@@ -1,5 +1,5 @@
 from aiogram import Dispatcher, types
-import markups as nav
+from mark import markups as nav
 import sqlite_db
 from create_bot import bot, ADMIN_ID
 from func import btc

@@ -4,7 +4,7 @@ import sqlite3 as sq
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from create_bot import bot, ADMIN_ID
-from markups import check_menu, user_and_admin_menu, cancel_menu
+from mark.markups import check_menu, user_and_admin_menu, cancel_menu
 
 
 # del user with FSM

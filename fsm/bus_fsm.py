@@ -5,7 +5,7 @@ from aiogram import types, Dispatcher
 from func.pars_bus import get_current_schedule, get_all_bus_schedule,\
     get_bus_dispatched, get_bus_canceled
 import sqlite_db
-import markups as nav
+from mark import markups as nav
 from handlers.client_handlers import send_welcome
 
 
