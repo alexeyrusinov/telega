@@ -2,6 +2,29 @@ import requests
 import json
 from datetime import datetime
 from func.date_and_time import get_data_time_ekb
+import logging
+import os
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(os.path.basename(__file__))
+
+
+def get_json_bus_data(days=0):
+    now_datetime_with_parm_days = get_data_time_ekb(days)
+
+    day, month, year = str(now_datetime_with_parm_days.day), str(now_datetime_with_parm_days.month), str(
+        now_datetime_with_parm_days.year)
+    url_bus = f"https://autovokzal.org/upload/php/result.php?id=1331&date=%27{year}-{month}-{day}%27&station=ekb"
+
+    try:
+        response = requests.get(url_bus)
+        response.raise_for_status()
+        dict_json_bus = response.json()
+    except Exception:
+        print(">>>>--------> Errors with getting json <--------<<<<")
+        raise
+
+    return dict_json_bus
 
 
 def list_schedule_json_to_string(list_schedule):
@@ -11,9 +34,9 @@ def list_schedule_json_to_string(list_schedule):
     for i in reversed(list_schedule):  # revers list, and output next bus
         schedule += i["time_otpr"]
         schedule += i["status"] + ' '
-        schedule += i["free_place"] + ' '
         schedule += i["name_bus"] + ' '
-        schedule += i["name_route"] + '\n\n'
+        schedule += i["free_place"] + ' '
+        schedule += i["name_route"] + '\n'
     return schedule
 
 
@@ -63,20 +86,10 @@ def get_bus_time(days=0):
     now_datetime = get_data_time_ekb()
     now_date_str = now_datetime.strftime('%d-%m-%Y')
 
-    day, month, year = str(now_datetime_with_parm_days.day), str(now_datetime_with_parm_days.month), str(
-        now_datetime_with_parm_days.year)
-    url_bus = f"https://autovokzal.org/upload/php/result.php?id=1331&date=%27{year}-{month}-{day}%27&station=ekb"
-
-    try:
-        response = requests.get(url_bus)
-        response.raise_for_status()
-        dict_json_bus = response.json()
-    except Exception:
-        print(">>>>--------> Errors with getting json <--------<<<<")
-        raise
+    request_json_data = get_json_bus_data(days)
 
     with open('data.json', 'w', encoding='utf8') as f:
-        json.dump(dict_json_bus, f, ensure_ascii=False, indent=4)
+        json.dump(request_json_data, f, ensure_ascii=False, indent=4)
 
     with open('data.json') as f:  # Read json file
         all_data = json.load(f)
@@ -99,7 +112,7 @@ def get_bus_time(days=0):
         item["status"] = item.pop("cancel")  # rename key
         if item["time_otpr"] > now_datetime and item["status"] != "❌":
             bus_schedule.append(item)
-        elif item["status"] == "✅" and item["status"]:
+        elif item["status"] == "✅":
             bus_dispatched.append(item)
         elif item["status"] == "❌":
             bus_canceled.append(item)
@@ -118,21 +131,22 @@ def get_bus_time(days=0):
     data_bus['now_date'] = now_date_str
 
     bus = str(len(all_data["rasp"]))
-    print(f"all_bus - {bus}, bus_dispatched - {str(len(bus_dispatched))}, "
-          f"bus_schedule - {len(bus_schedule)}, bus_canceled - {len(bus_canceled)}")
+
+    logger.info(f"all_bus - {bus}, bus_dispatched - {str(len(bus_dispatched))}, "
+                f"bus_schedule - {len(bus_schedule)}, bus_canceled - {len(bus_canceled)}")
 
     return data_bus
 
 
-def get_all_bus_schedule():  # Все автобусы
-    data_bus = get_bus_time()  # c парметром days
+def get_all_bus_schedule(days=0):  # Все автобусы
+    data_bus = get_bus_time(days)  # c парметром days
     entire_schedule_for_today = list_schedule_json_to_string(data_bus['all_bus'])
     entire_schedule_for_today += f"Все автобусы за: {data_bus['now_date_with_parm_days']}"
     return entire_schedule_for_today
 
 
-def get_current_schedule():  # Расписание автобуса
-    data_bus = get_bus_time()  # c парметром days
+def get_current_schedule(days=0):  # Расписание автобуса
+    data_bus = get_bus_time(days)  # c парметром days
     time = next_bus_time_today(data_bus)
     schedule = list_schedule_json_to_string(data_bus['raw_schedule'])
     bus_schedule_today = schedule + time
@@ -149,8 +163,8 @@ def get_bus_dispatched():  # Отправленные автобусы
     return entire_bus_dispatched_for_today
 
 
-def get_bus_canceled():  # Отменённые автобусы
-    data_bus = get_bus_time()  # c парметром days
+def get_bus_canceled(days=0):  # Отменённые автобусы
+    data_bus = get_bus_time(days)  # c парметром days
     entire_bus_canceled_for_today = list_schedule_json_to_string(data_bus['bus_canceled'])
     if len(entire_bus_canceled_for_today) == 0:
         return f"No canceled bus: {data_bus['now_date_with_parm_days']}"
@@ -159,41 +173,37 @@ def get_bus_canceled():  # Отменённые автобусы
         return entire_bus_canceled_for_today
 
 
-########---------
+#  ---------
 
-def get_bus(days=0):
-    now_datetime_with_parm_days = get_data_time_ekb(days)
-
-    day, month, year = str(now_datetime_with_parm_days.day), str(now_datetime_with_parm_days.month), str(
-        now_datetime_with_parm_days.year)
-    url_bus = f"https://autovokzal.org/upload/php/result.php?id=1331&date=%27{year}-{month}-{day}%27&station=ekb"
-
-    response = requests.get(url_bus)
-    response.raise_for_status()
-    dict_json_bus = response.json()
-
-    if dict_json_bus is None or len(dict_json_bus['rasp']) == 0:
-        print(f'oops.. data is empty last parameters {days + 1}, parameters days: {days}')
-    else:
-        return dict_json_bus
+# def generation_date_schedule():
+#     mydict = {}
+#     for i in range(15):
+#         req = get_json_bus_data(i)
+#         if req and len(req['rasp']) > 1:
+#             mydict.update({f"{i} - day": get_data_time_ekb(i).strftime('%d-%m-%Y')})
+#         else:
+#             break
+#     result = generate_keyboard(mydict)
+#     logger.info(mydict)
+#     logger.info(f"generation_date_schedule - {len(mydict)} items")
+#     return result
 
 
-def generation_date_schedule():
-    mydict = {}
-    for i in range(15):
-        req = get_bus(i)
-        if req:
-            mydict.update({i: get_data_time_ekb(i).strftime('%d-%m-%Y')})
-            # mydict.update({get_data_time_ekb(i).strftime('%d-%m-%Y'): req})
-        else:
-            break
-    print(f"result: {len(mydict)}\n"
-          f"{mydict}")
-    return mydict
+# def generation():
+#     test_dict = {}
+#     for i in range(15):
+#         req = get_json_bus_data(i)
+#         if req and len(req['rasp']) > 1:
+#             test_dict.update({get_data_time_ekb(i).strftime('%d-%m-%Y'): get_data_time_ekb(i).strftime('%d-%m-%Y')})
+#         else:
+#             break
+#     result = generate_keyboard(test_dict)
+#     logger.info(test_dict)
+#     logger.info(f"generation_date - {len(test_dict)} items")
+#     return result
 
-
-if __name__ == '__main__':
-    x = generation_date_schedule()
+# if __name__ == '__main__':
+#     x = generation_date_schedule()
 
 # y = generation_date_schedule()
 # print(y)
