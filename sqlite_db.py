@@ -1,12 +1,17 @@
 from func import pars_bus
 import sqlite3 as sq
 from aiogram import types
+import logging
+import os
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(os.path.basename(__file__))
 
 
 def sql_start():
     with sq.connect("users.db") as con:
         cur = con.cursor()
-        print("Data base connected Ok!")
+        logger.info("Data base connected Ok!")
         cur.execute('CREATE TABLE IF NOT EXISTS users(user_id INT PRIMARY KEY,'
                     'user_name TEXT,'
                     'name TEXT,'
@@ -23,14 +28,14 @@ async def sql_add_user(message: types.Message):
         data = cur.fetchone()
         if data is None:
             cur.execute('INSERT INTO users (user_id, user_name, name) VALUES(?, ?, ?)', data_user,)
-            print(f'{data_user} - added to db')
+            logger.info(f'{data_user} - added to db')
             con.commit()
         else:
-            print(f"{data_user} - already exists in db")
+            logger.info(f"{data_user} - already exists in db")
         cur.close()
 
 
-def get_timetable_passing_bus(user_id):
+def get_timetable_passing_bus(user_id, days=0):
     with sq.connect("users.db") as con:
         cur = con.cursor()
         cur.execute("""SELECT passing_bus FROM users WHERE user_id = ?""", (user_id,))
@@ -44,7 +49,7 @@ def get_timetable_passing_bus(user_id):
             case "отмененные":
                 return pars_bus.get_bus_canceled()
             case "ближайшие":
-                return pars_bus.get_current_schedule()
+                return pars_bus.get_current_schedule(days)
 
 
 async def update_type_timetable_passing_bus(data_user, result):
@@ -53,4 +58,5 @@ async def update_type_timetable_passing_bus(data_user, result):
         cur.execute("""UPDATE users SET passing_bus = ? WHERE user_id = ?""", (result, data_user[0],))
         con.commit()
         cur.close()
-        print(f"value of column passing_bus of user {data_user} updated to {result}")
+        logger.info(f"value of column passing_bus of user {data_user} updated to {result}")
+
