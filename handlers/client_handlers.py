@@ -1,20 +1,36 @@
 from aiogram import types, Dispatcher
+import logging
 import sqlite_db
-import markups as nav
+from mark import markups as nav
 from create_bot import bot
 import random
+import os
 from func.pars_bus import get_all_bus_schedule, get_bus_dispatched, get_current_schedule, get_bus_canceled
+from mark.markups import generation_date_schedule
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(os.path.basename(__file__))
 
 
 # @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     await sqlite_db.sql_add_user(message)
     await message.answer("select command..", reply_markup=nav.user_and_admin_menu(message.from_user.id))
+    await message.answer("test inline schedule", reply_markup=generation_date_schedule())
 
 
 # @dp.message_handler(commands=['help'])
 async def send_help(message: types.Message):
     await message.answer("Подскажет тебе: @rusinov")
+
+
+async def test_generate_inline_menu(call: types.CallbackQuery):
+    day = int(call.data[:2])
+    for i in range(day + 1):
+        if i == day:
+            await bot.delete_message(call.from_user.id, call.message.message_id)
+            await bot.send_message(call.from_user.id, get_current_schedule(i), reply_markup=nav.generation_date_schedule())
+            logger.info(f"call data - {call.data} - {call.from_user.username} - {call.from_user.first_name}")
 
 
 # @dp.callback_query_handler(text="btnRandom")
@@ -54,6 +70,7 @@ async def bot_shop(call: types.CallbackQuery):  # это чтобы понять
 def register_handlers_client(dp : Dispatcher):
     dp.register_message_handler(send_welcome, commands=['start'])
     dp.register_message_handler(send_help, commands=['help'])
+    dp.register_callback_query_handler(test_generate_inline_menu, text_contains=["day"])
     dp.register_callback_query_handler(get_random_num, text="btnRandom")
     dp.register_callback_query_handler(inline_menu, text_contains="bus")
     dp.register_callback_query_handler(bot_shop, text_contains="buy")
