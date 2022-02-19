@@ -1,6 +1,14 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from create_bot import ADMIN_ID
+from func.date_and_time import get_data_time_ekb
+from func.pars_bus import get_json_bus_data
+import logging
+import os
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(os.path.basename(__file__))
+
 
 myMenu = InlineKeyboardMarkup(row_width=2)
 btnRandom = InlineKeyboardButton(text="узнать число", callback_data="btnRandom")
@@ -75,3 +83,24 @@ check_menu = ReplyKeyboardMarkup(resize_keyboard=True).add(btn_yes, btn_cancel)
 
 # cancel menu
 cancel_menu = ReplyKeyboardMarkup(resize_keyboard=True).add(btn_cancel)
+
+
+# generate inline menu date schedule
+def generate_keyboard(data):
+    keyboard = InlineKeyboardMarkup(row_width=2)
+    for k, v in data.items():
+        keyboard.insert(InlineKeyboardButton(text=v, callback_data=k))
+    return keyboard
+
+
+def generation_date_schedule():
+    mydict = {}
+    for i in range(15):
+        req = get_json_bus_data(i)
+        if req and len(req['rasp']) > 1:
+            mydict.update({f"{i} - day": get_data_time_ekb(i).strftime('%d-%m-%Y')})
+        else:
+            break
+    result = generate_keyboard(mydict)
+    logger.info(f"generation_date_schedule - {len(mydict)} items")
+    return result
