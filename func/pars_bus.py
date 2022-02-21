@@ -131,7 +131,6 @@ def get_bus_time(days=0):
     data_bus['now_date'] = now_date_str
 
     bus = str(len(all_data["rasp"]))
-
     logger.info(f"all_bus - {bus}, bus_dispatched - {str(len(bus_dispatched))}, "
                 f"bus_schedule - {len(bus_schedule)}, bus_canceled - {len(bus_canceled)}")
 
@@ -202,8 +201,9 @@ def get_bus_canceled(days=0):  # Отменённые автобусы
 #     logger.info(f"generation_date - {len(test_dict)} items")
 #     return result
 
-# if __name__ == '__main__':
-#     x = generation_date_schedule()
+if __name__ == '__main__':
+    x = get_current_schedule()
+    print(x)
 
 # y = generation_date_schedule()
 # print(y)
