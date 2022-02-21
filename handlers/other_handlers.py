@@ -4,6 +4,7 @@ import sqlite_db
 from create_bot import bot, ADMIN_ID
 from func import btc
 from func.date_and_time import get_convert_date_time
+from mark.markups import generation_date_schedule
 
 
 # @dp.message_handler()
@@ -21,6 +22,8 @@ async def filter_message(message: types.Message):
             await bot.send_message(message.from_user.id, btc.get_btc_usdt_rate())
         case "inlineButtons":
             await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
+        case "inline schedule":
+            await message.answer("test inline schedule", reply_markup=generation_date_schedule())
         case _:
             if message.from_user.id != ADMIN_ID:
                 await bot.forward_message(ADMIN_ID, message.from_user.id, message.message_id)
