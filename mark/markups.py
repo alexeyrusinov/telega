@@ -24,16 +24,6 @@ myMenu.insert(btnShare)
 myMenu.insert(btnSub)
 myMenu.insert(btnVip)
 
-inlineMenu = InlineKeyboardMarkup(row_width=1)
-btnAllBuses = InlineKeyboardButton(text="Все автобусы", callback_data="all_buses")
-btnDispatchedBuses = InlineKeyboardButton(text="Отправленные", callback_data="dispatched_buses")
-btnCanceledBuses = InlineKeyboardButton(text='Отмененные', callback_data="buses_canceled")
-btnGetBuses = InlineKeyboardButton(text="Ближайшие", callback_data="bus_schedule")
-
-inlineMenu.insert(btnAllBuses)
-inlineMenu.insert(btnDispatchedBuses)
-inlineMenu.insert(btnCanceledBuses)
-inlineMenu.insert(btnGetBuses)
 
 btnMain = KeyboardButton("Главное меню")
 
@@ -65,7 +55,8 @@ def user_and_admin_menu(user_id):
 # other menu
 btnTime = KeyboardButton("Текущее время и дата")
 btnRandint = KeyboardButton("inlineButtons")
-otherMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnTime,btnRandint, btnMain)
+btnSchedule = KeyboardButton("inline schedule")
+otherMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnSchedule, btnRandint).add(btnTime, btnMain)
 
 # bus_answer_menu
 btn_answer1 = KeyboardButton("все автобусы")
@@ -74,8 +65,8 @@ btn_answer3 = KeyboardButton("отмененные")
 btn_answer4 = KeyboardButton("ближайшие")
 btn_cancel = KeyboardButton("отмена")
 bus_answer_menu = ReplyKeyboardMarkup(resize_keyboard=True).add(btn_answer4)\
-                                                                                   .add(btn_answer1, btn_answer2)\
-                                                                                   .add(btn_answer3, btn_cancel)
+                                                           .add(btn_answer1, btn_answer2)\
+                                                           .add(btn_answer3, btn_cancel)
 
 # check menu
 btn_yes = KeyboardButton("верно")
