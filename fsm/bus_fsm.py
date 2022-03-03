@@ -42,19 +42,31 @@ async def load_question(message: types.Message, state:FSMContext):
         if result in ["все автобусы", "отправленные", "отмененные", "ближайшие"]:
             await sqlite_db.update_type_timetable_passing_bus(data_user, result)
             await state.finish()
-            match result:
-                case "все автобусы":
-                    await message.reply(get_all_bus_schedule(),
-                                        reply_markup=nav.user_and_admin_menu(message.from_user.id))
-                case "отправленные":
-                    await message.reply(get_bus_dispatched(),
-                                        reply_markup=nav.user_and_admin_menu(message.from_user.id))
-                case "отмененные":
-                    await message.reply(get_bus_canceled(),
-                                        reply_markup=nav.user_and_admin_menu(message.from_user.id))
-                case "ближайшие":
-                    await message.reply(get_current_schedule(),
-                                        reply_markup=nav.user_and_admin_menu(message.from_user.id))
+            if result == "все автобусы":
+                await message.reply(get_all_bus_schedule(),
+                                    reply_markup=nav.user_and_admin_menu(message.from_user.id))
+            elif result == "отправленные":
+                await message.reply(get_bus_dispatched(),
+                                    reply_markup=nav.user_and_admin_menu(message.from_user.id))
+            elif result == "отмененные":
+                await message.reply(get_bus_canceled(),
+                                    reply_markup=nav.user_and_admin_menu(message.from_user.id))
+            elif result == "ближайшие":
+                await message.reply(get_current_schedule(),
+                                    reply_markup=nav.user_and_admin_menu(message.from_user.id))
+            # match result:
+            #     case "все автобусы":
+            #         await message.reply(get_all_bus_schedule(),
+            #                             reply_markup=nav.user_and_admin_menu(message.from_user.id))
+            #     case "отправленные":
+            #         await message.reply(get_bus_dispatched(),
+            #                             reply_markup=nav.user_and_admin_menu(message.from_user.id))
+            #     case "отмененные":
+            #         await message.reply(get_bus_canceled(),
+            #                             reply_markup=nav.user_and_admin_menu(message.from_user.id))
+            #     case "ближайшие":
+            #         await message.reply(get_current_schedule(),
+            #                             reply_markup=nav.user_and_admin_menu(message.from_user.id))
 
 
 def register_handlers_bus_fsm(dp : Dispatcher):
