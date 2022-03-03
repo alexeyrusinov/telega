@@ -41,15 +41,23 @@ def get_timetable_passing_bus(user_id, days=0):
         cur.execute("""SELECT passing_bus FROM users WHERE user_id = ?""", (user_id,))
         result = cur.fetchone()
         cur.close()
-        match result[0]:
-            case "все автобусы":
-                return pars_bus.get_all_bus_schedule()
-            case "отправленные":
-                return pars_bus.get_bus_dispatched()
-            case "отмененные":
-                return pars_bus.get_bus_canceled()
-            case "ближайшие":
-                return pars_bus.get_current_schedule(days)
+        if result[0] == "все автобусы":
+            return pars_bus.get_all_bus_schedule()
+        elif result[0] == "отправленные":
+            return pars_bus.get_bus_dispatched()
+        elif result[0] == "отмененные":
+            return pars_bus.get_bus_canceled()
+        elif result[0] == "ближайшие":
+            return pars_bus.get_current_schedule(days)
+        # match result[0]:
+        #     case "все автобусы":
+        #         return pars_bus.get_all_bus_schedule()
+        #     case "отправленные":
+        #         return pars_bus.get_bus_dispatched()
+        #     case "отмененные":
+        #         return pars_bus.get_bus_canceled()
+        #     case "ближайшие":
+        #         return pars_bus.get_current_schedule(days)
 
 
 async def update_type_timetable_passing_bus(data_user, result):

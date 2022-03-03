@@ -9,22 +9,23 @@ from mark.markups import generation_date_schedule
 
 # @dp.message_handler()
 async def filter_message(message: types.Message):
-    match message.text:
-        case "Текущее время и дата":
+    async def filter_message(message: types.Message):
+        if message.text == "Текущее время и дата":
             await bot.send_message(message.from_user.id, get_convert_date_time())
-        case "Главное меню":
-            await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.user_and_admin_menu(message.from_user.id))
-        case "Другое":
+        elif message.text == "Главное меню":
+            await bot.send_message(message.from_user.id, "Главное меню",
+                                   reply_markup=nav.user_and_admin_menu(message.from_user.id))
+        elif message.text == "Другое":
             await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
-        case "Расписание автобуса":
+        elif message.text == "Расписание автобуса":
             await bot.send_message(message.from_user.id, sqlite_db.get_timetable_passing_bus(message.from_user.id))
-        case "Курс биткоина":
+        elif message.text == "Курс биткоина":
             await bot.send_message(message.from_user.id, btc.get_btc_usdt_rate())
-        case "inlineButtons":
+        elif message.text == "inlineButtons":
             await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
-        case "inline schedule":
+        elif message.text == "inline schedule":
             await message.answer("test inline schedule", reply_markup=generation_date_schedule())
-        case _:
+        else:
             if message.from_user.id != ADMIN_ID:
                 await bot.forward_message(ADMIN_ID, message.from_user.id, message.message_id)
             if message.from_user.id == ADMIN_ID:
@@ -34,6 +35,31 @@ async def filter_message(message: types.Message):
                     await bot.send_message(var, message.text)
                 except TypeError:
                     pass
+    # match message.text:
+    #     case "Текущее время и дата":
+    #         await bot.send_message(message.from_user.id, get_convert_date_time())
+    #     case "Главное меню":
+    #         await bot.send_message(message.from_user.id, "Главное меню", reply_markup=nav.user_and_admin_menu(message.from_user.id))
+    #     case "Другое":
+    #         await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
+    #     case "Расписание автобуса":
+    #         await bot.send_message(message.from_user.id, sqlite_db.get_timetable_passing_bus(message.from_user.id))
+    #     case "Курс биткоина":
+    #         await bot.send_message(message.from_user.id, btc.get_btc_usdt_rate())
+    #     case "inlineButtons":
+    #         await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
+    #     case "inline schedule":
+    #         await message.answer("test inline schedule", reply_markup=generation_date_schedule())
+    #     case _:
+    #         if message.from_user.id != ADMIN_ID:
+    #             await bot.forward_message(ADMIN_ID, message.from_user.id, message.message_id)
+    #         if message.from_user.id == ADMIN_ID:
+    #             try:
+    #                 var = message.reply_to_message
+    #                 var = var["forward_from"]["id"]
+    #                 await bot.send_message(var, message.text)
+    #             except TypeError:
+    #                 pass
 
 
 def register_handlers_other(dp : Dispatcher):
