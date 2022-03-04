@@ -9,7 +9,6 @@ from mark.markups import generation_date_schedule
 
 # @dp.message_handler()
 async def filter_message(message: types.Message):
-    async def filter_message(message: types.Message):
         if message.text == "Текущее время и дата":
             await bot.send_message(message.from_user.id, get_convert_date_time())
         elif message.text == "Главное меню":
