@@ -4,8 +4,8 @@ from datetime import datetime
 from func.date_and_time import get_data_time_ekb
 import logging
 import os
-from user_agent import generate_user_agent
-
+# from user_agent import generate_user_agent
+import user_agent
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(os.path.basename(__file__))
 
@@ -18,7 +18,8 @@ def get_json_bus_data(days=0):
     url_bus = f"https://autovokzal.org/upload/php/result.php?id=1331&date=%27{year}-{month}-{day}%27&station=ekb"
     url_station = 'https://www.autovokzal.org/upload/php/date_update.php?station=ekb'
 
-    ua = generate_user_agent()
+    # ua = generate_user_agent()
+    ua = user_agent.generate_user_agent()
     try:
         session = requests.Session()
         session.headers.update({'User-Agent': f'{ua}'})
