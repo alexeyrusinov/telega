@@ -4,6 +4,7 @@ from datetime import datetime
 from func.date_and_time import get_data_time_ekb
 import logging
 import os
+from user_agent import generate_user_agent
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(os.path.basename(__file__))
@@ -15,17 +16,22 @@ def get_json_bus_data(days=0):
     day, month, year = str(now_datetime_with_parm_days.day), str(now_datetime_with_parm_days.month), str(
         now_datetime_with_parm_days.year)
     url_bus = f"https://autovokzal.org/upload/php/result.php?id=1331&date=%27{year}-{month}-{day}%27&station=ekb"
+    url_station = 'https://www.autovokzal.org/upload/php/date_update.php?station=ekb'
 
+    ua = generate_user_agent()
     try:
-        response = requests.get(url_bus)
-        response.raise_for_status()
-        dict_json_bus = response.json()
+        session = requests.Session()
+        session.headers.update({'User-Agent': f'{ua}'})
+        session.get(url_station)
+        session_cookies = session.cookies
+        result = session.get(url_bus, cookies=session_cookies)
+        result.raise_for_status()
+        dict_json_bus = result.json()
     except Exception:
         print(">>>>--------> Errors with getting json <--------<<<<")
         raise
 
     return dict_json_bus
-
 
 def list_schedule_json_to_string(list_schedule):
     for i in list_schedule:  # convert class 'datetime.time to string deleting seconds for output
