@@ -20,7 +20,7 @@ async def send_welcome(message: types.Message):
 
 # @dp.message_handler(commands=['help'])
 async def send_help(message: types.Message):
-    await message.answer("Подскажет тебе: @rusinov")
+    await message.answer("Подскажет тебе: @rusinov", reply_markup=types.ReplyKeyboardRemove())
 
 
 async def test_generate_inline_menu(call: types.CallbackQuery):
