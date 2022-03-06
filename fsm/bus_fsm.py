@@ -6,7 +6,7 @@ from func.pars_bus import get_current_schedule, get_all_bus_schedule,\
     get_bus_dispatched, get_bus_canceled
 import sqlite_db
 from mark import markups as nav
-from handlers.client_handlers import send_welcome
+from handlers.client_handlers import send_welcome, send_help
 
 
 class FSMSelectBus(StatesGroup):
@@ -54,6 +54,13 @@ async def load_question(message: types.Message, state:FSMContext):
             elif result == "ближайшие":
                 await message.reply(get_current_schedule(),
                                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
+        elif result == '/start':
+            await state.finish()
+            await send_welcome(message)
+        elif result == '/help':
+            await state.finish()
+            await send_help(message)
+
             # match result:
             #     case "все автобусы":
             #         await message.reply(get_all_bus_schedule(),
