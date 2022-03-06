@@ -18,7 +18,6 @@ def get_json_bus_data(days=0):
     url_bus = f"https://autovokzal.org/upload/php/result.php?id=1331&date=%27{year}-{month}-{day}%27&station=ekb"
     url_station = 'https://www.autovokzal.org/upload/php/date_update.php?station=ekb'
 
-    # ua = generate_user_agent()
     ua = user_agent.generate_user_agent()
     try:
         session = requests.Session()
@@ -33,6 +32,7 @@ def get_json_bus_data(days=0):
         raise
 
     return dict_json_bus
+
 
 def list_schedule_json_to_string(list_schedule):
     for i in list_schedule:  # convert class 'datetime.time to string deleting seconds for output
@@ -208,9 +208,9 @@ def get_bus_canceled(days=0):  # Отменённые автобусы
 #     logger.info(f"generation_date - {len(test_dict)} items")
 #     return result
 
-if __name__ == '__main__':
-    x = get_current_schedule()
-    print(x)
+# if __name__ == '__main__':
+#     x = get_current_schedule()
+#     print(x)
 
 # y = generation_date_schedule()
 # print(y)
