@@ -15,7 +15,7 @@ async def filter_message(message: types.Message):
                                reply_markup=nav.user_and_admin_menu(message.from_user.id))
     elif message.text == "Другое":
         await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
-    elif message.text == "Расписание автобуса":
+    elif message.text == "Расписание проходящего":
         await bot.send_message(message.from_user.id, sqlite_db.get_timetable_passing_bus(message.from_user.id, id_station_arr=1331, days=0))
     elif message.text == "Курс биткоина":
         await bot.send_message(message.from_user.id, btc.get_btc_usdt_rate())

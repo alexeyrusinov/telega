@@ -28,25 +28,21 @@ myMenu.insert(btnVip)
 btnMain = KeyboardButton("Главное меню")
 
 ################
+btnStation = KeyboardButton("Расписание")
+btnBtc = KeyboardButton("Курс биткоина")
+btnInfo = KeyboardButton("Расписание проходящего")
+btnOther = KeyboardButton("Другое")
+btn_all_db = KeyboardButton("alldb")
+btn_send = KeyboardButton("send")
+btn_del_users = KeyboardButton("del")
 
 
 def user_and_admin_menu(user_id):
     if user_id == ADMIN_ID:
-        # admin menu
-        btnBtc = KeyboardButton("Курс биткоина")
-        btnInfo = KeyboardButton("Расписание автобуса")
-        btnOther = KeyboardButton("Другое")
-        btn_all_db = KeyboardButton("alldb")
-        btn_send = KeyboardButton("send")
-        btn_del_users = KeyboardButton("del")
-        adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnInfo).add(btnBtc, btnOther).add(btn_del_users, btn_all_db, btn_send)
+        adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo).add(btnBtc, btnOther).add(btn_del_users, btn_all_db, btn_send)
         return adminMenu
     else:
-        # user menu
-        btnBtc = KeyboardButton("Курс биткоина")
-        btnInfo = KeyboardButton("Расписание автобуса")
-        btnOther = KeyboardButton("Другое")
-        userMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnInfo).add(btnBtc, btnOther)
+        userMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo).add(btnBtc, btnOther)
         return userMenu
 
 ##############
@@ -95,3 +91,12 @@ def generation_date_schedule():
     result = generate_keyboard(mydict)
     logger.info(f"generation_date_schedule - {len(mydict)} items")
     return result
+
+
+# generate inline menu stations
+def generate_keyboard_station(data):
+    keyboard = InlineKeyboardMarkup(row_width=2)
+    for k, v in data.items():
+        values_plus_id = str(v + " id")
+        keyboard.insert(InlineKeyboardButton(text=k, callback_data=values_plus_id))
+    return keyboard
