@@ -13,16 +13,13 @@ class FSMSelectBus(StatesGroup):
     question = State()
 
 
-#Задаём вопрос
-# dp.message_handler(commands="Выбрать", state=None)
+# Задаём вопрос
 async def fsm_start(message: types.Message):
     await FSMSelectBus.question.set()
     await message.reply("select type of schedule:", reply_markup=nav.bus_answer_menu)
 
 
-#Выход из состояний
-# @dp.message_handler(state="*", commands="отмена")
-# @dp.message_handler(Text(equals"отмена", ignore_case=True,)state="*")
+# Выход из состояний
 async def cancel_handler(message: types.Message, state: FSMContext):
     current_state = await state.get_state()
     if current_state is None:
@@ -32,9 +29,8 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     await send_welcome(message)
 
 
-#ловим первый ответ
-# dp.message_handler(state=FSMAdmin.question)
-async def load_question(message: types.Message, state:FSMContext):
+# ловим  ответ
+async def load_question(message: types.Message, state: FSMContext):
     data_user = (message.from_user.id, message.from_user.username, message.from_user.first_name)
     async with state.proxy() as data:
         data["type_schedule"] = message.text
@@ -43,16 +39,16 @@ async def load_question(message: types.Message, state:FSMContext):
             await sqlite_db.update_type_timetable_passing_bus(data_user, result)
             await state.finish()
             if result == "все автобусы":
-                await message.reply(get_all_bus_schedule(),
+                await message.reply(get_all_bus_schedule(id_station_arr=1331, days=0),
                                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
             elif result == "отправленные":
-                await message.reply(get_bus_dispatched(),
+                await message.reply(get_bus_dispatched(id_station_arr=1331, days=0),
                                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
             elif result == "отмененные":
-                await message.reply(get_bus_canceled(),
+                await message.reply(get_bus_canceled(id_station_arr=1331, days=0),
                                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
             elif result == "ближайшие":
-                await message.reply(get_current_schedule(),
+                await message.reply(get_current_schedule(id_station_arr=1331, days=0),
                                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
         elif result == '/start':
             await state.finish()
@@ -76,7 +72,7 @@ async def load_question(message: types.Message, state:FSMContext):
             #                             reply_markup=nav.user_and_admin_menu(message.from_user.id))
 
 
-def register_handlers_bus_fsm(dp : Dispatcher):
+def register_handlers_bus_fsm(dp: Dispatcher):
     dp.register_message_handler(fsm_start, commands="select", state=None)
     dp.register_message_handler(cancel_handler, state="*", commands="отмена")
     dp.register_message_handler(cancel_handler, Text(equals="отмена", ignore_case=True, ), state="*")
