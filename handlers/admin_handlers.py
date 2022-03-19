@@ -5,6 +5,11 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from create_bot import bot, ADMIN_ID
 from mark.markups import check_menu, user_and_admin_menu, cancel_menu
+import logging
+import os
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(os.path.basename(__file__))
 
 
 # del user with FSM
@@ -53,6 +58,7 @@ async def del_user(message: types.Message, state: FSMContext):
                 await state.finish()
                 await message.answer(f"user: {data_user[0]} - was deleted",
                                      reply_markup=user_and_admin_menu(message.from_user.id))
+                logger.info(f"user: {data_user[0]} - was deleted")
                 con.commit()
                 cur.close()
         else:
@@ -96,14 +102,14 @@ async def send_message_all_users(message: types.Message, state: FSMContext):
                     if answer == "верно":
                         await bot.send_message(user_id, text, reply_markup=user_and_admin_menu(message.from_user.id))
                         await state.finish()
-                        print(f"text: \"{text}\" send to - {user[1]} - {user[0]} - done")
+                        logger.info(f"text: \"{text}\" send to - {user[1]} - {user[0]} - done")
                     else:
                         await state.reset_state()
                         await message.answer("отменено", reply_markup=user_and_admin_menu(message.from_user.id))
-                        print(f"command \"SendMessageToAllUsers\" NOT done, text: \"{text}\" ")
+                        logger.info(f"command \"SendMessageToAllUsers\" NOT done, text: \"{text}\" ")
                         break
                 except BotBlocked:
-                    print(f"user {user_id} - bot blocked")
+                    logger.info(f"user {user_id} - bot blocked")
             cur.close()
 
 
@@ -118,14 +124,14 @@ async def get_all_users(message: types.Message):
                 result += str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + '\n'
             result += f'total users: {count}'
             cur.close()
-            print(f'total users in db: {count}')
+            logger.info(f"total users in db: {count}")
         await bot.send_message(message.from_user.id, result)
     else:
         await message.answer("only for admin")
 
 
 def register_handlers_admin(dp: Dispatcher):
-    dp.register_message_handler(send_question_del, text='del')
+    dp.register_message_handler(send_question_del, text='del', state=None)
     dp.register_message_handler(load_message_del, state=FSMDelUserFromDB.message_del)
     dp.register_message_handler(del_user, state=FSMDelUserFromDB.check_del)
     dp.register_message_handler(send_question_send, text='send', state=None)
