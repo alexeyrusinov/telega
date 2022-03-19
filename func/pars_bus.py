@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(os.path.basename(__file__))
 
 
-def get_json_bus_data(id_station_arr=1331, days=0):
+def get_json_bus_data(id_station_arr, days):
     now_datetime_with_parm_days = get_data_time_ekb(days)
 
     day, month, year = str(now_datetime_with_parm_days.day), str(now_datetime_with_parm_days.month), str(
