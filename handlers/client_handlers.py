@@ -14,11 +14,11 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 async def send_welcome(message: types.Message):
     await sqlite_db.sql_add_user(message)
-    await message.answer("select command..", reply_markup=nav.user_and_admin_menu(message.from_user.id))
+    await message.answer("Выбери команду..", reply_markup=nav.user_and_admin_menu(message.from_user.id))
 
 
 async def send_help(message: types.Message):
-    await message.answer("Подскажет тебе: @rusinov", reply_markup=types.ReplyKeyboardRemove())
+    await message.answer("Подскажет тебе: @rusinov", reply_markup=None)
 
 
 async def test_generate_inline_menu(call: types.CallbackQuery):
