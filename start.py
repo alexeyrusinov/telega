@@ -2,17 +2,24 @@ import sqlite_db
 from aiogram import executor
 from create_bot import dp
 from handlers import client_handlers, admin_handlers, other_handlers
-from fsm import bus_fsm
+import fsm
+import logging
+import os
 
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(os.path.basename(__file__))
+
+
+fsm.bus_fsm.register_handlers_bus_fsm(dp)
+fsm.station_fsm.register_handlers_bus_station(dp)
 client_handlers.register_handlers_client(dp)
-bus_fsm.register_handlers_bus_fsm(dp)
 admin_handlers.register_handlers_admin(dp)
 other_handlers.register_handlers_other(dp)
 
 
 async def on_startup(_):
-    print("Bot is online!")
+    logger.info("Bot is online!")
     sqlite_db.sql_start()
 
 
