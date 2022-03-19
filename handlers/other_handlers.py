@@ -7,7 +7,6 @@ from func.date_and_time import get_convert_date_time
 from mark.markups import generation_date_schedule
 
 
-# @dp.message_handler()
 async def filter_message(message: types.Message):
     if message.text == "Текущее время и дата":
         await bot.send_message(message.from_user.id, get_convert_date_time())
@@ -17,7 +16,7 @@ async def filter_message(message: types.Message):
     elif message.text == "Другое":
         await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
     elif message.text == "Расписание автобуса":
-        await bot.send_message(message.from_user.id, sqlite_db.get_timetable_passing_bus(message.from_user.id))
+        await bot.send_message(message.from_user.id, sqlite_db.get_timetable_passing_bus(message.from_user.id, id_station_arr=1331, days=0))
     elif message.text == "Курс биткоина":
         await bot.send_message(message.from_user.id, btc.get_btc_usdt_rate())
     elif message.text == "inlineButtons":
