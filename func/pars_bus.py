@@ -4,18 +4,20 @@ from datetime import datetime
 from func.date_and_time import get_data_time_ekb
 import logging
 import os
-# from user_agent import generate_user_agent
 import user_agent
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(os.path.basename(__file__))
 
 
-def get_json_bus_data(days=0):
+def get_json_bus_data(id_station_arr=1331, days=0):
     now_datetime_with_parm_days = get_data_time_ekb(days)
 
     day, month, year = str(now_datetime_with_parm_days.day), str(now_datetime_with_parm_days.month), str(
         now_datetime_with_parm_days.year)
-    url_bus = f"https://autovokzal.org/upload/php/result.php?id=1331&date=%27{year}-{month}-{day}%27&station=ekb"
+
+    url_bus = f"https://autovokzal.org/upload/php/result.php?id={id_station_arr}&date=%27{year}-{month}-{day}%27&station=ekb"
+
     url_station = 'https://www.autovokzal.org/upload/php/date_update.php?station=ekb'
 
     ua = user_agent.generate_user_agent()
@@ -28,7 +30,7 @@ def get_json_bus_data(days=0):
         result.raise_for_status()
         dict_json_bus = result.json()
     except Exception:
-        print(">>>>--------> Errors with getting json <--------<<<<")
+        logger.info(">>>>--------> Errors with getting json <--------<<<<")
         raise
 
     return dict_json_bus
@@ -85,7 +87,7 @@ def next_bus_time_today(data_bus):
     return next_bus_time
 
 
-def get_bus_time(days=0):
+def get_bus_time(id_station_arr, days):
     now_datetime_with_parm_days = get_data_time_ekb(days)
     now_date_with_parm_days = str(now_datetime_with_parm_days.date())
     now_date_with_parm_days_str = now_datetime_with_parm_days.strftime('%d-%m-%Y')
@@ -93,7 +95,7 @@ def get_bus_time(days=0):
     now_datetime = get_data_time_ekb()
     now_date_str = now_datetime.strftime('%d-%m-%Y')
 
-    request_json_data = get_json_bus_data(days)
+    request_json_data = get_json_bus_data(id_station_arr, days)
 
     with open('data.json', 'w', encoding='utf8') as f:
         json.dump(request_json_data, f, ensure_ascii=False, indent=4)
@@ -109,6 +111,7 @@ def get_bus_time(days=0):
         item["name_route"] = item["name_route"].replace('г.Екатеринбург (Южный АВ) -<br/>',
                                                         'Южный АВ -')  # rename value
         item["name_route"] = item["name_route"].replace('г.', '')
+        item["name_route"] = item["name_route"].replace('-<br/>', '')
         item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6122 H9', 'YTNG')
         item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6129 H', 'YTNG')
         item["name_bus"] = item["name_bus"].replace('YUTONG 6121', 'YTNG')
@@ -144,15 +147,15 @@ def get_bus_time(days=0):
     return data_bus
 
 
-def get_all_bus_schedule(days=0):  # Все автобусы
-    data_bus = get_bus_time(days)  # c парметром days
+def get_all_bus_schedule(id_station_arr, days):  # Все автобусы
+    data_bus = get_bus_time(id_station_arr,  days)  # c парметром days
     entire_schedule_for_today = list_schedule_json_to_string(data_bus['all_bus'])
     entire_schedule_for_today += f"Все автобусы за: {data_bus['now_date_with_parm_days']}"
     return entire_schedule_for_today
 
 
-def get_current_schedule(days=0):  # Расписание автобуса
-    data_bus = get_bus_time(days)  # c парметром days
+def get_current_schedule(id_station_arr, days):  # Расписание автобуса
+    data_bus = get_bus_time(id_station_arr,  days)  # c парметром days
     time = next_bus_time_today(data_bus)
     schedule = list_schedule_json_to_string(data_bus['raw_schedule'])
     bus_schedule_today = schedule + time
@@ -162,15 +165,15 @@ def get_current_schedule(days=0):  # Расписание автобуса
         return bus_schedule_today
 
 
-def get_bus_dispatched():  # Отправленные автобусы
-    data_bus = get_bus_time()
+def get_bus_dispatched(id_station_arr, days):  # Отправленные автобусы
+    data_bus = get_bus_time(id_station_arr,  days)
     entire_bus_dispatched_for_today = list_schedule_json_to_string(data_bus['bus_dispatched'])
     entire_bus_dispatched_for_today += f"Отправленные автобусы за: {data_bus['now_date']}"
     return entire_bus_dispatched_for_today
 
 
-def get_bus_canceled(days=0):  # Отменённые автобусы
-    data_bus = get_bus_time(days)  # c парметром days
+def get_bus_canceled(id_station_arr,  days):  # Отменённые автобусы
+    data_bus = get_bus_time(id_station_arr,  days)  # c парметром days
     entire_bus_canceled_for_today = list_schedule_json_to_string(data_bus['bus_canceled'])
     if len(entire_bus_canceled_for_today) == 0:
         return f"No canceled bus: {data_bus['now_date_with_parm_days']}"
