@@ -146,34 +146,40 @@ def get_bus_time(id_station_arr, days):
 
 def get_all_bus_schedule(id_station_arr, days):  # Все автобусы
     data_bus = get_bus_time(id_station_arr,  days)  # c парметром days
-    entire_schedule_for_today = list_schedule_json_to_string(data_bus['all_bus'])
-    entire_schedule_for_today += f"Все автобусы за: {data_bus['now_date_with_parm_days']}"
-    return entire_schedule_for_today
+    if len(data_bus['all_bus']) == 0:
+        return f"Нет автобусов на: {data_bus['now_date']}"
+    else:
+        entire_schedule_for_today = list_schedule_json_to_string(data_bus['all_bus'])
+        entire_schedule_for_today += f"Все автобусы за: {data_bus['now_date_with_parm_days']}"
+        return entire_schedule_for_today
 
 
 def get_current_schedule(id_station_arr, days):  # Расписание автобуса
     data_bus = get_bus_time(id_station_arr,  days)  # c парметром days
-    time = next_bus_time_today(data_bus)
-    schedule = list_schedule_json_to_string(data_bus['raw_schedule'])
-    bus_schedule_today = schedule + time
     if len(data_bus['raw_schedule']) == 0:
         return f"No bus for: {data_bus['now_date_with_parm_days']}"
     else:
+        time = next_bus_time_today(data_bus)
+        schedule = list_schedule_json_to_string(data_bus['raw_schedule'])
+        bus_schedule_today = schedule + time
         return bus_schedule_today
 
 
 def get_bus_dispatched(id_station_arr, days):  # Отправленные автобусы
     data_bus = get_bus_time(id_station_arr,  days)
-    entire_bus_dispatched_for_today = list_schedule_json_to_string(data_bus['bus_dispatched'])
-    entire_bus_dispatched_for_today += f"Отправленные автобусы за: {data_bus['now_date']}"
-    return entire_bus_dispatched_for_today
+    if len(data_bus['bus_dispatched']) == 0:
+        return f"Нет отправленных автобусов за: {data_bus['now_date']}"
+    else:
+        entire_bus_dispatched_for_today = list_schedule_json_to_string(data_bus['bus_dispatched'])
+        entire_bus_dispatched_for_today += f"Отправленные автобусы за: {data_bus['now_date']}"
+        return entire_bus_dispatched_for_today
 
 
 def get_bus_canceled(id_station_arr,  days):  # Отменённые автобусы
     data_bus = get_bus_time(id_station_arr,  days)  # c парметром days
     entire_bus_canceled_for_today = list_schedule_json_to_string(data_bus['bus_canceled'])
-    if len(entire_bus_canceled_for_today) == 0:
-        return f"No canceled bus: {data_bus['now_date_with_parm_days']}"
+    if len(data_bus['bus_canceled']) == 0:
+        return f"Нет отменённых автобусов за: {data_bus['now_date_with_parm_days']}"
     else:
         entire_bus_canceled_for_today += f"Отменённые автобусы за: {data_bus['now_date_with_parm_days']}"
         return entire_bus_canceled_for_today
