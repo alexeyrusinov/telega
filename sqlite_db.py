@@ -35,20 +35,20 @@ async def sql_add_user(message: types.Message):
         cur.close()
 
 
-def get_timetable_passing_bus(user_id, days=0):
+def get_timetable_passing_bus(user_id, id_station_arr, days):
     with sq.connect("users.db") as con:
         cur = con.cursor()
         cur.execute("""SELECT passing_bus FROM users WHERE user_id = ?""", (user_id,))
         result = cur.fetchone()
         cur.close()
         if result[0] == "все автобусы":
-            return pars_bus.get_all_bus_schedule()
+            return pars_bus.get_all_bus_schedule(id_station_arr, days)
         elif result[0] == "отправленные":
-            return pars_bus.get_bus_dispatched()
+            return pars_bus.get_bus_dispatched(id_station_arr, days)
         elif result[0] == "отмененные":
-            return pars_bus.get_bus_canceled()
+            return pars_bus.get_bus_canceled(id_station_arr, days)
         elif result[0] == "ближайшие":
-            return pars_bus.get_current_schedule(days)
+            return pars_bus.get_current_schedule(id_station_arr, days)
         # match result[0]:
         #     case "все автобусы":
         #         return pars_bus.get_all_bus_schedule()
