@@ -66,9 +66,7 @@ def next_bus_time_today(data_bus):
                     time.replace(" min", "")  # код для елсе которое стиает мин если до след автобуса больше чем час
                 free_place = i["free_place"]
                 name_bus = i["name_bus"]
-                next_bus_time = str(
-                    f'Next bus in ' + str(time) + ' \nbus: ' + str(name_bus) + '. free places: ' + str(
-                        free_place) + f"\ndate: {data_bus['now_date']}" + '\n')
+                next_bus_time = str(f"Следующий автобус через:  {time}\nbus: {name_bus}\nfree places: {free_place}\ndate: {data_bus['now_date']}\n")
                 break
             elif i["status"] == "":
                 time = i["time_otpr"] - data_bus['now_datetime']
@@ -80,8 +78,7 @@ def next_bus_time_today(data_bus):
                 else:
                     time.replace(" min", "")  # код для елсе которое стиает мин если до след автобуса больше чем час
                 free_place = i["free_place"]
-                next_bus_time = str('Next bus in ' + str(time) + '. free places: ' + str(free_place) +
-                                    f"\ndate: {data_bus['now_date']}" + '\n')
+                next_bus_time = str(f"Следующий автобус через: {time}\nfree places: {free_place}\ndate: {data_bus['now_date']}\n")
                 break
 
     return next_bus_time
