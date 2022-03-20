@@ -16,7 +16,7 @@ class FSMSelectBus(StatesGroup):
 # Задаём вопрос
 async def fsm_start(message: types.Message):
     await FSMSelectBus.question.set()
-    await message.reply("select type of schedule:", reply_markup=nav.bus_answer_menu)
+    await message.reply("Выбери тип расписания проходящего автобуса:", reply_markup=nav.bus_answer_menu)
 
 
 # Выход из состояний
@@ -56,6 +56,9 @@ async def load_question(message: types.Message, state: FSMContext):
         elif result == '/help':
             await state.finish()
             await send_help(message)
+        elif result == '/select':
+            await state.reset_state()
+            await fsm_start(message)
 
             # match result:
             #     case "все автобусы":
