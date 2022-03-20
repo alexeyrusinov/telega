@@ -21,8 +21,8 @@ async def filter_message(message: types.Message):
         await bot.send_message(message.from_user.id, btc.get_btc_usdt_rate())
     elif message.text == "inlineButtons":
         await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
-    elif message.text == "inline schedule":
-        await message.answer("test inline schedule", reply_markup=generation_date_schedule())
+    elif message.text == "Расписание проходящего на несколько дней":
+        await message.answer("test inline schedule", reply_markup=generation_date_schedule(id_station_arr=1331))
     else:
         if message.from_user.id != ADMIN_ID:
             await bot.forward_message(ADMIN_ID, message.from_user.id, message.message_id)
