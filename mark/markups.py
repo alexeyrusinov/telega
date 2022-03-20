@@ -92,6 +92,8 @@ def generation_date_schedule(id_station_arr):
     logger.info(f"generation_date_schedule - {len(mydict)} items")
     return result
 
+# ------------------------------
+
 
 # generate inline menu stations
 def generate_keyboard_station(data):

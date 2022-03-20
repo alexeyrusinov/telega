@@ -20,8 +20,6 @@ def del_int_from_string(string):
             result.append(i)
             return str(result[0])
         else:
-            print(type(i))
-            print("это i сверху", i)
             items.append(i)
     str_item = items[0].split("-")
     another_result = []
