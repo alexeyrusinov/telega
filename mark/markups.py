@@ -51,8 +51,8 @@ def user_and_admin_menu(user_id):
 # other menu
 btnTime = KeyboardButton("Текущее время и дата")
 btnRandint = KeyboardButton("inlineButtons")
-btnSchedule = KeyboardButton("inline schedule")
-otherMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnSchedule, btnRandint).add(btnTime, btnMain)
+btnSchedule = KeyboardButton("Расписание проходящего на несколько дней")
+otherMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnSchedule).add(btnTime,btnRandint, btnMain)
 
 # bus_answer_menu
 btn_answer1 = KeyboardButton("все автобусы")
@@ -80,10 +80,10 @@ def generate_keyboard(data):
     return keyboard
 
 
-def generation_date_schedule():
+def generation_date_schedule(id_station_arr):
     mydict = {}
     for i in range(15):
-        req = get_json_bus_data(i)
+        req = get_json_bus_data(id_station_arr, i)
         if req and len(req['rasp']) > 1:
             mydict.update({f"{i} - day": get_data_time_ekb(i).strftime('%d-%m-%Y')})
         else:
