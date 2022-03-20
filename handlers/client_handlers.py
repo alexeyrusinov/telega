@@ -26,7 +26,7 @@ async def test_generate_inline_menu(call: types.CallbackQuery):
     for i in range(day + 1):
         if i == day:
             await bot.delete_message(call.from_user.id, call.message.message_id)
-            await bot.send_message(call.from_user.id, get_current_schedule(i), reply_markup=nav.generation_date_schedule())
+            await bot.send_message(call.from_user.id, get_current_schedule(id_station_arr=1331, days=i), reply_markup=nav.generation_date_schedule(id_station_arr=1331))
             logger.info(f"call data: {call.data}, user: {call.from_user.username} - {call.from_user.first_name}")
 
 
