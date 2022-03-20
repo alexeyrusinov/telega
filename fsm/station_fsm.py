@@ -44,12 +44,22 @@ async def station_fsm_question(message: types.Message, state: FSMContext):
 
 
 async def station_fsm_check_answer(call: types.CallbackQuery, state: FSMContext):
+    def get_name_station(id_station):
+        with open('files/704.json') as f:  # Read json file
+            stations = json.load(f)
+        name_station = ''
+        for k, v in stations.items():
+            if v == f'{id_station}':
+                name_station = k
+        return name_station
+
     result = []
     user_answer = call.data.split()
     for word in user_answer:
         if word.isnumeric():
             result.append(int(word))
     await bot.delete_message(call.from_user.id, call.message.message_id)
+    await bot.send_message(call.from_user.id, get_name_station(result[0]))
     await bot.send_message(call.from_user.id, get_current_schedule(result[0], days=0), reply_markup=nav.user_and_admin_menu(call.from_user.id))
     await state.finish()
 
