@@ -10,6 +10,27 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(os.path.basename(__file__))
 
 
+# del int from string
+def del_int_from_string(string):
+    bus_brand = string.split()
+    result = []
+    items = []
+    for i in bus_brand:
+        if i.isalpha() and i != ' ':
+            result.append(i)
+            return str(result[0])
+        else:
+            print(type(i))
+            print("это i сверху", i)
+            items.append(i)
+    str_item = items[0].split("-")
+    another_result = []
+    for i in str_item:
+        if i.isalpha() and i != ' ':
+            another_result.append(i)
+            return str(another_result[0])
+
+
 def get_json_bus_data(id_station_arr, days):
     now_datetime_with_parm_days = get_data_time_ekb(days)
 
@@ -105,15 +126,10 @@ def get_bus_time(id_station_arr, days):
     for item in all_data["rasp"]:  # Rename json
         item["time_otpr"] += f' {now_date_with_parm_days}'  # добавляем дату ко времени отправления
         item["time_otpr"] = datetime.strptime(item["time_otpr"], '%H:%M %Y-%m-%d')  # convert str to class 'datetime
-        item["name_route"] = item["name_route"].replace('г.Екатеринбург (Южный АВ) -<br/>',
-                                                        'Южный АВ -')  # rename value
+        item["name_route"] = item["name_route"].replace('г.Екатеринбург (Южный АВ) -<br/>', 'Южный АВ -')  # rename value
         item["name_route"] = item["name_route"].replace('г.', '')
         item["name_route"] = item["name_route"].replace('-<br/>', '')
-        item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6122 H9', 'YTNG')
-        item["name_bus"] = item["name_bus"].replace('YUTONG ZK 6129 H', 'YTNG')
-        item["name_bus"] = item["name_bus"].replace('YUTONG 6121', 'YTNG')
-        item["name_bus"] = item["name_bus"].replace('ПАЗ-4234', 'ПАЗ')
-        item["name_bus"] = item["name_bus"].replace('ПАЗ 4234-04', 'ПАЗ')
+        item["name_bus"] = item["name_bus"].replace(item["name_bus"], del_int_from_string(item["name_bus"]))
         item["cancel"] = item["cancel"].replace("Отмена", "❌")  # rename value
         item["cancel"] = item["cancel"].replace("Отправлен", "✅")
         item["status"] = item.pop("cancel")  # rename key
