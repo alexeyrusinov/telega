@@ -29,7 +29,8 @@ btnMain = KeyboardButton("Главное меню")
 
 ################
 btnStation = KeyboardButton("Расписание")
-btnBtc = KeyboardButton("Курс биткоина")
+btnBtc = KeyboardButton("BTC/USDT")
+btnUsd = KeyboardButton("USD/RUB")
 btnInfo = KeyboardButton("Расписание проходящего")
 btnOther = KeyboardButton("Другое")
 btn_all_db = KeyboardButton("alldb")
@@ -39,10 +40,10 @@ btn_del_users = KeyboardButton("del")
 
 def user_and_admin_menu(user_id):
     if user_id == ADMIN_ID:
-        adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo).add(btnBtc, btnOther).add(btn_del_users, btn_all_db, btn_send)
+        adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo).add(btnBtc, btnUsd, btnOther).add(btn_del_users, btn_all_db, btn_send)
         return adminMenu
     else:
-        userMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo).add(btnBtc, btnOther)
+        userMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo).add(btnBtc, btnUsd, btnOther)
         return userMenu
 
 ##############
