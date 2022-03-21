@@ -2,7 +2,7 @@ from aiogram import Dispatcher, types
 from mark import markups as nav
 import sqlite_db
 from create_bot import bot, ADMIN_ID
-from func import btc
+from func import exchange_rate
 from func.date_and_time import get_convert_date_time
 from mark.markups import generation_date_schedule
 
@@ -17,8 +17,10 @@ async def filter_message(message: types.Message):
         await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
     elif message.text == "Расписание проходящего":
         await bot.send_message(message.from_user.id, sqlite_db.get_timetable_passing_bus(message.from_user.id, id_station_arr=1331, days=0))
-    elif message.text == "Курс биткоина":
-        await bot.send_message(message.from_user.id, btc.get_btc_usdt_rate())
+    elif message.text == "BTC/USDT":
+        await bot.send_message(message.from_user.id, exchange_rate.get_exchange_rate(11, 8, '$'), parse_mode="Markdown")
+    elif message.text == "USD/RUB":
+        await bot.send_message(message.from_user.id, exchange_rate.get_exchange_rate(688, 6, '₽'), parse_mode="Markdown")
     elif message.text == "inlineButtons":
         await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
     elif message.text == "Расписание проходящего на несколько дней":
