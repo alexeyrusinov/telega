@@ -30,7 +30,7 @@ btnMain = KeyboardButton("Главное меню")
 ################
 btnStation = KeyboardButton("Расписание")
 btnBtc = KeyboardButton("BTC/USDT")
-btnUsd = KeyboardButton("USD/RUB")
+btnUsd = KeyboardButton("USDT/RUB")
 btnInfo = KeyboardButton("Расписание проходящего")
 btnOther = KeyboardButton("Другое")
 btn_all_db = KeyboardButton("alldb")

@@ -19,7 +19,7 @@ async def filter_message(message: types.Message):
         await bot.send_message(message.from_user.id, sqlite_db.get_timetable_passing_bus(message.from_user.id, id_station_arr=1331, days=0))
     elif message.text == "BTC/USDT":
         await bot.send_message(message.from_user.id, exchange_rate.get_exchange_rate(11, 8, '$'), parse_mode="Markdown")
-    elif message.text == "USD/RUB":
+    elif message.text == "USDT/RUB":
         await bot.send_message(message.from_user.id, exchange_rate.get_exchange_rate(688, 6, '₽'), parse_mode="Markdown")
     elif message.text == "inlineButtons":
         await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
