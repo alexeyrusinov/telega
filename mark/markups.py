@@ -28,10 +28,11 @@ myMenu.insert(btnVip)
 btnMain = KeyboardButton("Главное меню")
 
 ################
-btnStation = KeyboardButton("Расписание")
+btnStation = KeyboardButton("Выбор направления")
 btnBtc = KeyboardButton("BTC/USDT")
 btnUsd = KeyboardButton("USDT/RUB")
-btnInfo = KeyboardButton("Расписание проходящего")
+# btnInfo = KeyboardButton("Расписание проходящего")
+btnLast = KeyboardButton("Последнее расписание")
 btnOther = KeyboardButton("Другое")
 btn_all_db = KeyboardButton("alldb")
 btn_send = KeyboardButton("send")
@@ -40,10 +41,12 @@ btn_del_users = KeyboardButton("del")
 
 def user_and_admin_menu(user_id):
     if user_id == ADMIN_ID:
-        adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo).add(btnBtc, btnUsd, btnOther).add(btn_del_users, btn_all_db, btn_send)
+        # adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo, btnLast).add(btnBtc, btnUsd, btnOther).add(btn_del_users, btn_all_db, btn_send)
+        adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnLast).add(btnBtc, btnUsd, btnOther).add(btn_del_users, btn_all_db, btn_send)
         return adminMenu
     else:
-        userMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo).add(btnBtc, btnUsd, btnOther)
+        # userMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo, btnLast).add(btnBtc, btnUsd, btnOther)
+        userMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnLast).add(btnBtc, btnUsd, btnOther)
         return userMenu
 
 ##############
@@ -97,9 +100,9 @@ def generation_date_schedule(id_station_arr):
 
 
 # generate inline menu stations
-def generate_keyboard_station(data):
-    keyboard = InlineKeyboardMarkup(row_width=2)
+def generate_keyboard_station(data, text_contains, row_wight=2):
+    keyboard = InlineKeyboardMarkup(row_width=row_wight)
     for k, v in data.items():
-        values_plus_id = str(v + " id")
+        values_plus_id = str(v + f" {text_contains}")
         keyboard.insert(InlineKeyboardButton(text=k, callback_data=values_plus_id))
     return keyboard
