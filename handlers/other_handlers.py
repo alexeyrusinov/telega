@@ -1,10 +1,15 @@
 from aiogram import Dispatcher, types
+import sqlite3 as sq
+from fsm.sp_fp_fsm import station_fsm_set
 from mark import markups as nav
-import sqlite_db
+import my_db
 from create_bot import bot, ADMIN_ID
-from func import exchange_rate
+from func import exchange_rate, pars_bus
 from func.date_and_time import get_convert_date_time
 from mark.markups import generation_date_schedule
+
+
+
 
 
 async def filter_message(message: types.Message):
@@ -15,8 +20,10 @@ async def filter_message(message: types.Message):
                                reply_markup=nav.user_and_admin_menu(message.from_user.id))
     elif message.text == "Другое":
         await bot.send_message(message.from_user.id, "Другое", reply_markup=nav.otherMenu)
-    elif message.text == "Расписание проходящего":
-        await bot.send_message(message.from_user.id, sqlite_db.get_timetable_passing_bus(message.from_user.id, id_station_arr=1331, days=0))
+
+    # elif message.text == "Расписание проходящего":
+    #     await bot.send_message(message.from_user.id, my_db.get_timetable_passing_bus(message.from_user.id, id_station_arr=1331, days=0))
+
     elif message.text == "BTC/USDT":
         await bot.send_message(message.from_user.id, exchange_rate.get_exchange_rate(11, '$'), parse_mode="Markdown")
     elif message.text == "USDT/RUB":
