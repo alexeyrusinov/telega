@@ -24,7 +24,7 @@ def get_station(value, file):
         stations = json.load(f)
     my_dict = {}
     for k, v in reversed(stations.items()):
-        if value in k or value in k.casefold():
+        if value in k.upper():
             my_dict.update({k: v})
     return my_dict
 
@@ -86,7 +86,7 @@ async def station_fsm_question_start_place(call: types.CallbackQuery, state: FSM
 
 async def station_fsm_question_finish_place(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        data["finish_place"] = message.text
+        data["finish_place"] = message.text.upper()
     dict_with_result_station = get_station(data["finish_place"], 'files/704.json')
     if len(dict_with_result_station) == 0:
         await message.answer("Попробуй ещё..\nКуда: (например: Екатеринбург) ", reply_markup=nav.cancel_menu)
