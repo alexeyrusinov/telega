@@ -29,13 +29,14 @@ def del_int_from_string(string):
             return str(another_result[0])
 
 
-def get_json_bus_data(id_station_arr, days):
+def get_json_bus_data(start_place, id_station_arr, days):
     now_datetime_with_parm_days = get_data_time_ekb(days)
 
     day, month, year = str(now_datetime_with_parm_days.day), str(now_datetime_with_parm_days.month), str(
         now_datetime_with_parm_days.year)
 
-    url_bus = f"https://autovokzal.org/upload/php/result.php?id={id_station_arr}&date=%27{year}-{month}-{day}%27&station=ekb"
+    # url_bus = f"https://autovokzal.org/upload/php/result.php?id={id_station_arr}&date=%27{year}-{month}-{day}%27&station=ekb"
+    url_bus = f"https://autovokzal.org/upload/php/result.php?id={id_station_arr}&date=%27{year}-{month}-{day}%27&station={start_place}"
 
     url_station = 'https://www.autovokzal.org/upload/php/date_update.php?station=ekb'
 
@@ -103,7 +104,7 @@ def next_bus_time_today(data_bus):
     return next_bus_time
 
 
-def get_bus_time(id_station_arr, days):
+def get_bus_time(start_place, id_station_arr, days):
     now_datetime_with_parm_days = get_data_time_ekb(days)
     now_date_with_parm_days = str(now_datetime_with_parm_days.date())
     now_date_with_parm_days_str = now_datetime_with_parm_days.strftime('%d-%m-%Y')
@@ -111,7 +112,7 @@ def get_bus_time(id_station_arr, days):
     now_datetime = get_data_time_ekb()
     now_date_str = now_datetime.strftime('%d-%m-%Y')
 
-    request_json_data = get_json_bus_data(id_station_arr, days)
+    request_json_data = get_json_bus_data(start_place, id_station_arr, days)
 
     with open('data.json', 'w', encoding='utf8') as f:
         json.dump(request_json_data, f, ensure_ascii=False, indent=4)
@@ -168,8 +169,8 @@ def get_all_bus_schedule(id_station_arr, days):  # Все автобусы
         return entire_schedule_for_today
 
 
-def get_current_schedule(id_station_arr, days):  # Расписание автобуса
-    data_bus = get_bus_time(id_station_arr,  days)  # c парметром days
+def get_current_schedule(start_place, id_station_arr, days):  # Расписание автобуса
+    data_bus = get_bus_time(start_place, id_station_arr, days)  # c парметром days
     if len(data_bus['raw_schedule']) == 0:
         return f"No bus for: {data_bus['now_date_with_parm_days']}"
     else:
