@@ -4,7 +4,7 @@ from aiogram.dispatcher.filters import Text
 from aiogram import types, Dispatcher
 from func.pars_bus import get_current_schedule, get_all_bus_schedule,\
     get_bus_dispatched, get_bus_canceled
-import sqlite_db
+import my_db
 from mark import markups as nav
 from handlers.client_handlers import send_welcome, send_help
 
@@ -36,7 +36,7 @@ async def load_question(message: types.Message, state: FSMContext):
         data["type_schedule"] = message.text
         result = data["type_schedule"]
         if result in ["все автобусы", "отправленные", "отмененные", "ближайшие"]:
-            await sqlite_db.update_type_timetable_passing_bus(data_user, result)
+            await my_db.update_type_timetable_passing_bus(data_user, result)
             await state.finish()
             if result == "все автобусы":
                 await message.reply(get_all_bus_schedule(id_station_arr=1331, days=0),
