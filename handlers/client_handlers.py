@@ -1,6 +1,6 @@
 from aiogram import types, Dispatcher
 import logging
-import sqlite_db
+import my_db
 from mark import markups as nav
 from create_bot import bot
 import random
@@ -13,7 +13,7 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 async def send_welcome(message: types.Message):
-    await sqlite_db.sql_add_user(message)
+    await my_db.sql_add_user(message)
     await message.answer("Выбери команду..", reply_markup=nav.user_and_admin_menu(message.from_user.id))
 
 
