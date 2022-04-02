@@ -54,7 +54,7 @@ class FSMSelectStation(StatesGroup):
 async def station_fsm_set(message: types.Message):
     await FSMSelectStation.start_place_question.set()
     await message.reply("Откуда: ", reply_markup=nav.generate_keyboard_station(load_file('files/starting_point_24.json'), 'start', 1))
-    await message.answer("Выбери", reply_markup=nav.cancel_menu)
+    await message.answer("Выбирай..", reply_markup=nav.cancel_menu)
 
 
 async def get_sp_and_fp_user_call(message: types.Message):
