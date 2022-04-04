@@ -31,6 +31,7 @@ btnMain = KeyboardButton("Главное меню")
 btnStation = KeyboardButton("Выбор направления")
 btnBtc = KeyboardButton("BTC/USDT")
 btnUsd = KeyboardButton("USDT/RUB")
+btn_ex_rate = KeyboardButton("Exchange rate")
 # btnInfo = KeyboardButton("Расписание проходящего")
 btnLast = KeyboardButton("Последнее расписание")
 btnOther = KeyboardButton("Другое")
@@ -42,7 +43,7 @@ btn_del_users = KeyboardButton("del")
 def user_and_admin_menu(user_id):
     if user_id == ADMIN_ID:
         # adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo, btnLast).add(btnBtc, btnUsd, btnOther).add(btn_del_users, btn_all_db, btn_send)
-        adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnLast).add(btnBtc, btnUsd, btnOther).add(btn_del_users, btn_all_db, btn_send)
+        adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnLast).add(btn_ex_rate, btnOther).add(btn_del_users, btn_all_db, btn_send)
         return adminMenu
     else:
         # userMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo, btnLast).add(btnBtc, btnUsd, btnOther)
