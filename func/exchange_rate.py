@@ -38,4 +38,3 @@ def get_exchange_rate_for_admin(currency1: int, currency_sign1: str, currency2: 
         return 'ошибка получения курса, напиши -> @rusinov'
 
 
-get_exchange_rate_for_admin(11, '$', 688, '₽')
