@@ -66,6 +66,9 @@ async def get_sp_and_fp_user_call(message: types.Message):
         if result[0][0] == str(None) and result[0][1] == str(None):
             await station_fsm_set(message)
         else:
+            start_place = get_name_station('files/starting_point_24.json', result[0][0])
+            finish_place = get_name_station('files/704.json', result[0][1])
+            await message.answer(f"от *{start_place}* до *{finish_place}*", parse_mode="Markdown")
             await message.answer(pars_bus.get_current_schedule(result[0][0], result[0][1], days=0))
 
 
