@@ -24,6 +24,10 @@ async def filter_message(message: types.Message):
     # elif message.text == "Расписание проходящего":
     #     await bot.send_message(message.from_user.id, my_db.get_timetable_passing_bus(message.from_user.id, id_station_arr=1331, days=0))
 
+    elif message.text == "Exchange rate":
+        await bot.send_message(message.from_user.id, exchange_rate.get_exchange_rate_for_admin(11, '$', 688, '₽'), parse_mode="Markdown")
+
+
     elif message.text == "BTC/USDT":
         await bot.send_message(message.from_user.id, exchange_rate.get_exchange_rate(11, '$'), parse_mode="Markdown")
     elif message.text == "USDT/RUB":
