@@ -84,6 +84,7 @@ async def station_fsm_question_start_place(call: types.CallbackQuery, state: FSM
     await bot.delete_message(call.from_user.id, call.message.message_id)
     await bot.send_message(call.from_user.id, f"От автостации - {data['start_place']}")
     await bot.send_message(call.from_user.id, "Куда: (например: Екатеринбург) ", reply_markup=nav.cancel_menu)
+    await call.answer()
     await FSMSelectStation.next()
 
 
@@ -116,6 +117,7 @@ async def station_fsm_check_answer_finish_place(call: types.CallbackQuery, state
     await bot.send_message(call.from_user.id, f"{get_current_schedule(start_call, finish_call, days=0)}")
     data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
     await my_db.update_sp_and_fp_call(data_user, start_call, finish_call)
+    await call.answer()
     await state.finish()
 
 
