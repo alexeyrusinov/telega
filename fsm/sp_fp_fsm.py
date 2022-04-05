@@ -127,4 +127,3 @@ def register_handlers_bus_station(dp: Dispatcher):
     dp.register_callback_query_handler(station_fsm_question_start_place, text_contains="start", state=FSMSelectStation.start_place_question)
     dp.register_message_handler(station_fsm_question_finish_place, state=FSMSelectStation.start_place_check_answer)
     dp.register_callback_query_handler(station_fsm_check_answer_finish_place, text_contains="id", state=FSMSelectStation.finish_place_question)
-
