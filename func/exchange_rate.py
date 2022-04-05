@@ -18,18 +18,18 @@ def get_exchange_rate(currency: int, currency_sign: str):
         return 'ошибка получения курса, напиши -> @rusinov'
 
 
-def get_exchange_rate_for_admin(*args: int, **kwargs: str) -> str:
+def get_exchange_rate_from_api(*currency_in_json: int, **currency_sign: str) -> str:
     url_binance = "https://api.binance.com/api/v3/ticker/price"
     total = ''
     sign = []
-    for k, v in kwargs.items():
+    for k, v in currency_sign.items():
         sign.append(v)
     counter = 0
     try:
         response = requests.get(url_binance)
         response.raise_for_status()
         dic = response.json()
-        for i in args:
+        for i in currency_in_json:
             result_currency = dic[i]
             my_slice1 = result_currency["price"].split(".")
             currency_pair1 = result_currency["symbol"]
