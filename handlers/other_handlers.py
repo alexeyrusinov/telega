@@ -9,9 +9,6 @@ from func.date_and_time import get_convert_date_time
 from mark.markups import generation_date_schedule
 
 
-
-
-
 async def filter_message(message: types.Message):
     if message.text == "Текущее время и дата":
         await bot.send_message(message.from_user.id, get_convert_date_time())
