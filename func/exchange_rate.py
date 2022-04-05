@@ -18,7 +18,7 @@ def get_exchange_rate(currency: int, currency_sign: str):
         return 'ошибка получения курса, напиши -> @rusinov'
 
 
-def get_exchange_rate_for_admin(*args, **kwargs):
+def get_exchange_rate_for_admin(*args: int, **kwargs: str) -> str:
     url_binance = "https://api.binance.com/api/v3/ticker/price"
     total = ''
     sign = []
