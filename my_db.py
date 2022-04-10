@@ -63,8 +63,6 @@ def get_timetable_passing_bus(user_id, id_station_arr, days):
         #         return pars_bus.get_current_schedule(days)
 
 
-
-
 async def update_type_timetable_passing_bus(data_user, result):
     with sq.connect("files/users.db") as con:
         cur = con.cursor()
