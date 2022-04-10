@@ -32,6 +32,7 @@ def get_keyboard_fab(page=1, elem_on_page=6):
         result_stations.append(types.InlineKeyboardButton(text=i[0], callback_data=f"station-call-{i[1]}"))
 
     keyboard = types.InlineKeyboardMarkup(row_width=1)
+
     keyboard.add(*result_stations)
 
     service_buttons = list()
@@ -50,8 +51,10 @@ def get_keyboard_fab(page=1, elem_on_page=6):
     else:
         service_buttons.append(types.InlineKeyboardButton(text="<-", callback_data=f"page-lib-{page-1}"))
         service_buttons.append(types.InlineKeyboardButton(text=f"{page}/{max_page}", callback_data="None"))
-        service_buttons.append(types.InlineKeyboardButton(text="->", callback_data=f"page-lib-{page+1}"))
-
+        if page < max_page:
+            service_buttons.append(types.InlineKeyboardButton(text="->", callback_data=f"page-lib-{page + 1}"))
+        else:
+            service_buttons.append(types.InlineKeyboardButton(text="->", callback_data="None"))
     keyboard.add(*service_buttons)
     return keyboard
 
