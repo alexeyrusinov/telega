@@ -1,4 +1,4 @@
-/users.db
+files/users.db
 /token.txt
 *.log
 .idea/
