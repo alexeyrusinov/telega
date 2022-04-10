@@ -13,7 +13,7 @@ from func.pars_bus import get_current_schedule
 from mark import markups as nav
 from create_bot import bot
 
-user_data = {}
+# user_data = {}
 
 
 def get_keyboard_fab(page=1, elem_on_page=6):
@@ -59,7 +59,7 @@ def get_keyboard_fab(page=1, elem_on_page=6):
 async def update_keyboard_fab(message: types.Message, page: int):
     with suppress(MessageNotModified):
         await message.edit_reply_markup(reply_markup=get_keyboard_fab(page=page))
-        print(user_data)
+        # print(user_data)
 
 
 def check_station(file):
@@ -114,7 +114,7 @@ async def station_fsm_set(message: types.Message):
 # async def callbacks_num_change_fab(call: types.CallbackQuery, callback_data: dict):
 async def callbacks_num_change_fab(call: types.CallbackQuery):
     page = int(call.data[-1])
-    user_data[call.from_user.id] = page
+    # user_data[call.from_user.id] = page
     await update_keyboard_fab(call.message, page)
     await call.answer()
 
