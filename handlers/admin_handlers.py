@@ -30,7 +30,7 @@ async def load_message_del(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data["text"] = message.text
         result = data["text"]
-        with sq.connect("../users.db") as con:
+        with sq.connect("files/users.db") as con:
             cur = con.cursor()
             cur.execute("SELECT * FROM users WHERE user_id = ?", (result,))
             data_user = cur.fetchall()
@@ -52,7 +52,7 @@ async def del_user(message: types.Message, state: FSMContext):
         answer = data["answer"]
         data_user = data["data_user"]
         if answer == "верно":
-            with sq.connect("../users.db") as con:
+            with sq.connect("files/users.db") as con:
                 cur = con.cursor()
                 cur.execute("DELETE FROM users WHERE user_id = ? ", (user_id,))
                 await state.finish()
@@ -95,7 +95,7 @@ async def send_message_all_users(message: types.Message, state: FSMContext):
         data["answer"] = message.text
         text = data["text"]
         answer = data["answer"]
-        with sq.connect("../users.db") as con:
+        with sq.connect("files/users.db") as con:
             cur = con.cursor()
             for user in cur.execute("SELECT user_id, name  FROM users"):
                 user_id = "".join(map(str, str(user[0])))
@@ -116,7 +116,7 @@ async def send_message_all_users(message: types.Message, state: FSMContext):
 
 async def get_all_users(message: types.Message):
     if message.from_user.id == ADMIN_ID:
-        with sq.connect("../users.db") as con:
+        with sq.connect("files/users.db") as con:
             cur = con.cursor()
             result = ''
             count = 0
