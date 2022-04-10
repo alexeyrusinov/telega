@@ -101,14 +101,13 @@ def create_table():
     with sq.connect("files/users.db") as con:
         cur = con.cursor()
         logger.info("table created :start_place")
-        print("Data base connected Ok!")
         cur.execute('CREATE TABLE IF NOT EXISTS start_place(name_station TEXT PRIMARY KEY,'
                     'station_call TEXT)')
         con.commit()
         cur.close()
 
 
-create_table()
+# create_table()
 
 
 def insert_station():
@@ -124,4 +123,4 @@ def insert_station():
         cur.close()
 
 
-insert_station()
+# insert_station()
