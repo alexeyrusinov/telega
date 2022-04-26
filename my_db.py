@@ -107,7 +107,7 @@ def create_table_start_place():
         cur.close()
 
 
-create_table_start_place()
+# create_table_start_place()
 
 
 def create_table_finish_place():
@@ -121,7 +121,7 @@ def create_table_finish_place():
         cur.close()
 
 
-create_table_finish_place()
+# create_table_finish_place()
 
 
 def insert_start_station():
@@ -137,7 +137,7 @@ def insert_start_station():
         cur.close()
 
 
-insert_start_station()
+# insert_start_station()
 
 
 def insert_finish_station():
@@ -153,5 +153,5 @@ def insert_finish_station():
         cur.close()
 
 
-insert_finish_station()
+# insert_finish_station()
 
