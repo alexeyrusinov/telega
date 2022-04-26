@@ -16,12 +16,12 @@ from create_bot import bot
 user_data = {}
 
 
-def get_keyboard_fab(name_table: str, page=1, elem_on_page=6):
+def get_keyboard_fab_sp(name_table: str, page=1, elem_on_page=6):
     all_items = 24
     max_page = math.ceil(all_items / elem_on_page)
     skip = (page - 1) * elem_on_page
     # word = '%Автокасса%'
-    with sq.connect("files/users.db") as con:
+    with sq.connect("files/station.db") as con:
         cur = con.cursor()
         # cur.execute("SELECT * FROM start_place LIMIT %s OFFSET %s" % (elem_on_page, skip))
         cur.execute("SELECT * FROM %s LIMIT %s OFFSET %s" % (name_table, elem_on_page, skip))  # вот это старое рабоает
@@ -65,7 +65,7 @@ def get_keyboard_fab_fp(name_table: str, value_station: str, page=1, elem_on_pag
     skip = (page - 1) * default_element_on_page
     word = f"'%{value_station}%'"
 
-    with sq.connect("files/users.db") as con:
+    with sq.connect("files/station.db") as con:
         cur = con.cursor()
         cur.execute("SELECT name_station_fp, station_call_fp "
                     "FROM %s "
@@ -106,7 +106,7 @@ def get_keyboard_fab_fp(name_table: str, value_station: str, page=1, elem_on_pag
 
 async def update_keyboard_fab_sp(message: types.Message, page: int, name_table, ):
     with suppress(MessageNotModified):
-        await message.edit_reply_markup(reply_markup=get_keyboard_fab(name_table=name_table, page=page))
+        await message.edit_reply_markup(reply_markup=get_keyboard_fab_sp(name_table=name_table, page=page))
 
 
 async def update_keyboard_fab_fp(message: types.Message, page: int, value_station, name_table, ):
@@ -159,7 +159,7 @@ class FSMSelectStation(StatesGroup):
 async def station_fsm_set(message: types.Message):
     await FSMSelectStation.start_place_question.set()
     # await message.reply("Откуда: ", reply_markup=nav.generate_keyboard_station(load_file('files/starting_point_24.json'), 'start', 1))
-    await message.reply("Откуда: ", reply_markup=get_keyboard_fab(name_table="start_place"))
+    await message.reply("Откуда: ", reply_markup=get_keyboard_fab_sp(name_table="start_place"))
     await message.answer("Выбирай..", reply_markup=nav.cancel_menu)
 
 
