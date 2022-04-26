@@ -137,7 +137,7 @@ def insert_start_station():
         cur.close()
 
 
-insert_start_station()
+# insert_start_station()
 
 def insert_finish_station():
     with sq.connect("files/users.db") as con:
@@ -152,5 +152,5 @@ def insert_finish_station():
         cur.close()
 
 
-insert_finish_station()
+# insert_finish_station()
 
