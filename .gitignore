@@ -1,4 +1,5 @@
 files/users.db
+files/station.db
 /token.txt
 *.log
 .idea/
