@@ -97,7 +97,7 @@ def load_file(file):
     return stations
 
 
-def create_table():
+def create_table_start_place():
     with sq.connect("files/users.db") as con:
         cur = con.cursor()
         logger.info("table created :start_place")
@@ -107,10 +107,24 @@ def create_table():
         cur.close()
 
 
-# create_table()
+create_table_start_place()
 
 
-def insert_station():
+def create_table_finish_place():
+    with sq.connect("files/users.db") as con:
+        cur = con.cursor()
+        logger.info("table created :finish_place")
+        cur.execute('CREATE TABLE IF NOT EXISTS finish_place(name_station_fp TEXT PRIMARY KEY,'
+                    'name_station_lower_fp TEXT,'
+                    'station_call_fp TEXT)')
+        con.commit()
+        cur.close()
+
+
+create_table_finish_place()
+
+
+def insert_start_station():
     with sq.connect("files/users.db") as con:
         cur = con.cursor()
         stations = load_file('files/starting_point_24.json')
@@ -123,4 +137,20 @@ def insert_station():
         cur.close()
 
 
-# insert_station()
+insert_start_station()
+
+def insert_finish_station():
+    with sq.connect("files/users.db") as con:
+        cur = con.cursor()
+        stations = load_file('files/704.json')
+        stations_k = []
+        for k, v in reversed(stations.items()):
+            stations_k.append((k, k.lower(), v))
+        cur.executemany(
+            "INSERT INTO finish_place (name_station_fp, name_station_lower_fp, station_call_fp) VALUES (?, ?, ?)", stations_k)
+        con.commit()
+        cur.close()
+
+
+insert_finish_station()
+
