@@ -1,11 +1,12 @@
 from aiogram import types, Dispatcher
 import logging
 import my_db
+from func.bus_func import get_schedule_with_type
 from mark import markups as nav
 from create_bot import bot
 import random
 import os
-from func.pars_bus import get_current_schedule
+import sqlite3 as sq
 
 
 logging.basicConfig(level=logging.INFO)
@@ -18,21 +19,32 @@ async def send_welcome(message: types.Message):
 
 
 async def send_help(message: types.Message):
+    await my_db.sql_add_user(message)
     await message.answer("Подскажет тебе: @rusinov", reply_markup=None)
 
 
 async def test_generate_inline_menu(call: types.CallbackQuery):
     day = int(call.data[:2])
-    for i in range(day + 1):
-        if i == day:
-            await bot.delete_message(call.from_user.id, call.message.message_id)
-            await bot.send_message(call.from_user.id, get_current_schedule(id_station_arr=1331, days=i), reply_markup=nav.generation_date_schedule(id_station_arr=1331))
-            logger.info(f"call data: {call.data}, user: {call.from_user.username} - {call.from_user.first_name}")
+    data_user = call.from_user.id
+
+    with sq.connect("files/users.db") as con:
+        cur = con.cursor()
+        cur.execute("""SELECT start_place_call, finish_place_call, type_schedule  FROM users WHERE user_id = ?""", (data_user,))
+        items = cur.fetchall()
+        for i in range(day + 1):
+            if i == day:
+                await bot.delete_message(call.from_user.id, call.message.message_id)
+                await bot.send_message(call.from_user.id,
+                                       get_schedule_with_type(items[0][0], items[0][1], days=i, type_schedule=items[0][2]),
+                                       parse_mode="Markdown")
+                logger.info(f"call data: {call.data}, user: {call.from_user.username} - {call.from_user.first_name}")
 
 
 async def get_random_num(message: types.Message):
     # await bot.delete_message(message.from_user.id, message.message.message_id)
-    # await bot.send_message(message.from_user.id, "Случайное сисло: {0}".format(random.randint(0, 1000)), reply_markup=nav.myMenu)
+    # await bot.send_message(message.from_user.id, "Случайное сисло: {0}".format(random.randint(0, 1000)),
+    # reply_markup=nav.myMenu)
+    await my_db.sql_add_user(message)
     await bot.edit_message_text("Случайное число: {0}".format(random.randint(0, 1000)),
                                 message.from_user.id, message_id=message.message.message_id, reply_markup=nav.myMenu)
 
