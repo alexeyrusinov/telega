@@ -3,15 +3,14 @@ from contextlib import suppress
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import json
 import math
 import sqlite3 as sq
 import my_db
-from func import pars_bus
-from func.pars_bus import get_current_schedule
+from func.bus_func import get_schedule_with_type
 from mark import markups as nav
 from create_bot import bot
+from mark.markups import generation_date_schedule
 
 user_data = {}
 
@@ -20,12 +19,9 @@ def get_keyboard_fab_sp(name_table: str, page=1, elem_on_page=6):
     all_items = 24
     max_page = math.ceil(all_items / elem_on_page)
     skip = (page - 1) * elem_on_page
-    # word = '%Автокасса%'
     with sq.connect("files/station.db") as con:
         cur = con.cursor()
-        # cur.execute("SELECT * FROM start_place LIMIT %s OFFSET %s" % (elem_on_page, skip))
         cur.execute("SELECT * FROM %s LIMIT %s OFFSET %s" % (name_table, elem_on_page, skip))  # вот это старое рабоает
-        # cur.execute("SELECT * FROM %s WHERE name_station LIKE '%s' LIMIT %s OFFSET %s" % (name_table, word, elem_on_page, skip))
         items = cur.fetchall()
         cur.close()
     result_stations = []
@@ -115,13 +111,13 @@ async def update_keyboard_fab_fp(message: types.Message, page: int, value_statio
             reply_markup=get_keyboard_fab_fp(name_table=name_table, value_station=value_station, page=page))
 
 
-def check_station(file):
-    with open(file) as f:  # Read json file
-        stations = json.load(f)
-        stations_call = []
-        for k, v in stations.items():
-            stations_call.append(v)
-    return stations_call
+# def check_station(file):
+#     with open(file) as f:  # Read json file
+#         stations = json.load(f)
+#         stations_call = []
+#         for k, v in stations.items():
+#             stations_call.append(v)
+#     return stations_call
 
 
 def get_station(value, file):
@@ -135,6 +131,7 @@ def get_station(value, file):
 
 
 def get_name_station(name_file, id_station):
+    name_station = ''
     with open(name_file) as f:  # Read json file
         stations = json.load(f)
         for k, v in stations.items():
@@ -156,9 +153,13 @@ class FSMSelectStation(StatesGroup):
     finish_place_question = State()
 
 
-async def station_fsm_set(message: types.Message):
+next_schedule = {}
+
+
+async def station_fsm_set(message: types.Message, flag_next_schedule=False):
+    await my_db.sql_add_user(message)
+    next_schedule[message.from_user.id] = flag_next_schedule
     await FSMSelectStation.start_place_question.set()
-    # await message.reply("Откуда: ", reply_markup=nav.generate_keyboard_station(load_file('files/starting_point_24.json'), 'start', 1))
     await message.reply("Откуда: ", reply_markup=get_keyboard_fab_sp(name_table="start_place"))
     await message.answer("Выбирай..", reply_markup=nav.cancel_menu)
 
@@ -168,7 +169,6 @@ async def station_fsm_set(message: types.Message):
 # этот фильтр работает он старый
 async def callbacks_num_change_fab_sp(call: types.CallbackQuery):
     page = int(call.data[-1])
-    # user_data[call.from_user.id] = page
     await update_keyboard_fab_sp(call.message, page=page, name_table="start_place")
     await call.answer()
 
@@ -177,24 +177,22 @@ async def callbacks_num_change_fab_fp(call: types.CallbackQuery):
     page = call.data.split('-')
     await update_keyboard_fab_fp(call.message, page=int(page[-1]), name_table="finish_place",
                                  value_station=user_data[call.from_user.id])
-    # await get_keyboard_fab_fp(name_table="finish_place", value_station=user_data[call.from_user.id], page=page)
     await call.answer()
 
 
 async def get_sp_and_fp_user_call(message: types.Message):
+    await my_db.sql_add_user(message)
     with sq.connect("files/users.db") as con:
         cur = con.cursor()
-        cur.execute("""SELECT start_place_call, finish_place_call  FROM users WHERE user_id = ?""",
+        cur.execute("""SELECT start_place_call, finish_place_call, type_schedule  FROM users WHERE user_id = ?""",
                     (message.from_user.id,))
         result = cur.fetchall()
         cur.close()
         if result[0][0] == str(None) and result[0][1] == str(None):
             await station_fsm_set(message)
         else:
-            start_place = get_name_station('files/starting_point_24.json', result[0][0])
-            finish_place = get_name_station('files/704.json', result[0][1])
-            await message.answer(f"от *{start_place}* до *{finish_place}*", parse_mode="Markdown")
-            await message.answer(pars_bus.get_current_schedule(result[0][0], result[0][1], days=0))
+            await message.answer(get_schedule_with_type(result[0][0], result[0][1], days=0, type_schedule=result[0][2]),
+                                 parse_mode="Markdown")
 
 
 async def station_fsm_question_start_place(call: types.CallbackQuery, state: FSMContext):
@@ -222,7 +220,8 @@ async def station_fsm_question_finish_place(message: types.Message, state: FSMCo
         await message.answer("Попробуй ещё..\nКуда: (например: Екатеринбург) ", reply_markup=nav.cancel_menu)
         await FSMSelectStation.start_place_check_answer.set()
     else:
-        await message.answer("Какую из:", reply_markup=get_keyboard_fab_fp(name_table="finish_place", value_station=user_data[message.from_user.id]))
+        await message.answer("Какую из:", reply_markup=get_keyboard_fab_fp(name_table="finish_place",
+                                                                           value_station=user_data[message.from_user.id]))
         await FSMSelectStation.next()
 
 
@@ -238,23 +237,39 @@ async def station_fsm_check_answer_finish_place(call: types.CallbackQuery, state
         finish_place = get_name_station('files/704.json', call_user_station[0])
         start_call = data["start_place_user_call"]
         finish_call = data["finish_place_user_call"]
-    await bot.delete_message(call.from_user.id, call.message.message_id)
-    await bot.send_message(call.from_user.id, f"*от* {start_place} *до* {finish_place}",
-                           reply_markup=nav.user_and_admin_menu(call.from_user.id), parse_mode="Markdown")
-    await bot.send_message(call.from_user.id, f"{get_current_schedule(start_call, finish_call, days=0)}")
-    data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
-    await my_db.update_sp_and_fp_call(data_user, start_call, finish_call)
+        data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
+        if next_schedule[call.from_user.id]:
+            await bot.delete_message(call.from_user.id, call.message.message_id)
+            await bot.send_message(call.from_user.id, f"*от* {start_place} *до* {finish_place}",
+                                   reply_markup=generation_date_schedule(start_place=start_call, finish_place=finish_call),
+                                   parse_mode="Markdown")
+            await bot.send_message(call.from_user.id, 'выбирай', reply_markup=nav.otherMenu)
+            await call.answer()
+            await state.finish()
+        else:
+            with sq.connect("files/users.db") as con:
+                cur = con.cursor()
+                cur.execute("""SELECT type_schedule  FROM users WHERE user_id = ?""",
+                            (data_user[0],))
+                items = cur.fetchone()
+                print(items, 'items')
+            await bot.delete_message(call.from_user.id, call.message.message_id)
+            await bot.send_message(call.from_user.id,
+                                   f"{get_schedule_with_type(start_call, finish_call, days=0, type_schedule=items[0])}",
+                                   reply_markup=nav.user_and_admin_menu(call.from_user.id), parse_mode="Markdown")
+
+        await my_db.update_sp_and_fp_call(data_user, start_call, finish_call)
     await call.answer()
     await state.finish()
 
 
 def register_handlers_bus_station(dp: Dispatcher):
-    dp.register_callback_query_handler(callbacks_num_change_fab_sp, text_contains="page-lib-", state="*")  # указать стэйт
-    dp.register_callback_query_handler(callbacks_num_change_fab_fp, text_contains="page-fp-", state="*")  # указать стэйт
-    # dp.register_callback_query_handler(callbacks_num_finish_fab, text_contains="station-call-", state="*")  # указать стэйт
+    dp.register_callback_query_handler(callbacks_num_change_fab_sp, text_contains="page-lib-", state="*")
+    dp.register_callback_query_handler(callbacks_num_change_fab_fp, text_contains="page-fp-", state="*")
     dp.register_message_handler(get_sp_and_fp_user_call, text='Последнее расписание', state="*")
     dp.register_message_handler(station_fsm_set, text='Выбор направления', state="*")
-    # dp.register_callback_query_handler(station_fsm_question_start_place, text_contains="start", state=FSMSelectStation.start_place_question)
-    dp.register_callback_query_handler(station_fsm_question_start_place, text_contains="start-call-", state=FSMSelectStation.start_place_question)
+    dp.register_callback_query_handler(station_fsm_question_start_place, text_contains="start-call-",
+                                       state=FSMSelectStation.start_place_question)
     dp.register_message_handler(station_fsm_question_finish_place, state=FSMSelectStation.start_place_check_answer)
-    dp.register_callback_query_handler(station_fsm_check_answer_finish_place, text_contains="station-call-", state=FSMSelectStation.finish_place_question)
+    dp.register_callback_query_handler(station_fsm_check_answer_finish_place, text_contains="station-call-",
+                                       state=FSMSelectStation.finish_place_question)
