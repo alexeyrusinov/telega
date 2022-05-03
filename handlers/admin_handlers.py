@@ -61,7 +61,7 @@ async def del_user(message: types.Message, state: FSMContext):
                 logger.info(f"user: {data_user[0]} - was deleted")
                 con.commit()
                 cur.close()
-                # добавить стэйт финиш
+                await state.finish()
         else:
             await state.reset_state()
             await message.answer("canceled", reply_markup=user_and_admin_menu(message.from_user.id))
@@ -122,8 +122,7 @@ async def get_all_users(message: types.Message):
             count = 0
             for value in cur.execute("SELECT * FROM users"):
                 count += 1
-                # result += str(value[0]) + " " + str(value[1]) + " " + str(value[2]) + " " + str(value[3]) + '\n'
-                result += f"{value[0]} - {value[1]} - {value[2]} - {value[3]} - {value[4]} \n"
+                result += f"{value}\n"
             result += f'total users: {count}'
             cur.close()
             logger.info(f"total users in db: {count}")
