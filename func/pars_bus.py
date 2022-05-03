@@ -1,6 +1,7 @@
 import requests
 import json
 from datetime import datetime
+from func.work_on_file import get_name_station
 from func.date_and_time import get_data_time_ekb
 import logging
 import os
@@ -10,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(os.path.basename(__file__))
 
 
-# del int from string
+# get firs word from name bus
 def del_int_from_string(string):
     bus_brand = string.split()
     result = []
@@ -22,6 +23,8 @@ def del_int_from_string(string):
         else:
             items.append(i)
     str_item = items[0].split("-")
+    if len(str_item) == 1:
+        return str(items[0])
     another_result = []
     for i in str_item:
         if i.isalpha() and i != ' ':
@@ -29,14 +32,13 @@ def del_int_from_string(string):
             return str(another_result[0])
 
 
-def get_json_bus_data(start_place, id_station_arr, days):
+def get_json_bus_data(start_place, finish_place, days):
     now_datetime_with_parm_days = get_data_time_ekb(days)
 
     day, month, year = str(now_datetime_with_parm_days.day), str(now_datetime_with_parm_days.month), str(
         now_datetime_with_parm_days.year)
 
-    # url_bus = f"https://autovokzal.org/upload/php/result.php?id={id_station_arr}&date=%27{year}-{month}-{day}%27&station=ekb"
-    url_bus = f"https://autovokzal.org/upload/php/result.php?id={id_station_arr}&date=%27{year}-{month}-{day}%27&station={start_place}"
+    url_bus = f"https://autovokzal.org/upload/php/result.php?id={finish_place}&date=%27{year}-{month}-{day}%27&station={start_place}"
 
     url_station = 'https://www.autovokzal.org/upload/php/date_update.php?station=ekb'
 
@@ -86,7 +88,8 @@ def next_bus_time_today(data_bus):
                     time.replace(" min", "")  # код для елсе которое стиает мин если до след автобуса больше чем час
                 free_place = i["free_place"]
                 name_bus = i["name_bus"]
-                next_bus_time = str(f"Следующий автобус через:  {time}\nbus: {name_bus}\nfree places: {free_place}\ndate: {data_bus['now_date']}\n")
+                next_bus_time = str(f"Следующий автобус через:  {time}\nbus: {name_bus}\n"
+                                    f"free places: {free_place}\ndate: {data_bus['now_date']}\n")
                 break
             elif i["status"] == "":
                 time = i["time_otpr"] - data_bus['now_datetime']
@@ -98,13 +101,14 @@ def next_bus_time_today(data_bus):
                 else:
                     time.replace(" min", "")  # код для елсе которое стиает мин если до след автобуса больше чем час
                 free_place = i["free_place"]
-                next_bus_time = str(f"Следующий автобус через: {time}\nfree places: {free_place}\ndate: {data_bus['now_date']}\n")
+                next_bus_time = str(f"Следующий автобус через: {time}\n"
+                                    f"free places: {free_place}\ndate: {data_bus['now_date']}\n")
                 break
 
     return next_bus_time
 
 
-def get_bus_time(start_place, id_station_arr, days):
+def get_bus_time(start_place, finish_place, days):
     now_datetime_with_parm_days = get_data_time_ekb(days)
     now_date_with_parm_days = str(now_datetime_with_parm_days.date())
     now_date_with_parm_days_str = now_datetime_with_parm_days.strftime('%d-%m-%Y')
@@ -112,7 +116,7 @@ def get_bus_time(start_place, id_station_arr, days):
     now_datetime = get_data_time_ekb()
     now_date_str = now_datetime.strftime('%d-%m-%Y')
 
-    request_json_data = get_json_bus_data(start_place, id_station_arr, days)
+    request_json_data = get_json_bus_data(start_place, finish_place, days)
 
     with open('data.json', 'w', encoding='utf8') as f:
         json.dump(request_json_data, f, ensure_ascii=False, indent=4)
@@ -142,6 +146,11 @@ def get_bus_time(start_place, id_station_arr, days):
     with open('new_data.json', 'w', encoding='utf8') as f:  # write json file
         json.dump(all_data["rasp"], f, ensure_ascii=False, indent=4, sort_keys=True, default=str)
 
+    start_place_name = get_name_station('files/starting_point_24.json', start_place)
+    finish_place_name = get_name_station('files/704.json', finish_place)
+
+    name_road = f"от *{start_place_name}* до *{finish_place_name}*\n\n"
+
     data_bus = dict()  # add to dict for output
     data_bus['days'] = days
     data_bus['all_bus'] = all_data["rasp"]
@@ -151,6 +160,7 @@ def get_bus_time(start_place, id_station_arr, days):
     data_bus['now_date_with_parm_days'] = now_date_with_parm_days_str
     data_bus['now_datetime'] = now_datetime
     data_bus['now_date'] = now_date_str
+    data_bus['name_road'] = name_road
 
     bus = str(len(all_data["rasp"]))
     logger.info(f"all_bus - {bus}, bus_dispatched - {str(len(bus_dispatched))}, "
@@ -159,48 +169,54 @@ def get_bus_time(start_place, id_station_arr, days):
     return data_bus
 
 
-def get_all_bus_schedule(id_station_arr, days):  # Все автобусы
-    data_bus = get_bus_time(id_station_arr,  days)  # c парметром days
+def get_all_bus_schedule(start_place, finish_place, days):  # Все автобусы
+    data_bus = get_bus_time(start_place, finish_place,  days)  # c парметром days
     if len(data_bus['all_bus']) == 0:
-        return f"Нет автобусов на: {data_bus['now_date']}"
+        return f"{data_bus['name_road']}"\
+               f"Нет автобусов на: {data_bus['now_date']}"
     else:
-        entire_schedule_for_today = list_schedule_json_to_string(data_bus['all_bus'])
+        entire_schedule_for_today = data_bus['name_road']
+        entire_schedule_for_today += list_schedule_json_to_string(data_bus['all_bus'])
         entire_schedule_for_today += f"Все автобусы за: {data_bus['now_date_with_parm_days']}"
         return entire_schedule_for_today
 
 
-def get_current_schedule(start_place, id_station_arr, days):  # Расписание автобуса
-    data_bus = get_bus_time(start_place, id_station_arr, days)  # c парметром days
+def get_current_schedule(start_place, finish_place, days):  # Расписание автобуса
+    data_bus = get_bus_time(start_place, finish_place, days)  # c парметром days
     if len(data_bus['raw_schedule']) == 0:
-        return f"No bus for: {data_bus['now_date_with_parm_days']}"
+        return f"{data_bus['name_road']}"\
+               f"Нет автобусов на: {data_bus['now_date_with_parm_days']}"
     else:
         time = next_bus_time_today(data_bus)
         schedule = list_schedule_json_to_string(data_bus['raw_schedule'])
-        bus_schedule_today = schedule + time
+        bus_schedule_today = data_bus['name_road']
+        bus_schedule_today += schedule + time
         return bus_schedule_today
 
 
-def get_bus_dispatched(id_station_arr, days):  # Отправленные автобусы
-    data_bus = get_bus_time(id_station_arr,  days)
+def get_bus_dispatched(start_place, finish_place, days):  # Отправленные автобусы
+    data_bus = get_bus_time(start_place, finish_place,  days)
     if len(data_bus['bus_dispatched']) == 0:
-        return f"Нет отправленных автобусов за: {data_bus['now_date']}"
+        return f"{data_bus['name_road']}"\
+               f"Нет отправленных автобусов за: {data_bus['now_date']}"
     else:
-        entire_bus_dispatched_for_today = list_schedule_json_to_string(data_bus['bus_dispatched'])
+        entire_bus_dispatched_for_today = data_bus['name_road']
+        entire_bus_dispatched_for_today += list_schedule_json_to_string(data_bus['bus_dispatched'])
         entire_bus_dispatched_for_today += f"Отправленные автобусы за: {data_bus['now_date']}"
         return entire_bus_dispatched_for_today
 
 
-def get_bus_canceled(id_station_arr,  days):  # Отменённые автобусы
-    data_bus = get_bus_time(id_station_arr,  days)  # c парметром days
-    entire_bus_canceled_for_today = list_schedule_json_to_string(data_bus['bus_canceled'])
+def get_bus_canceled(start_place, finish_place,  days):  # Отменённые автобусы
+    data_bus = get_bus_time(start_place, finish_place,  days)  # c парметром days
     if len(data_bus['bus_canceled']) == 0:
-        return f"Нет отменённых автобусов за: {data_bus['now_date_with_parm_days']}"
+        return f"{data_bus['name_road']}"\
+               f"Нет отменённых автобусов за: {data_bus['now_date_with_parm_days']}"
     else:
+        entire_bus_canceled_for_today = data_bus['name_road']
+        entire_bus_canceled_for_today += list_schedule_json_to_string(data_bus['bus_canceled'])
         entire_bus_canceled_for_today += f"Отменённые автобусы за: {data_bus['now_date_with_parm_days']}"
         return entire_bus_canceled_for_today
 
-
-#  ---------
 
 # def generation_date_schedule():
 #     mydict = {}
