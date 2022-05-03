@@ -2,8 +2,6 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
 from aiogram import types, Dispatcher
-from func.pars_bus import get_current_schedule, get_all_bus_schedule,\
-    get_bus_dispatched, get_bus_canceled
 import my_db
 from mark import markups as nav
 from handlers.client_handlers import send_welcome, send_help
@@ -15,8 +13,9 @@ class FSMSelectBus(StatesGroup):
 
 # Задаём вопрос
 async def fsm_start(message: types.Message):
+    await my_db.sql_add_user(message)
     await FSMSelectBus.question.set()
-    await message.reply("Выбери тип расписания проходящего автобуса:", reply_markup=nav.bus_answer_menu)
+    await message.reply("Выбери тип расписания:  ", reply_markup=nav.bus_answer_menu)
 
 
 # Выход из состояний
@@ -39,16 +38,24 @@ async def load_question(message: types.Message, state: FSMContext):
             await my_db.update_type_timetable_passing_bus(data_user, result)
             await state.finish()
             if result == "все автобусы":
-                await message.reply(get_all_bus_schedule(id_station_arr=1331, days=0),
+                # await message.reply(get_all_bus_schedule(id_station_arr=1331, days=0),
+                #                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
+                await message.reply("Тип расписания изменён на: 'все автобусы'",
                                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
             elif result == "отправленные":
-                await message.reply(get_bus_dispatched(id_station_arr=1331, days=0),
+                # await message.reply(get_bus_dispatched(id_station_arr=1331, days=0),
+                #                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
+                await message.reply("Тип расписания изменён на: 'отправленные'",
                                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
             elif result == "отмененные":
-                await message.reply(get_bus_canceled(id_station_arr=1331, days=0),
+                # await message.reply(get_bus_canceled(id_station_arr=1331, days=0),
+                #                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
+                await message.reply("Тип расписания изменён на: 'отмененные'",
                                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
             elif result == "ближайшие":
-                await message.reply(get_current_schedule(id_station_arr=1331, days=0),
+                # await message.reply(get_current_schedule(id_station_arr=1331, days=0),
+                #                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
+                await message.reply("Тип расписания изменён на: 'ближайшие'",
                                     reply_markup=nav.user_and_admin_menu(message.from_user.id))
         elif result == '/start':
             await state.finish()
@@ -59,20 +66,6 @@ async def load_question(message: types.Message, state: FSMContext):
         elif result == '/select':
             await state.reset_state()
             await fsm_start(message)
-
-            # match result:
-            #     case "все автобусы":
-            #         await message.reply(get_all_bus_schedule(),
-            #                             reply_markup=nav.user_and_admin_menu(message.from_user.id))
-            #     case "отправленные":
-            #         await message.reply(get_bus_dispatched(),
-            #                             reply_markup=nav.user_and_admin_menu(message.from_user.id))
-            #     case "отмененные":
-            #         await message.reply(get_bus_canceled(),
-            #                             reply_markup=nav.user_and_admin_menu(message.from_user.id))
-            #     case "ближайшие":
-            #         await message.reply(get_current_schedule(),
-            #                             reply_markup=nav.user_and_admin_menu(message.from_user.id))
 
 
 def register_handlers_bus_fsm(dp: Dispatcher):
