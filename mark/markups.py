@@ -32,7 +32,6 @@ btnStation = KeyboardButton("Выбор направления")
 btnBtc = KeyboardButton("BTC/USDT")
 btnUsd = KeyboardButton("USDT/RUB")
 btn_ex_rate = KeyboardButton("Exchange rate")
-# btnInfo = KeyboardButton("Расписание проходящего")
 btnLast = KeyboardButton("Последнее расписание")
 btnOther = KeyboardButton("Другое")
 btn_all_db = KeyboardButton("alldb")
@@ -42,13 +41,12 @@ btn_del_users = KeyboardButton("del")
 
 def user_and_admin_menu(user_id):
     if user_id == ADMIN_ID:
-        # adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo, btnLast).add(btnBtc, btnUsd, btnOther).add(btn_del_users, btn_all_db, btn_send)
-        adminMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnLast).add(btn_ex_rate, btnOther).add(btn_del_users, btn_all_db, btn_send)
-        return adminMenu
+        admin_menu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnLast).add(btn_ex_rate, btnOther)\
+            .add(btn_del_users, btn_all_db, btn_send)
+        return admin_menu
     else:
-        # userMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnInfo, btnLast).add(btnBtc, btnUsd, btnOther)
-        userMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnLast).add(btnBtc, btnUsd, btnOther)
-        return userMenu
+        user_menu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnStation, btnLast).add(btnBtc, btnUsd, btnOther)
+        return user_menu
 
 ##############
 
@@ -56,8 +54,8 @@ def user_and_admin_menu(user_id):
 # other menu
 btnTime = KeyboardButton("Текущее время и дата")
 btnRandint = KeyboardButton("inlineButtons")
-btnSchedule = KeyboardButton("Расписание проходящего на несколько дней")
-otherMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnSchedule).add(btnTime,btnRandint, btnMain)
+btnSchedule = KeyboardButton("Расписание на несколько дней")
+otherMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnSchedule).add(btnTime, btnRandint, btnMain)
 
 # bus_answer_menu
 btn_answer1 = KeyboardButton("все автобусы")
@@ -85,10 +83,10 @@ def generate_keyboard(data):
     return keyboard
 
 
-def generation_date_schedule(id_station_arr):
+def generation_date_schedule(start_place, finish_place):
     mydict = {}
     for i in range(15):
-        req = get_json_bus_data(id_station_arr, i)
+        req = get_json_bus_data(start_place, finish_place, i)
         if req and len(req['rasp']) > 1:
             mydict.update({f"{i} - day": get_data_time_ekb(i).strftime('%d-%m-%Y')})
         else:
