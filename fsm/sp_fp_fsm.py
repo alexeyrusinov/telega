@@ -3,11 +3,11 @@ from contextlib import suppress
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
-import json
 import math
 import sqlite3 as sq
 import my_db
 from func.bus_func import get_schedule_with_type
+from func.work_on_file import get_station, get_name_station
 from mark import markups as nav
 from create_bot import bot
 from mark.markups import generation_date_schedule
@@ -21,7 +21,7 @@ def get_keyboard_fab_sp(name_table: str, page=1, elem_on_page=6):
     skip = (page - 1) * elem_on_page
     with sq.connect("files/station.db") as con:
         cur = con.cursor()
-        cur.execute("SELECT * FROM %s LIMIT %s OFFSET %s" % (name_table, elem_on_page, skip))  # вот это старое рабоает
+        cur.execute("SELECT * FROM %s LIMIT %s OFFSET %s" % (name_table, elem_on_page, skip))
         items = cur.fetchall()
         cur.close()
     result_stations = []
@@ -111,42 +111,6 @@ async def update_keyboard_fab_fp(message: types.Message, page: int, value_statio
             reply_markup=get_keyboard_fab_fp(name_table=name_table, value_station=value_station, page=page))
 
 
-# def check_station(file):
-#     with open(file) as f:  # Read json file
-#         stations = json.load(f)
-#         stations_call = []
-#         for k, v in stations.items():
-#             stations_call.append(v)
-#     return stations_call
-
-
-def get_station(value, file):
-    with open(file) as f:  # Read json file
-        stations = json.load(f)
-    my_dict = {}
-    for k, v in reversed(stations.items()):
-        if value in k.upper():
-            my_dict.update({k: v})
-    return my_dict
-
-
-def get_name_station(name_file, id_station):
-    name_station = ''
-    with open(name_file) as f:  # Read json file
-        stations = json.load(f)
-        for k, v in stations.items():
-            if v == f'{id_station}':
-                name_station = k
-        return name_station
-
-
-def load_file(file):
-    with open(file) as f:  # Read json file
-        stations = json.load(f)
-        stations = dict(reversed(list(stations.items())))  # revers
-    return stations
-
-
 class FSMSelectStation(StatesGroup):
     start_place_question = State()
     start_place_check_answer = State()
@@ -166,7 +130,6 @@ async def station_fsm_set(message: types.Message, flag_next_schedule=False):
 
 # @dp.callback_query_handler(text_contains="page-lib-")
 # async def callbacks_num_change_fab(call: types.CallbackQuery, callback_data: dict):
-# этот фильтр работает он старый
 async def callbacks_num_change_fab_sp(call: types.CallbackQuery):
     page = int(call.data[-1])
     await update_keyboard_fab_sp(call.message, page=page, name_table="start_place")
