@@ -111,10 +111,10 @@ def next_bus_time_today(data_bus):
 def get_bus_time(start_place, finish_place, days):
     now_datetime_with_parm_days = get_data_time_ekb(days)
     now_date_with_parm_days = str(now_datetime_with_parm_days.date())
-    now_date_with_parm_days_str = now_datetime_with_parm_days.strftime('%d-%m-%Y')
+    now_date_with_parm_days_str = now_datetime_with_parm_days.strftime('%d/%m/%Y')
 
     now_datetime = get_data_time_ekb()
-    now_date_str = now_datetime.strftime('%d-%m-%Y')
+    now_date_str = now_datetime.strftime('%d/%m/%Y')
 
     request_json_data = get_json_bus_data(start_place, finish_place, days)
 
