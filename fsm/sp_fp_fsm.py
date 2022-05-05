@@ -1,3 +1,4 @@
+from aiogram.dispatcher.filters import Text
 from aiogram.utils.exceptions import MessageNotModified
 from contextlib import suppress
 from aiogram.dispatcher.filters.state import State, StatesGroup
@@ -8,6 +9,7 @@ import sqlite3 as sq
 import my_db
 from func.bus_func import get_schedule_with_type
 from func.work_on_file import get_station, get_name_station
+from handlers.client_handlers import send_welcome
 from mark import markups as nav
 from create_bot import bot
 from mark.markups import generation_date_schedule
@@ -203,10 +205,10 @@ async def station_fsm_check_answer_finish_place(call: types.CallbackQuery, state
         data_user = (call.from_user.id, call.from_user.username, call.from_user.first_name)
         if next_schedule[call.from_user.id]:
             await bot.delete_message(call.from_user.id, call.message.message_id)
-            await bot.send_message(call.from_user.id, f"*от* {start_place} *до* {finish_place}",
+            await bot.send_message(call.from_user.id, 'Выбирай..', reply_markup=nav.otherMenu)
+            await bot.send_message(call.from_user.id, f"от *{start_place}* до *{finish_place}*",
                                    reply_markup=generation_date_schedule(start_place=start_call, finish_place=finish_call),
                                    parse_mode="Markdown")
-            await bot.send_message(call.from_user.id, 'выбирай', reply_markup=nav.otherMenu)
             await call.answer()
             await state.finish()
         else:
