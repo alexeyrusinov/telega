@@ -34,7 +34,7 @@ async def filter_message(message: types.Message):
     elif message.text == "inlineButtons":
         await my_db.sql_add_user(message)
         await bot.send_message(message.from_user.id, "inlineButtons", reply_markup=nav.myMenu)
-    elif message.text == "Расписание на несколько дней":
+    elif message.text == "Расписание на ближайшие дни":
         await my_db.sql_add_user(message)
         data_user = message.from_user.id
         with sq.connect("files/users.db") as con:

@@ -54,7 +54,7 @@ def user_and_admin_menu(user_id):
 # other menu
 btnTime = KeyboardButton("Текущее время и дата")
 btnRandint = KeyboardButton("inlineButtons")
-btnSchedule = KeyboardButton("Расписание на несколько дней")
+btnSchedule = KeyboardButton("Расписание на ближайшие дни")
 otherMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(btnSchedule).add(btnTime, btnRandint, btnMain)
 
 # bus_answer_menu
